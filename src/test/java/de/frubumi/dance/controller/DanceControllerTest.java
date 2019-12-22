@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,10 +23,10 @@ public class DanceControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void getIndex() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/").
+    public void getList() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/list").
                 accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isOk()).
-                andExpect(content().string(equalTo("Let's dance!")));
+                andExpect(content().string(containsString("Hello, Gast")));
     }
 }
