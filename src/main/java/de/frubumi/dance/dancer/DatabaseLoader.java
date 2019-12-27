@@ -17,9 +17,13 @@ public class DatabaseLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         this.dancerRepository.save(
-                new Dancer("Marc",
-                        "Gorzala",
-                        "recoby",
-                        "Tango"));
+                new Dancer("Marc", "Gorzala", "marc", "Tango"));
+        this.dancerRepository.save(
+                new Dancer("Xiaofei", "Shi", "xiaofei", "Tango"));
+        this.dancerRepository.save(
+                new Dancer("Jan", "Stroppel", "jan", "Tango"));
+        this.dancerRepository.save(
+                new Dancer("Bernd", "Brot", "Kasten", "Tango")
+        );
     }
 }
