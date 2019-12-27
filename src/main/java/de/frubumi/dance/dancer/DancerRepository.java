@@ -1,6 +1,6 @@
 package de.frubumi.dance.dancer;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface DancerRepository extends CrudRepository<Dancer, Long> {
+public interface DancerRepository extends PagingAndSortingRepository<Dancer, Long> {
 }
