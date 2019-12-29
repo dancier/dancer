@@ -34,6 +34,7 @@ Color definition
   max-width: 1000px;
   position: fixed;
   top: 0;
+  z-index: 99999;
 }
 
 .head img{
@@ -99,9 +100,10 @@ Color definition
     background-color:rgba(255, 255, 255, 0.9);
     max-width: 800px;
     margin: 200px auto 245px auto;
-    padding: 30px 120px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     text-align: center;
-    border-radius: 15px;
+    border-radius: 9px;
 }
 
 .site-image-row {
