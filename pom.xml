@@ -8,11 +8,13 @@
 		<version>2.2.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>de.frubumi</groupId>
-	<artifactId>dance</artifactId>
+
+	<groupId>net.dancier</groupId>
+	<artifactId>dancer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dance</name>
-	<description>bring dancers together with love</description>
+	<name>Dancer</name>
+	<url>http://project.dancier.net</url>
+	<description>Contains backend and frontend to connect people.</description>
 
 	<properties>
 		<java.version>12</java.version>
