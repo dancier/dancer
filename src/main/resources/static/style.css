@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.page-container {
+    background-color: black;
+    margin: 0;
+}
+
+.head {
+  background-color: #ffefd1;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.head .head-content {
+   margin-left: 45px;
+}
+
+.head img{
+  display: inline;
+  width: 150px;
+}
+
+.head .title {
+    display: inline-block;
+    margin: 30px 0 0 30px;
+    vertical-align: top;
+}
+
+.head .title-text {
+    width: 300px;
+}
+
+.head h1 {
+    font-size: 100px;
+    margin: 0;
+}
+
+.head h2 {
+    font-size: 25px;
+    margin: 15px;
+}
+
+.body-container {
+}
+
+.body-image {
+        background-image: url(dance-grey.svg);
+        background-repeat: no-repeat;
+        background-size: 1200px;
+        background-position: center;
+        min-height: 1600px;
+        padding-top: 360px;
+}
+
+.register-container .register-button {
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+}
+
+.login-button {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.register-container {
+    background-color:rgba(255, 255, 255, 0.9);
+    max-width: 800px;
+    margin: 45px auto;
+    padding: 30px 120px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.register-container button {
+    margin: 30px;
+}
+
+.footer {
+    background-color: #ffefd1;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    margin: 30px;
+    display: inline-block;
+}
+
+.footer-content {
+    margin: auto;
+    max-width: 800px;
+}
+
+.row {
+    display: block;
+}
