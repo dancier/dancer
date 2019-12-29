@@ -2,20 +2,38 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/*
+Color definition
+*/
+.wine-red {
+   background-color: #b40720;
+}
+
+.warm-red {
+   background-color:  #fa0720;
+}
+
+.warm-orange {
+    background-color: #fb5e00;
+}
+
 .page-container {
-    background-color: black;
+    background-color: #997059;
     margin: 0;
 }
 
-.head {
-  background-color: #ffefd1;
-  position: fixed;
-  top: 0;
-  width: 100%;
+.page-content {
+    max-width: 1000px;
+    margin: auto;
 }
 
-.head .head-content {
-   margin-left: 45px;
+.head {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1000px;
+  position: fixed;
+  top: 0;
 }
 
 .head img{
@@ -24,13 +42,24 @@ body {
 }
 
 .head .title {
-    display: inline-block;
-    margin: 30px 0 0 30px;
+    background-color: #fff;
     vertical-align: top;
 }
 
+.head .menu {
+    color: white;
+    margin: 15px;
+}
+
+.head .menu a{
+    padding-right: 30px;
+    text-decoration: none;
+    color: white;
+}
+
 .head .title-text {
-    width: 300px;
+    width: 260px;
+    margin: 15px 15px;
 }
 
 .head h1 {
@@ -47,7 +76,7 @@ body {
 }
 
 .body-image {
-        background-image: url(dance-grey.svg);
+        background-image: url(img/dance-grey.svg);
         background-repeat: no-repeat;
         background-size: 1200px;
         background-position: center;
@@ -69,10 +98,20 @@ body {
 .register-container {
     background-color:rgba(255, 255, 255, 0.9);
     max-width: 800px;
-    margin: 45px auto;
+    margin: 200px auto 245px auto;
     padding: 30px 120px;
     text-align: center;
     border-radius: 15px;
+}
+
+.site-image-row {
+    height: 150px;
+    color: white;
+}
+
+.site-image-col {
+    padding: 30px;
+    font-weight: bold;
 }
 
 .register-container button {
@@ -80,7 +119,7 @@ body {
 }
 
 .footer {
-    background-color: #ffefd1;
+    background-color: #b40720;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -88,7 +127,7 @@ body {
 
 .footer a {
     text-decoration: none;
-    color: black;
+    color: white;
     font-weight: bold;
     margin: 30px;
     display: inline-block;
@@ -97,8 +136,4 @@ body {
 .footer-content {
     margin: auto;
     max-width: 800px;
-}
-
-.row {
-    display: block;
 }
