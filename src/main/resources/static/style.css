@@ -1,0 +1,141 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+Color definition
+*/
+.wine-red {
+   background-color: #b40720;
+}
+
+.warm-red {
+   background-color:  #fa0720;
+}
+
+.warm-orange {
+    background-color: #fb5e00;
+}
+
+.page-container {
+    background-color: #997059;
+    margin: 0;
+}
+
+.page-content {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1000px;
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+}
+
+.head img{
+  display: inline;
+  width: 150px;
+}
+
+.head .title {
+    background-color: #fff;
+    vertical-align: top;
+}
+
+.head .menu {
+    color: white;
+    margin: 15px;
+}
+
+.head .menu a{
+    padding-right: 30px;
+    text-decoration: none;
+    color: white;
+}
+
+.head .title-text {
+    width: 260px;
+    margin: 15px 15px;
+}
+
+.head h1 {
+    font-size: 100px;
+    margin: 0;
+}
+
+.head h2 {
+    font-size: 25px;
+    margin: 15px;
+}
+
+.body-container {
+}
+
+.body-image {
+        background-image: url(img/dance-grey.svg);
+        background-repeat: no-repeat;
+        background-size: 1200px;
+        background-position: center;
+        min-height: 1600px;
+        padding-top: 360px;
+}
+
+.register-container .register-button {
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+}
+
+.login-button {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.register-container {
+    background-color:rgba(255, 255, 255, 0.9);
+    max-width: 800px;
+    margin: 200px auto 245px auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+    border-radius: 9px;
+}
+
+.site-image-row {
+    height: 150px;
+    color: white;
+}
+
+.site-image-col {
+    padding: 30px;
+    font-weight: bold;
+}
+
+.register-container button {
+    margin: 30px;
+}
+
+.footer {
+    background-color: #b40720;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    margin: 30px;
+    display: inline-block;
+}
+
+.footer-content {
+    margin: auto;
+    max-width: 800px;
+}
