@@ -6,20 +6,38 @@ body {
 Color definition
 */
 .wine-red {
-   background-color: #b40720;
+   background-color: #ef233c;
 }
 
 .warm-red {
-   background-color:  #fa0720;
+   background-color:  #8d99ae;
 }
 
 .warm-orange {
-    background-color: #fb5e00;
+    background-color: #edf2f4;
 }
 
 .page-container {
-    background-color: #997059;
+    background-color: #2b2d42;
     margin: 0;
+
+}
+
+.page-container::after {
+    background-image: url(img/dance-grey.svg);
+    background-repeat: no-repeat;
+    background-position: -175px;
+    background-position-y: center;
+    background-size: 2000px;
+    background-position-y: -159px;
+  content: "";
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
 }
 
 .page-content {
@@ -31,7 +49,6 @@ Color definition
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 1000px;
   position: fixed;
   top: 0;
   z-index: 99999;
@@ -45,6 +62,9 @@ Color definition
 .head .title {
     background-color: #fff;
     vertical-align: top;
+    border-radius: 0px 0px 12px 12px;
+    border: 1px solid black;
+    border-top: 0;
 }
 
 .head .menu {
@@ -89,6 +109,11 @@ Color definition
     font-size: 30px;
     font-weight: bold;
     display: block;
+    background-color: #ef233c;
+    margin: 0;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .login-button {
@@ -96,10 +121,12 @@ Color definition
     font-weight: bold;
 }
 
+.body-content {
+    margin: 200px auto 245px auto;
+}
+
 .register-container {
     background-color:rgba(255, 255, 255, 0.9);
-    max-width: 800px;
-    margin: 200px auto 245px auto;
     padding-top: 30px;
     padding-bottom: 30px;
     text-align: center;
@@ -116,12 +143,16 @@ Color definition
     font-weight: bold;
 }
 
+.site-image-col-bright {
+    color: black;
+}
+
 .register-container button {
     margin: 30px;
 }
 
 .footer {
-    background-color: #b40720;
+    background-color: #d90429;
     position: fixed;
     bottom: 0;
     width: 100%;
