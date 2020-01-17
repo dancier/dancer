@@ -19,8 +19,9 @@ jobs:
       run: |
            curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
-    - name: check docker
-      run: |
-           docker --version
-           docker login docker.pkg.github.com --username gorzala --password {{{{secrets.GITHUB_TOKEN}}}}
-           docker docker build -t docker.pkg.github.com/dancier/dancer/dancer:1.0
+    - name: show docker version
+      run:  docker --version
+    - name: login to docker registry (from github)
+      run:  docker login docker.pkg.github.com --username gorzala --password {{{{secrets.GITHUB_TOKEN}}}}
+    - name: build the image
+      run:  docker build -t docker.pkg.github.com/dancier/dancer/dancer:1.0
