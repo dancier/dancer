@@ -20,4 +20,6 @@ jobs:
            curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
     - name: check docker
-      run: docker --version
+      run: |
+           docker --version
+           docker login docker.pkg.github.com --username gorzala --password {{{{secrets.GITHUB_TOKEN}}}}
