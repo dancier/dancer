@@ -16,7 +16,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: install docker
-      run: curl -fsSL https://get.docker.com -o get-docker.sh
+      run: |
+           curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
     - name: check docker
       run: docker --version
