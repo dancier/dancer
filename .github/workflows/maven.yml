@@ -23,3 +23,4 @@ jobs:
       run: |
            docker --version
            docker login docker.pkg.github.com --username gorzala --password {{{{secrets.GITHUB_TOKEN}}}}
+           docker docker build -t docker.pkg.github.com/dancier/dancer/dancer:1.0
