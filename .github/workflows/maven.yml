@@ -25,3 +25,5 @@ jobs:
       run:  docker login docker.pkg.github.com --username gorzala --password {{{{secrets.GITHUB_TOKEN}}}}
     - name: Build the image
       run:  docker build -t docker.pkg.github.com/dancier/dancer/dancer:1.0 .
+    - name: Publish the image
+      run:  docker push docker.pkg.github.com/dancier/dancer/dancer:1.0
