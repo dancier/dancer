@@ -28,5 +28,9 @@ public class DatabaseLoader implements CommandLineRunner {
         this.dancerRepository.save(
                 new Dancer("Nina", "H", "Nina", "Salsa")
         );
+        this.dancerRepository.save(
+                new Dancer("Julius", "H", "julsen", "keiner")
+        );
+
     }
 }
