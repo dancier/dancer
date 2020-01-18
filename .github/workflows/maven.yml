@@ -22,7 +22,7 @@ jobs:
     - name: Show docker version
       run:  docker --version
     - name: Login to docker registry
-      run:  docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrects.DOCKER_HUB_PASS }}
+      run:  docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_PASS }}
     - name: Build the image
       run:  docker build -t dancier/dancer:1.0 .
     - name: Publish the image
