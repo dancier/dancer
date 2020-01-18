@@ -21,9 +21,9 @@ jobs:
            sh get-docker.sh
     - name: Show docker version
       run:  docker --version
-    - name: Login to docker registry (from github)
-      run:  docker login docker.pkg.github.com --username gorzala --password ${{ secrets.GITHUB_TOKEN }}
+    - name: Login to docker registry
+      run:  docker login --username ${{ DOCKER_HUB_USER}} --password ${{ DOCKER_HUB_PASS }}
     - name: Build the image
-      run:  docker build -t docker.pkg.github.com/dancier/dancer/dancer:1.0 .
+      run:  docker build -t dancier/dancer:1.0 .
     - name: Publish the image
-      run:  docker push docker.pkg.github.com/dancier/dancer/dancer:1.0
+      run:  docker push dancier/dancer:1.0
