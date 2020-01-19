@@ -51,7 +51,8 @@ def create_server(name):
     time.sleep(20)
     print("Now assign the ip new")
     client.floating_ips.assign(get_floating_ip(), server)
-    time.sleep(30)
+    time.sleep(60)
+    print("Bootstrapping...")
     bootstrap_server(main_ip)
 
 
