@@ -1,4 +1,4 @@
-name: Java CI
+name: Deploy app
 
 on: [push]
 
@@ -13,26 +13,28 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.12
-    - name: Build with Maven
+    - name: Build the project with Maven
       run: mvn -B package --file pom.xml
-    - name: Install docker
+    - name: Install docker on build system
       run: |
            curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
-    - name: Show docker version
+    - name: Show installed docker version
       run:  docker --version
     - name: Login to docker registry
       run:  docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_PASS }}
-    - name: Build the image
+    - name: Build the docker image
       run:  docker build -t dancier/dancer:1.0 .
-    - name: Publish the image
+    - name: Publish the docker image on hub.docker.com
       run:  docker push dancier/dancer:1.0
-    - name: Install hetzner cloud api
+    - name: Install the Hetzner cloud api
       run:  |
             sudo apt -y install python3-pip
             sudo apt -y install python3-setuptools
             sudo -H pip3 install hcloud
-    - name: Create ssh key
+    - name: show local directory
+      run: tree
+    - name: Create ssh key for deployment
       run:  |
             echo "${{ secrets.DEPLOY_KEY }}" >> /home/runner/dancier
             chmod 400 /home/runner/dancier

@@ -7,7 +7,8 @@ from hcloud import Client, APIException
 from hcloud.server_types.domain import ServerType
 from hcloud.images.domain import Image
 
-client = Client(token="RkGceGqcTcUe3OpMFJZKGAY46kcdZ1G2rssFcRcUEj1QieBJY7vzzZz1whO0tyEe")
+cloud_api_token=os.environ['CLOUD_API_TOKEN']
+client = Client(token=cloud_api_token)
 
 ssh_key = client.ssh_keys.get_by_name("dancier")
 
@@ -35,25 +36,26 @@ def bootstrap_server(ip):
     execute_command("ssh -i /home/runner/dancier -oStrictHostKeyChecking=no root@" + ip + " sudo ip addr add 116.202.177.122 dev eth0")
 
 
-def create_server(name):
+def create_server(name, verbose=False):
     response = client.servers.create(name=name, server_type=ServerType(name="cx11"), datacenter=get_data_center(),
-                                     image=Image(name="ubuntu-18.04"), ssh_keys=[ssh_key])
+                                     image=Image(name="debian-10"), ssh_keys=[ssh_key])
     server = response.server
     main_ip = str(response.server.data_model.public_net.ipv4.ip)
-    print(server)
-    print(
-        "You can login: " + "ssh -oStrictHostKeyChecking=no root@" + main_ip)
+    if verbose:
+        print(server)
+        print(
+            "You can login: " + "ssh -oStrictHostKeyChecking=no root@" + main_ip)
     try:
         client.floating_ips.unassign(get_floating_ip())
     except APIException:
         print("No need to unassign")
-    print("Waiting...")
+    if verbose:
+        print("Waiting...")
     time.sleep(20)
-    print("Now assign the ip new")
+    if verbose:
+       print("Now assign the ip new")
     client.floating_ips.assign(get_floating_ip(), server)
-    time.sleep(60)
-    print("Bootstrapping...")
-    bootstrap_server(main_ip)
+    print(main_ip)
 
 
 # ip addr add 116.202.177.122/32 dev eth0
@@ -66,12 +68,13 @@ def get_servers():
     return servers
 
 
-def find_new_server_name(base_name="dancer"):
+def find_new_server_name(base_name="dancer", verbose=True):
     all_servers = get_servers()
     all_server_names = set()
     for server in all_servers:
         all_server_names.add(server.data_model.name)
-    print(all_server_names)
+    if verbose:
+        print(all_server_names)
     i = 1
     found = False
     found_name = ""
@@ -85,7 +88,8 @@ def find_new_server_name(base_name="dancer"):
     return found_name
 
 
-def create_next_server():
-    new_server_name = find_new_server_name()
-    print("Creating new server with name: " + new_server_name)
-    create_server(new_server_name)
+def create_next_server(verbose=True):
+    new_server_name = find_new_server_name(verbose=verbose)
+    if verbose:
+        print("Creating new server with name: " + new_server_name)
+    create_server(new_server_name, verbose=verbose)
