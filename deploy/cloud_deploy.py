@@ -48,7 +48,8 @@ def create_server(name, verbose=False):
     try:
         client.floating_ips.unassign(get_floating_ip())
     except APIException:
-        print("No need to unassign")
+        if verbose:
+            print("No need to unassign")
     if verbose:
         print("Waiting...")
     time.sleep(20)
