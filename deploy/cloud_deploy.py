@@ -28,7 +28,7 @@ def bootstrap_server(ip):
     print("Remove possible existing host key")
     execute_command("ssh-keygen -R " + ip)
     print("Copy bootstrap.sh")
-    execute_command("scp -i /home/runner/dancier -oStrictHostKeyChecking=no  ./bootstrap.sh root@" + ip + ":/home/runner/")
+    execute_command("scp -i /home/runner/dancier -oStrictHostKeyChecking=no  ./deploy/bootstrap.sh root@" + ip + ":/home/runner/")
     print("Invoke bootstrap")
     execute_command("ssh -i /home/runner/dancier -oStrictHostKeyChecking=no root@" + ip + " /home/runner/bootstrap.sh")
     print("Enable floating IP")
