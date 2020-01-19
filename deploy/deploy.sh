@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# fail on any failed command
-set -e
-
 export CLOUD_API_TOKEN=$(cat "./deploy/cloud-api-token")
 export PRIVATE_KEY_FILE="./deploy/dancier.key"
 
-IP=$(./deploy/create_next_server.py)
+IP=$(./deploy/create_next_server.py || exit 1)
 
 echo "This is the created ip: " "$IP"
 
@@ -25,10 +22,10 @@ do
 done
 
 echo "Copy init-instance script"
-scp -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no  ./deploy/init-instance.sh root@"${IP}":/root/
+scp -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no  ./deploy/init-instance.sh root@"${IP}":/root/ || exit 2
 
 echo "Invoke bootstrap"
-ssh -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no root@"${IP}" /root/init-instance.sh
+ssh -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no root@"${IP}" /root/init-instance.sh || exit 3
 
 echo "Enable floating IP"
-ssh -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no root@"${IP}" sudo ip addr add 116.202.177.122 dev eth0
+ssh -i $PRIVATE_KEY_FILE -oStrictHostKeyChecking=no root@"${IP}" sudo ip addr add 116.202.177.122 dev eth0 || exit 4
