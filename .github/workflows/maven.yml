@@ -30,6 +30,6 @@ jobs:
     - name: Install hetzner cloud api
       run:  |
             sudo apt install python3-pip
-            sudo pip3 install hcloud
+            pip3 install hcloud
     - name: Create ssh key
       run: echo ${{ secrets.DEPLOY_KEY }}
