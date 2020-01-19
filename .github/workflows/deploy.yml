@@ -1,4 +1,4 @@
-name: Deploy app
+name: Deploy the dancer
 
 on: [push]
 
@@ -19,8 +19,6 @@ jobs:
       run: |
            curl -fsSL https://get.docker.com -o get-docker.sh
            sh get-docker.sh
-    - name: Show installed docker version
-      run:  docker --version
     - name: Login to docker registry
       run:  docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_PASS }}
     - name: Build the docker image
@@ -32,10 +30,6 @@ jobs:
             sudo apt -y install python3-pip
             sudo apt -y install python3-setuptools
             sudo -H pip3 install hcloud
-    - name: show local directory
-      run: |
-           sudo apt -y install tree
-           tree
     - name: Create ssh key for deployment
       run:  |
             echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier
@@ -44,5 +38,5 @@ jobs:
       run:  |
         echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/api_token
         chmod 400 ./deploy/api_token
-    - name: Deploy the component
+    - name: Let the dancer dance
       run: ./deploy/deploy.py
