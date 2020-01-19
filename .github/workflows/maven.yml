@@ -33,4 +33,4 @@ jobs:
             sudo apt -y install python3-setuptools
             sudo -H pip3 install hcloud
     - name: Create ssh key
-      run: echo ${{ secrets.DEPLOY_KEY }}
+      run: echo ${{ secrets.DEPLOY_KEY }} >> /root/dancier
