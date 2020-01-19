@@ -39,10 +39,10 @@ jobs:
     - name: Create ssh key for deployment
       run:  |
             echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier
-            chmod 400 /home/runner/dancier
+            chmod 400 ./deploy/dancier
     - name: Create ssh-key
       run:  |
         echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/api_token
-        chmod 400 /home/runner/api_token
+        chmod 400 ./deploy/api_token
     - name: Deploy the component
       run: ./deploy/deploy.py
