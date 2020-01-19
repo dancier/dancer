@@ -29,7 +29,8 @@ jobs:
       run:  docker push dancier/dancer:1.0
     - name: Install hetzner cloud api
       run:  |
-            sudo apt install python3-pip
+            sudo apt -y install python3-pip
+            sudo apt -y install python3-setuptools
             sudo -H pip3 install hcloud
     - name: Create ssh key
       run: echo ${{ secrets.DEPLOY_KEY }}
