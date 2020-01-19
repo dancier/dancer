@@ -38,11 +38,11 @@ jobs:
            tree
     - name: Create ssh key for deployment
       run:  |
-            echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier.
+            echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier
             chmod 400 /home/runner/dancier
     - name: Create ssh-key
       run:  |
-        echo "${{ secrets.DEPLOY_KEY }}" >> /home/runner/api_token
+        echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/api_token
         chmod 400 /home/runner/api_token
     - name: Deploy the component
       run: ./deploy/deploy.py
