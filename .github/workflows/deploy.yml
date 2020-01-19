@@ -39,4 +39,4 @@ jobs:
         echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/api_token
         chmod 400 ./deploy/api_token
     - name: Let the dancer dance
-      run: ./deploy/deploy.py
+      run: ./deploy/deploy.sh
