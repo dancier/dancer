@@ -36,7 +36,7 @@ jobs:
             chmod 400 ./deploy/dancier
     - name: Create ssh-key
       run:  |
-        echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/api_token
+        echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/cloud-api-token
         chmod 400 ./deploy/api_token
     - name: Let the dancer dance
       run: ./deploy/deploy.sh
