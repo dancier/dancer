@@ -9,8 +9,7 @@ from hcloud.images.domain import Image
 
 client = Client(token="RkGceGqcTcUe3OpMFJZKGAY46kcdZ1G2rssFcRcUEj1QieBJY7vzzZz1whO0tyEe")
 
-ssh_key = client.ssh_keys.get_by_name("mgorzala")
-
+ssh_key = client.ssh_keys.get_by_name("dancier")
 
 def get_data_center():
     return client.datacenters.get_by_id(2)
@@ -29,11 +28,11 @@ def bootstrap_server(ip):
     print("Remove possible existing host key")
     execute_command("ssh-keygen -R " + ip)
     print("Copy bootstrap.sh")
-    execute_command("scp -oStrictHostKeyChecking=no  ./bootstrap.sh root@" + ip + ":/root/")
+    execute_command("scp -i /home/runner/dancier -oStrictHostKeyChecking=no  ./bootstrap.sh root@" + ip + ":/root/")
     print("Invoke bootstrap")
-    execute_command("ssh -oStrictHostKeyChecking=no root@" + ip + " /root/bootstrap.sh")
+    execute_command("ssh -i /home/runner/dancier -oStrictHostKeyChecking=no root@" + ip + " /root/bootstrap.sh")
     print("Enable floating IP")
-    execute_command("ssh -oStrictHostKeyChecking=no root@" + ip + " sudo ip addr add 116.202.177.122 dev eth0")
+    execute_command("ssh -i /home/runner/dancier -oStrictHostKeyChecking=no root@" + ip + " sudo ip addr add 116.202.177.122 dev eth0")
 
 
 def create_server(name):

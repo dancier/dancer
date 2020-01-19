@@ -34,3 +34,5 @@ jobs:
             sudo -H pip3 install hcloud
     - name: Create ssh key
       run: echo "${{ secrets.DEPLOY_KEY }}" >> /home/runner/dancier
+    - name: deploy
+      run: ./deploy/deploy.py
