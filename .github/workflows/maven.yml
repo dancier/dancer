@@ -28,4 +28,4 @@ jobs:
     - name: Publish the image
       run:  docker push dancier/dancer:1.0
     - name: Install hetzner cloud api
-      run:  sudo pip3 install hcloud
+      run:  sudo pip3 install hcloud --user
