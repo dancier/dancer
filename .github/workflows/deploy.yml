@@ -33,7 +33,7 @@ jobs:
     - name: Create ssh key for deployment
       run:  |
             echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier.key
-            chmod 400 ./deploy/dancier
+            chmod 400 ./deploy/dancier.key
     - name: Create cloud api token
       run:  |
         echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/cloud-api-token
