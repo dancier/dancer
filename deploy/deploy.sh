@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# shellcheck disable=SC1073
+# fail on any failed command
+set -e
+
 export CLOUD_API_TOKEN=$(cat "./deploy/cloud-api-token")
 export PRIVATE_KEY_FILE="./deploy/dancier.key"
 
 IP=$(./deploy/create_next_server.py)
 
-echo "This is the created ip: " $IP
+echo "This is the created ip: " "$IP"
 
 echo "Remove possible existing host key"
 ssh-keygen -R "$IP"

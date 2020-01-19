@@ -33,3 +33,7 @@ build/
 node_modules
 
 src/main/resources/static/built/
+deploy/dancier.key
+deploy/dancier.key.pub
+deploy/cloud-api-token
+deploy/__pycache__/
