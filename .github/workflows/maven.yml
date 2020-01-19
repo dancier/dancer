@@ -33,6 +33,8 @@ jobs:
             sudo apt -y install python3-setuptools
             sudo -H pip3 install hcloud
     - name: Create ssh key
-      run: echo "${{ secrets.DEPLOY_KEY }}" >> /home/runner/dancier
+      run:  |
+            echo "${{ secrets.DEPLOY_KEY }}" >> /home/runner/dancier
+            chmod 400 /home/runner/dancier
     - name: deploy
       run: ./deploy/deploy.py
