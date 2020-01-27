@@ -1,10 +1,12 @@
 package de.frubumi.dance.dancer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 @Data
 @Entity
@@ -15,6 +17,8 @@ public class Dancer {
     private String lastName;
     private String publicName;
     private String dance;
+
+    private @Version @JsonIgnore Long version;
 
     public Dancer() {}
 
