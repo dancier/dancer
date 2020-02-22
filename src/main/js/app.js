@@ -3,11 +3,14 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const when = require('when');
+
 const client = require('./client');
 
 const follow = require('./follow'); // function to hop multiple links by "rel"
 
 const root = '/api';
+
+let stompClient = require('./websocket-listener')
 
 class App extends React.Component {
 
@@ -19,6 +22,8 @@ class App extends React.Component {
 		this.onUpdate = this.onUpdate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
+		this.refreshAndGoToLastPage = this.refreshAndGoToLastPage.bind(this);
+		this.refreshCurrentPage = this.refreshCurrentPage.bind(this);
 	}
 
     // tag::follow-2[]
@@ -56,25 +61,16 @@ class App extends React.Component {
     // end::follow-2[]
 
 	// tag::create[]
-	onCreate(newDancer) {
-	    const self = this;
-		follow(client, root, ['dancers']).then(response => {
-			return client({
-				method: 'POST',
-				path: response.entity._links.self.href,
-				entity: newDancer,
-				headers: {'Content-Type': 'application/json'}
-			})
-		}).then(response => {
-			return follow(client, root, [{rel: 'dancers', params: {'size': self.state.pageSize}}]);
-		}).done(response => {
-			if (typeof response.entity._links.last !== "undefined") {
-				this.onNavigate(response.entity._links.last.href);
-			} else {
-				this.onNavigate(response.entity._links.self.href);
-			}
-		});
-	}
+    onCreate(newDancer) {
+        follow(client, root, ['dancers']).done(response => {
+            client({
+                method: 'POST',
+                path: response.entity._links.self.href,
+                entity: newDancer,
+                headers: {'Content-Type': 'application/json'}
+            })
+        })
+    }
 	// end::create[]
 
 	// tag::update[]
@@ -100,7 +96,7 @@ class App extends React.Component {
 
 	// tag::delete[]
 	onDelete(dancer) {
-		client({method: 'DELETE', path: dancer._links.self.href}).done(response => {
+		client({method: 'DELETE', path: dancer.entity._links.self.href}).done(response => {
 			this.loadFromServer(this.state.pageSize);
 		});
 	}
@@ -117,7 +113,7 @@ class App extends React.Component {
 			return dancerCollection.entity._embedded.dancers.map(dancer =>
 					client({
 						method: 'GET',
-						path: dancer._links.self.href
+						path: dancer.entity._links.self.href
 					})
 			);
 		}).then(dancerPromises => {
@@ -141,9 +137,57 @@ class App extends React.Component {
 	}
 	// end::update-page-size[]
 
+    refreshAndGoToLastPage(message) {
+        follow(client, root, [{
+            rel: 'dancers',
+            params: {size: this.state.pageSize}
+        }]).done(response => {
+            if (response.entity._links.last !== undefined) {
+                this.onNavigate(response.entity._links.last.href);
+            } else {
+                this.onNavigate(response.entity._links.self.href);
+            }
+        })
+    }
+    
+    refreshCurrentPage(message) {
+        follow(client, root, [{
+            rel: 'dancers',
+            params: {
+                size: this.state.pageSize,
+                page: this.state.page
+            }
+        }]).then(dancerCollection => {
+            this.links = dancerCollection.entity._links;
+            this.page = dancerCollection.entity.page;
+    
+            return dancerCollection.entity._embedded.dancers.map(dancer => {
+                return client({
+                    method: 'GET',
+                    path: dancer._links.self.href
+                })
+            });
+        }).then(dancerPromises => {
+            return when.all(dancerPromises);
+        }).then(dancers => {
+            this.setState({
+                page: this.page,
+                dancers: dancers,
+                attributes: Object.keys(this.schema.properties),
+                pageSize: this.state.pageSize,
+                links: this.links
+            });
+        });
+    }
+
     // tag::follow-1[]
     componentDidMount() {
         this.loadFromServer(this.state.pageSize);
+        stompClient.register([
+            {route: '/topic/newDancer', callback: this.refreshAndGoToLastPage},
+            {route: '/topic/updateDancer', callback: this.refreshCurrentPage},
+            {route: '/topic/deleteDancer', callback: this.refreshCurrentPage}
+        ]);
     }
     // end::follow-1[]
 
