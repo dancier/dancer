@@ -13,7 +13,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {employees: [], attributes: [], pageSize: 2, links: {}};
+		this.state = {dancers: [], attributes: [], pageSize: 2, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onUpdate = this.onUpdate.bind(this);
@@ -36,7 +36,7 @@ class App extends React.Component {
                 return dancerCollection;
             });
         }).then(dancerCollection => {
-            return employeeCollection.entity._embedded.dancers.map(dancer =>
+            return dancerCollection.entity._embedded.dancers.map(dancer =>
                 client({
                     method: 'GET',
                     path: dancer._links.self.href
@@ -316,17 +316,19 @@ class DancerList extends React.Component {
 		);
 
 		const navLinks = [];
-		if ("first" in this.props.links) {
-			navLinks.push(<button key="first" onClick={this.handleNavFirst}>&lt;&lt;</button>);
-		}
-		if ("prev" in this.props.links) {
-			navLinks.push(<button key="prev" onClick={this.handleNavPrev}>&lt;</button>);
-		}
-		if ("next" in this.props.links) {
-			navLinks.push(<button key="next" onClick={this.handleNavNext}>&gt;</button>);
-		}
-		if ("last" in this.props.links) {
-			navLinks.push(<button key="last" onClick={this.handleNavLast}>&gt;&gt;</button>);
+		if (this.props.links) {
+			if (this.props.links.first) {
+				navLinks.push(<button key="first" onClick={this.handleNavFirst}>&lt;&lt;</button>);
+			}
+			if (this.props.links.prev) {
+				navLinks.push(<button key="prev" onClick={this.handleNavPrev}>&lt;</button>);
+			}
+			if (this.props.links.next) {
+				navLinks.push(<button key="next" onClick={this.handleNavNext}>&gt;</button>);
+			}
+			if (this.props.links.last) {
+				navLinks.push(<button key="last" onClick={this.handleNavLast}>&gt;&gt;</button>);
+			}
 		}
 
 		return (
