@@ -86,6 +86,10 @@ class App extends React.Component {
 		}).done(response => {
 			this.loadFromServer(this.state.pageSize);
 		}, response => {
+		    if (response.status.code === 403) {
+        				alert('ACCESS DENIED: You are not authorized to update ' +
+        					dancer.entity._links.self.href);
+        			}
 			if (response.status.code === 412) {
 				alert('DENIED: Unable to update ' +
 					dancer.entity._links.self.href + '. Your copy is stale.');
@@ -96,10 +100,15 @@ class App extends React.Component {
 
 	// tag::delete[]
 	onDelete(dancer) {
-		client({method: 'DELETE', path: dancer.entity._links.self.href}).done(response => {
-			this.loadFromServer(this.state.pageSize);
-		});
-	}
+    	client({method: 'DELETE', path: dancer.entity._links.self.href}
+    	).done(response => {/* let the websocket handle updating the UI */},
+    	response => {
+    		if (response.status.code === 403) {
+    			alert('ACCESS DENIED: You are not authorized to delete ' +
+    				dancer.entity._links.self.href);
+    		}
+    	});
+    }
 	// end::delete[]
 
 	// tag::navigate[]
