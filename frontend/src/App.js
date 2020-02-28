@@ -1,4 +1,4 @@
-'use strict';
+import './App.css';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -158,7 +158,7 @@ class App extends React.Component {
             }
         })
     }
-    
+
     refreshCurrentPage(message) {
         follow(client, root, [{
             rel: 'dancers',
@@ -169,7 +169,7 @@ class App extends React.Component {
         }]).then(dancerCollection => {
             this.links = dancerCollection.entity._links;
             this.page = dancerCollection.entity.page;
-    
+
             return dancerCollection.entity._embedded.dancers.map(dancer => {
                 return client({
                     method: 'GET',
@@ -441,7 +441,4 @@ class Dancer extends React.Component {
 }
 // end::dancer[]
 
-ReactDOM.render(
-	<App />,
-	document.getElementById('react')
-)
+export default App;
