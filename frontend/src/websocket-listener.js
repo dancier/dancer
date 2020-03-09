@@ -1,5 +1,3 @@
-'use strict';
-
 const SockJS = require('sockjs-client');
 let Stomp = require('stompjs');
 
