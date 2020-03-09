@@ -46,6 +46,7 @@ Color definition
 }
 
 .head {
+  background-color: white;
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -63,7 +64,6 @@ Color definition
     background-color: #fff;
     vertical-align: top;
     border-radius: 0px 0px 12px 12px;
-    border: 1px solid black;
     border-top: 0;
 }
 
@@ -75,11 +75,11 @@ Color definition
 .head .menu a{
     padding-right: 30px;
     text-decoration: none;
-    color: white;
+    color: #d90429;
 }
 
 .head .title-text {
-    width: 260px;
+    width: 115px;
     margin: 15px 15px;
 }
 
