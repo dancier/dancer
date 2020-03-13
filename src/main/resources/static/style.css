@@ -18,7 +18,7 @@ Color definition
 }
 
 .page-container {
-    background-color: #2b2d42;
+    background-color: #BBB;
     margin: 0;
 
 }
@@ -26,10 +26,10 @@ Color definition
 .page-container::after {
     background-image: url(img/dance-grey.svg);
     background-repeat: no-repeat;
-    background-position: -175px;
+    background-position: 600px;
     background-position-y: center;
-    background-size: 2000px;
-    background-position-y: -159px;
+    background-size: 400px;
+    background-position-y: 100px;
   content: "";
   opacity: 0.5;
   top: 0;
@@ -106,7 +106,7 @@ Color definition
 }
 
 .register-container .register-button {
-    font-size: 30px;
+    font-size: 14px;
     font-weight: bold;
     display: block;
     background-color: #ef233c;
