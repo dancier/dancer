@@ -18,7 +18,7 @@ Color definition
 }
 
 .page-container {
-    background-color: #2b2d42;
+    background-color: #BBB;
     margin: 0;
 
 }
@@ -26,10 +26,10 @@ Color definition
 .page-container::after {
     background-image: url(img/dance-grey.svg);
     background-repeat: no-repeat;
-    background-position: -175px;
+    background-position: 600px;
     background-position-y: center;
-    background-size: 2000px;
-    background-position-y: -159px;
+    background-size: 400px;
+    background-position-y: 100px;
   content: "";
   opacity: 0.5;
   top: 0;
@@ -105,8 +105,12 @@ Color definition
         padding-top: 360px;
 }
 
+.register-button-container{
+    margin-top: 30px !important;
+}
+
 .register-container .register-button {
-    font-size: 30px;
+    font-size: 14px;
     font-weight: bold;
     display: block;
     background-color: #ef233c;
@@ -116,20 +120,29 @@ Color definition
     border-radius: 5px;
 }
 
+.register-container input{
+    max-width: 200px;
+    font-size: 14px;
+}
+
+.register-container h3{
+    font-size: 100%;
+}
+
 .login-button {
     font-size: 30px;
     font-weight: bold;
 }
 
 .body-content {
-    margin: 200px auto 245px auto;
+    margin: 120px auto 245px auto;
 }
 
 .register-container {
+    max-width: 480px;
     background-color:rgba(255, 255, 255, 0.9);
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
+    padding: 30px;
+    text-align: left;
     border-radius: 9px;
 }
 
