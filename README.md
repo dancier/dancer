@@ -4,7 +4,7 @@ To start the dancer project locally, use the following command
 in the projects main directory:
 
 ```
-./mvnw spring-boot:run
+./gradlew bootRun
 ```
 
 This will start both backend and frontend, you can access the landing page via http://localhost:8080

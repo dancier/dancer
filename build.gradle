@@ -1,10 +1,14 @@
-apply plugin: 'java'
-apply plugin: 'maven'
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
 
 group = 'net.dancier'
 version = '0.0.1-SNAPSHOT'
 
-description = """Dancer"""
+description = "Dancer"
 
 sourceCompatibility = 1.10
 targetCompatibility = 1.10
@@ -12,23 +16,20 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
-
-
 repositories {
-        
-     maven { url "https://repo.maven.apache.org/maven2" }
+     mavenCentral()
 }
+
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'2.2.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version:'2.2.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:'2.2.2.RELEASE'
-    compile group: 'org.projectlombok', name: 'lombok', version:'1.18.10'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version:'2.2.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'2.2.2.RELEASE'
-    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version:'3.0.4.RELEASE'
-    runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'2.2.2.RELEASE'
-    runtime group: 'com.h2database', name: 'h2', version:'1.4.200'
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'2.2.2.RELEASE') {
-exclude(module: 'junit-vintage-engine')
-    }
+    implementation 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.2.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.2.2.RELEASE'
+    implementation  'org.springframework.boot:spring-boot-starter-thymeleaf:2.2.2.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:2.2.2.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.2.2.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.0.4.RELEASE'
+    runtime 'org.springframework.boot:spring-boot-devtools:2.2.2.RELEASE'
+    runtime 'com.h2database:h2:1.4.200'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
 }
