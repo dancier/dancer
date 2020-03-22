@@ -28,22 +28,26 @@
 
 	<div class="body-container">
 		<div class="row body-content">
-			<div class="col-md-8">
-				<iframe width="560" height="315" src="https://www.youtube.com/embed/6lAKlYTQVKY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-			</div>
-			<div class="col-md-4 register-container">
+			<div class="col-xs-12 register-container">
 				<div class="row d-flex justify-content-center">
-					<div class="col-xs-12">
+					<div class="col-xs-12 col-md-6">
 						<h3 class="badge">Ich tanze</h3>
-						<input placeholder="Tango, Salsa"/>
+						<input placeholder="Tango, Salsa, ..."/>
 					</div>
-					<div class="col-xs-12 mt-3">
+					<div class="col-xs-12 col-md-6">
 						<h3 class="badge">Ich suche</h3>
-						<input placeholder="Tanzpartnerin"/>
+						<div>
+							<input type="radio" id="male" name="gender" value="male">
+							<label for="male">Tanzpartner</label><br>
+							<input type="radio" id="female" name="gender" value="female">
+							<label for="female">Tanzpartnerin</label><br>
+							<input type="radio" id="other" name="gender" value="other">
+							<label for="other">Tanzpartner (divers)</label>
+						</div>
 					</div>
 				</div>
-				<div class="row d-flex justify-content-center mt-5">
-					<button type="button" class="btn register-button">Suchen</button>
+				<div class="row d-flex justify-content-center mt-5 register-button-container">
+					<button type="button" class="btn register-button">Kostenlos registrieren</button>
 				</div>
 			</div>
 		</div>
