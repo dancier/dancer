@@ -1,0 +1,21 @@
+plugins {
+    id 'org.siouan.frontend' version '1.2.1'
+}
+
+frontend {
+    nodeVersion = '12.10.0'
+    yarnEnabled = true
+    yarnVersion = '1.17.3'
+
+    installScript = 'install'
+    checkScript = 'run test'
+}
+
+tasks.register('copyFrontendResources', Copy) {
+    description 'Process frontend resources'
+    from buildDir
+    into "${project(':backend').buildDir}/resources/classes/static/"
+    if (project.hasProperty('bundleFrontend')) {
+        dependsOn tasks.named('assembleFrontend')
+    }
+}

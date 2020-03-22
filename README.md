@@ -4,6 +4,7 @@ To start the dancer project locally, use the following command
 in the projects main directory:
 
 ```
+./gradlew clean build
 ./gradlew bootRun
 ```
 
