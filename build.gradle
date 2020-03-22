@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.dancier'
+version = '0.0.1-SNAPSHOT'
+
+description = """Dancer"""
+
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+        
+     maven { url "https://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version:'2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:'2.2.2.RELEASE'
+    compile group: 'org.projectlombok', name: 'lombok', version:'1.18.10'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version:'2.2.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'2.2.2.RELEASE'
+    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version:'3.0.4.RELEASE'
+    runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'2.2.2.RELEASE'
+    runtime group: 'com.h2database', name: 'h2', version:'1.4.200'
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'2.2.2.RELEASE') {
+exclude(module: 'junit-vintage-engine')
+    }
+}
