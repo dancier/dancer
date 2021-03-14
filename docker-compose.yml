@@ -22,7 +22,7 @@ services:
     image: ${DANCER_IMAGE}
     restart: always
     volumes:
-      - "./config.yml:/config/config.yml"
+      - "./config.yml:/config.yml"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dancer.rule=Host(`${DANCER_HOSTNAME}`)"
