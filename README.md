@@ -1,20 +1,32 @@
-## Dancer
+# Dancer
 
-To start the dancer project locally, use the following command
-in the projects main directory:
+## How to start the Dancer application
 
+1. Run `mvn clean install` to build your application
+1. Start application with `java -jar target/dancer-2.0-SNAPSHOT.jar server config.yml`
+1. To check that your application is running enter url `http://localhost:8080`
+
+## Health Check
+
+To see your applications health enter url `http://localhost:8081/healthcheck`
+
+## Deploy
+
+### Build the docker image
+```bash
+./docker-build-image.sh
 ```
-./mvnw spring-boot:run
+
+### Push the docker image
+```bash
+./docker-push-image.sh
 ```
 
-This will start both backend and frontend, you can access the landing page via http://localhost:8080
-and the dancer detail page via http://localhost:8080/dancers
+### Update the image on the target
 
-To have the frontend in development mode (including hot reload) use the following command in the frontend
-subfolder:
+scp docker-compose.yml .env root@dancer.dancier.net:/root/
 
-```
-npm start
-``` 
+docker-compose pull
 
-You can access the frontend via http://localhost:3000/
+docker-compose up -d --force-recreate
+

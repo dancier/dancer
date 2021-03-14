@@ -37,3 +37,6 @@ deploy/dancier.key
 deploy/dancier.key.pub
 deploy/cloud-api-token
 deploy/__pycache__/
+
+dependency-reduced-pom.xml
+.env
