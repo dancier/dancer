@@ -16,6 +16,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -124,7 +126,7 @@ public class LoginResource {
     @SneakyThrows
     @GET
     @Path("callback")
-    public String callback(@Context HttpServletRequest request, @Context ContainerRequestContext requestContext) {
+    public Response callback(@Context HttpServletRequest request, @Context ContainerRequestContext requestContext) {
         StringBuilder sb = new StringBuilder();
         if (getParam(request.getParameterMap(), OIDC_PARAM_CODE).isPresent()) {
             String accessToken = exchangeToken(request.getParameterMap().get(OIDC_PARAM_CODE)[0]);
@@ -133,7 +135,7 @@ public class LoginResource {
             System.out.println("Got Profile");
             DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(facebookProfile.getName());
             cookiePrincipal.addInContext(requestContext);
-            return facebookProfile.toString();
+            return Response.seeOther(UriBuilder.fromPath("https://dancier.net").build()).build();
         }
         return null;
     }
