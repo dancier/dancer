@@ -1,14 +1,12 @@
-package dancier.net;
+package net.dancier;
 
 import io.dropwizard.Configuration;
-import io.dropwizard.client.HttpClientConfiguration;
-import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthConfiguration;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 public class DancerConfiguration extends Configuration {
 
@@ -24,4 +22,13 @@ public class DancerConfiguration extends Configuration {
     @NotNull
     public JwtCookieAuthConfiguration jwtCookieAuth = new JwtCookieAuthConfiguration();
 
+    public JwtCookieAuthConfiguration getJwtCookieAuth() {
+        return jwtCookieAuth;
+    }
+
+    @NotNull
+    public LoginConfiguration login = new LoginConfiguration();
+
+    @NotNull
+    public CorsConfiguration cors = new CorsConfiguration();
 }

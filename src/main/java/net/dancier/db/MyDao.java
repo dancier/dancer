@@ -1,4 +1,4 @@
-package dancier.net.db;
+package net.dancier.db;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

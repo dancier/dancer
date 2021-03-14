@@ -8,9 +8,18 @@ jwtCookieAuth:
   secure: false
   httpOnly: true
   domain: null
-  sameSite: null
+  sameSite: Lax
   sessionExpiryVolatile: PT30m
   sessionExpiryPersistent: P7d
+
+cors:
+  allowedOrigin: dancier.net
+
+login:
+  facebook:
+    clientId: 1212105452524676
+    callbackUri: https://dancer.dancier.net/login/callback
+    clientSecret: ${DW_LOGIN_FACEBOOK_CLIENT_SECRET:-never place that here! set it via the environment}
 
 database:
   # the name of your JDBC driver
@@ -20,10 +29,10 @@ database:
   user: postgres
 
   # the password
-  password: mysecretpassword
+  password: ${DW_DB_PASSWORD:-mysecretpassword}
 
   # the JDBC URL
-  url: jdbc:postgresql://localhost/dancier
+  url: ${DW_DB_JDBC_URL:-jdbc:postgresql://localhost/dancier}
 
   # any properties specific to your JDBC driver:
   properties:
@@ -52,4 +61,3 @@ database:
 
   # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
   minIdleTime: 1 minute
-

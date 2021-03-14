@@ -1,10 +1,9 @@
-package dancier.net.resources;
+package net.dancier.resources;
 
 
-import dancier.net.db.MyDao;
-import dancier.net.db.UserDao;
+import net.dancier.db.MyDao;
+import net.dancier.db.UserDao;
 import io.dropwizard.auth.Auth;
-import liquibase.pro.packaged.U;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
 import org.jdbi.v3.core.Jdbi;
 

@@ -1,4 +1,4 @@
-package dancier.net.api;
+package net.dancier.api;
 
 import lombok.Data;
 

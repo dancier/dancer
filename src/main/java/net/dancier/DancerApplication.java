@@ -1,21 +1,22 @@
-package dancier.net;
+package net.dancier;
 
-import dancier.net.resources.DancerResource;
-import dancier.net.resources.DbTestResource;
-import dancier.net.resources.LoginResource;
+import net.dancier.api.CorsFilter;
+import net.dancier.resources.DancerResource;
+import net.dancier.resources.DbTestResource;
+import net.dancier.resources.login.LoginResource;
+import net.dancier.resources.ProfileResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.client.HttpClientBuilder;
 import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import org.apache.http.client.HttpClient;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
-import org.glassfish.jersey.client.JerseyClient;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.ws.rs.client.Client;
@@ -33,8 +34,15 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<DancerConfiguration> bootstrap) {
-        bootstrap.addBundle(JwtCookieAuthBundle.getDefault());
-        bootstrap.addBundle(new ViewBundle<DancerConfiguration>());
+        bootstrap.setConfigurationSourceProvider(
+                new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
+                        new EnvironmentVariableSubstitutor(false)
+                )
+        );
+
+        bootstrap.addBundle(JwtCookieAuthBundle.getDefault().withConfigurationSupplier(configuration -> {
+            return  ((DancerConfiguration) configuration).jwtCookieAuth;
+        }));
         bootstrap.addBundle(new AssetsBundle("/assets/", "/assets/", "index.html"));
         bootstrap.addBundle(new MigrationsBundle<DancerConfiguration>() {
             @Override
@@ -51,14 +59,20 @@ public class DancerApplication extends Application<DancerConfiguration> {
         final Jdbi jdbi = factory.build(environment, configuration.database, "postgresql");
 
         final Client client = new JerseyClientBuilder(environment).using(configuration.jerseyClient).build(getName());
+        final CorsFilter corsFilter = new CorsFilter(configuration.cors);
 
-        final LoginResource loginResource = new LoginResource(client);
+        environment.jersey().register(corsFilter);
+
+        final ProfileResource profileResource = new ProfileResource();
+        environment.jersey().register(profileResource);
+
+        final LoginResource loginResource = new LoginResource(client, configuration.login);
         environment.jersey().register(loginResource);
 
         final DbTestResource dbTestResource = new DbTestResource(jdbi);
         environment.jersey().register(dbTestResource);
 
-        final DancerResource dancerResource = new DancerResource(configuration.database.getUrl());
+        final DancerResource dancerResource = new DancerResource(configuration.database.getUrl(), configuration);
         environment.jersey().register(dancerResource);
 
 

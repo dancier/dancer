@@ -1,7 +1,8 @@
-package dancier.net.resources;
+package net.dancier.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import dancier.net.api.Dancer;
+import net.dancier.DancerConfiguration;
+import net.dancier.api.Dancer;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,9 +15,11 @@ import java.util.UUID;
 public class DancerResource {
 
     private String name;
+    private DancerConfiguration dancerConfiguration;
 
-    public DancerResource(String name) {
+    public DancerResource(String name, DancerConfiguration dancerConfiguration) {
         this.name = name;
+        this.dancerConfiguration = dancerConfiguration;
     }
 
     @GET

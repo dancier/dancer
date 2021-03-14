@@ -1,4 +1,4 @@
-package dancier.net.resources;
+package net.dancier.resources;
 
 import javax.ws.rs.Path;
 

@@ -14,10 +14,15 @@
     <name>Dancer</name>
 
     <properties>
+        <docker.host.address>localhost</docker.host.address>
+        <docker.registry.name></docker.registry.name><!-- leave empty for docker hub; use e.g. "localhost:5000/" for a local docker registry -->
+        <docker.repository.name>${docker.registry.name}dancier/${project.artifactId}</docker.repository.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.19</dropwizard.version>
-        <mainClass>dancier.net.DancerApplication</mainClass>
+        <mainClass>net.dancier.DancerApplication</mainClass>
+        <http.port>8080</http.port>
+        <http.port.admin>8081</http.port.admin>
     </properties>
 
     <dependencyManagement>

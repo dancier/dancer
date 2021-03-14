@@ -1,7 +1,7 @@
-package dancier.net.resources;
+package net.dancier.resources.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import liquibase.pro.packaged.F;
+import net.dancier.LoginConfiguration;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
@@ -16,13 +16,20 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import static java.util.stream.Collectors.joining;
 
 @Path("/login")
-@Produces(MediaType.TEXT_HTML)
 public class LoginResource {
+
+
+    public final static String REQUESTED_SCOPES = "email,public_profile";
+    public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
+
 
     public final static String OIDC_PARAM_CODE = "code";
     public final static String OIDC_PARAM_ERROR_REASON = "error_reason";
@@ -36,7 +43,6 @@ public class LoginResource {
     public final static String OIDC_VERIFY_ENDPOINT = "https://graph.facebook.com/debug_token";
     public final static String GRAPH_ENDPOINT = "https://graph.facebook.com/";
     public final static String GRAPH_FIELDS = "fields";
-
 
     @Data
     public static class FacebookAccessToken {
@@ -92,14 +98,27 @@ public class LoginResource {
     }
 
     private Client client;
+    private LoginConfiguration loginConfiguration;
 
-    public LoginResource(Client client) {
+    public LoginResource(Client client, LoginConfiguration loginConfiguration) {
         this.client = client;
+        this.loginConfiguration = loginConfiguration;
     }
 
     @GET
-    public String base() {
-        return "base";
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OidcProvider> base() throws UnsupportedEncodingException {
+        OidcProvider oidcProvider = new OidcProvider(
+                1,
+                "Facebook",
+                "login mit Deinem Facebook Account",
+                "",
+                constructFacebookLink(
+                        loginConfiguration.facebook.clientId,
+                        loginConfiguration.facebook.callbackUri,
+                        "",
+                        UUID.randomUUID().toString()));
+        return Arrays.asList(oidcProvider);
     }
 
     @SneakyThrows
@@ -119,12 +138,12 @@ public class LoginResource {
         return null;
     }
     private String exchangeToken(String code) {
-        System.out.println("Exchange Token:");
-
+        System.out.println("Exchange Token:" + code);
         WebTarget webTarget = client.target(OIDC_TOKEN_ENDPOINT);
-        webTarget = webTarget.queryParam(OIDC_CLIENT_ID, "1212105452524676");
-        webTarget = webTarget.queryParam(OIDC_REDIRECT_URI, "http://localhost:8080/login/callback");
-        webTarget = webTarget.queryParam(OIDC_CLIENT_SECRET, "a5ea908c38d57b486744507a03e74d66");
+        webTarget = webTarget.queryParam(OIDC_CLIENT_ID, loginConfiguration.facebook.clientId);
+        webTarget = webTarget.queryParam(OIDC_REDIRECT_URI, loginConfiguration.facebook.callbackUri);
+        System.out.println("use cs: " + loginConfiguration.facebook.clientSecret);
+        webTarget = webTarget.queryParam(OIDC_CLIENT_SECRET, loginConfiguration.facebook.clientSecret);
         webTarget = webTarget.queryParam(OIDC_PARAM_CODE, code);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookAccessToken response = invocationBuilder.get(FacebookAccessToken.class);
@@ -139,8 +158,26 @@ public class LoginResource {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookVerify response = invocationBuilder.get(FacebookVerify.class);
         System.out.println("validated !!!!!!!!!!!!!: " + response.getData().getType());
-        System.out.println("bla: " + response.data);
         return response.data.userId;
+    }
+
+    private String constructFacebookLink(String clientId,
+                                         String callbackUrl,
+                                         String redirectUrl,
+                                         String state) throws UnsupportedEncodingException {
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put("client_id", encodeValue(clientId));
+        requestParams.put("redirect_uri", encodeValue(callbackUrl));
+        requestParams.put("state", encodeValue(redirectUrl + "-" + state));
+        requestParams.put("scopes", encodeValue(REQUESTED_SCOPES));
+
+        return requestParams.keySet().stream()
+                .map(key -> key + "=" + requestParams.get(key))
+                .collect(joining("&", FACEBOOK_BASE, ""));
+    }
+
+    private String encodeValue(String rawString) throws UnsupportedEncodingException {
+        return URLEncoder.encode(rawString, StandardCharsets.UTF_8.toString());
     }
 
     public FacebookProfile getFacebookProfile(String id, String access_token) {
