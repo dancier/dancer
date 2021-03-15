@@ -1,0 +1,12 @@
+openapi: '3.0.2'
+info:
+  title: dancer
+  version: '1.0'
+servers:
+  - url: https://dancer.dancier.net
+paths:
+  /login:
+    get:
+      responses:
+        '200':
+          description: OK
