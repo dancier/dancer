@@ -1,10 +1,14 @@
 package net.dancier.resources.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.dancier.LoginConfiguration;
 import lombok.Data;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
+import net.dancier.LoginConfiguration;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -25,9 +29,11 @@ import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
+
 @Path("/login")
 public class LoginResource {
 
+    private final Logger logger = LoggerFactory.getLogger(LoginResource.class);
 
     public final static String REQUESTED_SCOPES = "email,public_profile";
     public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
@@ -48,9 +54,7 @@ public class LoginResource {
 
     @Data
     public static class FacebookAccessToken {
-
         public FacebookAccessToken() {}
-
         @JsonProperty("access_token")
         public String accessToken;
 
@@ -127,29 +131,30 @@ public class LoginResource {
     @GET
     @Path("callback")
     public Response callback(@Context HttpServletRequest request, @Context ContainerRequestContext requestContext) {
-        StringBuilder sb = new StringBuilder();
+        logger.debug("Received callback");
         if (getParam(request.getParameterMap(), OIDC_PARAM_CODE).isPresent()) {
             String accessToken = exchangeToken(request.getParameterMap().get(OIDC_PARAM_CODE)[0]);
             String userId = getUserId(accessToken);
             FacebookProfile facebookProfile = getFacebookProfile(userId, accessToken);
-            System.out.println("Got Profile");
+            logger.debug("Got Profile");
+
             DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(facebookProfile.getName());
             cookiePrincipal.addInContext(requestContext);
             return Response.seeOther(UriBuilder.fromPath("https://dancier.net").build()).build();
         }
         return null;
     }
+
     private String exchangeToken(String code) {
-        System.out.println("Exchange Token:" + code);
+        logger.debug("Exchange Token:" + code);
         WebTarget webTarget = client.target(OIDC_TOKEN_ENDPOINT);
         webTarget = webTarget.queryParam(OIDC_CLIENT_ID, loginConfiguration.facebook.clientId);
         webTarget = webTarget.queryParam(OIDC_REDIRECT_URI, loginConfiguration.facebook.callbackUri);
-        System.out.println("use cs: " + loginConfiguration.facebook.clientSecret);
+        logger.debug("use cs: " + loginConfiguration.facebook.clientSecret);
         webTarget = webTarget.queryParam(OIDC_CLIENT_SECRET, loginConfiguration.facebook.clientSecret);
         webTarget = webTarget.queryParam(OIDC_PARAM_CODE, code);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookAccessToken response = invocationBuilder.get(FacebookAccessToken.class);
-        System.out.print("access tokken: " + response.accessToken);
         return response.getAccessToken();
     }
 
@@ -159,7 +164,7 @@ public class LoginResource {
         webTarget = webTarget.queryParam(OIDC_ACCESS_TOKEN, accessToken);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookVerify response = invocationBuilder.get(FacebookVerify.class);
-        System.out.println("validated !!!!!!!!!!!!!: " + response.getData().getType());
+        logger.debug("validated !!!!!!!!!!!!!: " + response.getData().getType());
         return response.data.userId;
     }
 

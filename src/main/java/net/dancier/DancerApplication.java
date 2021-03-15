@@ -1,8 +1,10 @@
 package net.dancier;
 
+import liquibase.pro.packaged.U;
 import net.dancier.api.CorsFilter;
 import net.dancier.resources.DancerResource;
 import net.dancier.resources.DbTestResource;
+import net.dancier.resources.UserResource;
 import net.dancier.resources.login.LoginResource;
 import net.dancier.resources.ProfileResource;
 import io.dropwizard.Application;
@@ -75,7 +77,8 @@ public class DancerApplication extends Application<DancerConfiguration> {
         final DancerResource dancerResource = new DancerResource(configuration.database.getUrl(), configuration);
         environment.jersey().register(dancerResource);
 
-
+        final UserResource userResource = new UserResource(jdbi);
+        environment.jersey().register(userResource);
     }
 
 }

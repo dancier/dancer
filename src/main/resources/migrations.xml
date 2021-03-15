@@ -22,4 +22,11 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="2" author="marc">
+        <addColumn tableName="user">
+            <column name="email" type="varchar(255)" defaultValue="marc">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
