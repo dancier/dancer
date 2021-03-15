@@ -30,3 +30,9 @@ docker-compose pull
 
 docker-compose up -d --force-recreate
 
+#### Database
+
+docker exec -it root_postgres_1 psql -h localhost -U postgres
+
+docker exec -it root_dancer_1 /bin/bash
+
