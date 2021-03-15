@@ -1,12 +1,5 @@
 package net.dancier;
 
-import liquibase.pro.packaged.U;
-import net.dancier.api.CorsFilter;
-import net.dancier.resources.DancerResource;
-import net.dancier.resources.DbTestResource;
-import net.dancier.resources.UserResource;
-import net.dancier.resources.login.LoginResource;
-import net.dancier.resources.ProfileResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -17,7 +10,11 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.dropwizard.views.ViewBundle;
+import net.dancier.api.CorsFilter;
+import net.dancier.resources.DancerResource;
+import net.dancier.resources.ProfileResource;
+import net.dancier.resources.UserResource;
+import net.dancier.resources.login.LoginResource;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
 import org.jdbi.v3.core.Jdbi;
 
@@ -70,9 +67,6 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         final LoginResource loginResource = new LoginResource(client, configuration.login);
         environment.jersey().register(loginResource);
-
-        final DbTestResource dbTestResource = new DbTestResource(jdbi);
-        environment.jersey().register(dbTestResource);
 
         final DancerResource dancerResource = new DancerResource(configuration.database.getUrl(), configuration);
         environment.jersey().register(dancerResource);
