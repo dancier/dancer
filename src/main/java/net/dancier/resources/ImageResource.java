@@ -19,10 +19,14 @@ public class ImageResource {
     public static Logger logger = LoggerFactory.getLogger(ImageResource.class);
 
     @GET
-    @Path("/{imageId}.png")
+    @Path("/{imageId}.{type}")
     @Produces("image/png")
-    public Response getImage(@PathParam("imageId") String id) {
+    public Response getImage(
+            @PathParam("type") String type,
+            @PathParam("imageId") String id
+    ) {
         logger.debug("About to return an image." + id);
+        logger.debug("With type: "+  type);
         File file = new File("/data/images/" + id + ".png");
         return returnFile(file);
     }

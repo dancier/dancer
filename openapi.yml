@@ -10,3 +10,8 @@ paths:
       responses:
         '200':
           description: OK
+  /image:
+    get:
+      responses:
+        '200':
+          description: The image
