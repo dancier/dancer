@@ -1,6 +1,7 @@
 package net.dancier.domain.dance;
 
 import lombok.Data;
+import net.dancier.domain.Image;
 import net.dancier.domain.User;
 
 import java.util.Date;
