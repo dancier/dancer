@@ -12,6 +12,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import net.dancier.api.CorsFilter;
 import net.dancier.resources.DancerResource;
+import net.dancier.resources.ImageResource;
 import net.dancier.resources.ProfileResource;
 import net.dancier.resources.UserResource;
 import net.dancier.resources.login.LoginResource;
@@ -73,6 +74,9 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         final UserResource userResource = new UserResource(jdbi);
         environment.jersey().register(userResource);
+
+        final ImageResource imageResource = new ImageResource();
+        environment.jersey().register(imageResource);
     }
 
 }
