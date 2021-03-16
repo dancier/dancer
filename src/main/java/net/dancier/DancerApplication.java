@@ -6,6 +6,7 @@ import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -40,6 +41,7 @@ public class DancerApplication extends Application<DancerConfiguration> {
                 )
         );
 
+        bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(JwtCookieAuthBundle.getDefault().withConfigurationSupplier(configuration -> {
             return  ((DancerConfiguration) configuration).jwtCookieAuth;
         }));

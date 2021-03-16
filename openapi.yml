@@ -15,3 +15,7 @@ paths:
       responses:
         '200':
           description: The image
+    post:
+      responses:
+        '201':
+          description: image was created
