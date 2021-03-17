@@ -1,4 +1,4 @@
-FROM openjdk:13-slim
+FROM openjdk:15-slim
 
 ADD ./target/dancer-2.0-SNAPSHOT.jar /dancer-2.0-SNAPSHOT.jar
 ADD ./config.yml /config.yml

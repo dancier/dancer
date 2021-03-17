@@ -3,9 +3,9 @@ package net.dancier.resources.login;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
 import net.dancier.LoginConfiguration;
+import net.dancier.domain.User;
+import net.dancier.service.UserService;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,8 @@ public class LoginResource {
 
     private final Logger logger = LoggerFactory.getLogger(LoginResource.class);
 
+    private UserService userService;
+
     public final static String REQUESTED_SCOPES = "email,public_profile";
     public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
 
@@ -51,6 +53,12 @@ public class LoginResource {
     public final static String OIDC_VERIFY_ENDPOINT = "https://graph.facebook.com/debug_token";
     public final static String GRAPH_ENDPOINT = "https://graph.facebook.com/";
     public final static String GRAPH_FIELDS = "fields";
+
+    public LoginResource(Client client, LoginConfiguration loginConfiguration, UserService userService) {
+        this.client = client;
+        this.loginConfiguration = loginConfiguration;
+        this.userService = userService;
+    }
 
     @Data
     public static class FacebookAccessToken {
@@ -106,11 +114,6 @@ public class LoginResource {
     private Client client;
     private LoginConfiguration loginConfiguration;
 
-    public LoginResource(Client client, LoginConfiguration loginConfiguration) {
-        this.client = client;
-        this.loginConfiguration = loginConfiguration;
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<OidcProvider> base() throws UnsupportedEncodingException {
@@ -137,8 +140,9 @@ public class LoginResource {
             String userId = getUserId(accessToken);
             FacebookProfile facebookProfile = getFacebookProfile(userId, accessToken);
             logger.debug("Got Profile");
-
-            DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(facebookProfile.getName());
+            User user = userService.assignUser(User.IdProvider.FACEBOOK, facebookProfile.id, facebookProfile.email);
+            logger.debug("Using user: " + user.getId());
+            DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(user.getId().toString());
             cookiePrincipal.addInContext(requestContext);
             return Response.seeOther(UriBuilder.fromPath("https://dancier.net").build()).build();
         }
@@ -164,7 +168,6 @@ public class LoginResource {
         webTarget = webTarget.queryParam(OIDC_ACCESS_TOKEN, accessToken);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookVerify response = invocationBuilder.get(FacebookVerify.class);
-        logger.debug("validated !!!!!!!!!!!!!: " + response.getData().getType());
         return response.data.userId;
     }
 

@@ -9,15 +9,33 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserDao {
 
-    @SqlQuery("select * from dancier.public.user;")
+    @SqlQuery("""
+            SELECT * 
+              FROM "user"
+            """)
     @RegisterRowMapper(UserMapper.class)
     List<User> getAll();
 
-    @SqlUpdate("INSERT INTO dancier.public.user (id, user_name, id_system, foreign_id, email) " +
-               "VALUES (:id, :userName, :idSystem, :foreignId, :email)")
-    void insertBean(@BindBean User user);
+    @SqlQuery("""
+            SELECT * 
+              FROM "user"
+             WHERE id_provider = :idProvider 
+               AND foreign_id = :foreignId
+              """)
+    @RegisterRowMapper(UserMapper.class)
+    Optional<User> lookUpId(@Bind("idProvider") User.IdProvider idProvider, @Bind("foreignId") String foreignId);
+
+    @SqlUpdate("""
+                INSERT INTO "user" 
+                (id, id_provider, foreign_id, email)
+                VALUES (:id, :idProvider, :foreignId, :email)
+                """)
+    void insertUser(@BindBean User user);
+
+
 }

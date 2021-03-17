@@ -29,4 +29,24 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="3" author="marc">
+        <dropColumn tableName="user" columnName="user_name"/>
+    </changeSet>
+    <changeSet id="4" author="marc">
+        <renameColumn tableName="user" oldColumnName="id_system" newColumnName="id_provider" />
+    </changeSet>
+    <changeSet id="5" author="marc">
+        <addUniqueConstraint tableName="user" columnNames="id_provider, foreign_id"/>
+    </changeSet>
+    <changeSet id="6" author="marc">
+        <createTable tableName="dancer">
+            <column name="user_id" type="uuid" />
+            <column name="user_name" type="varchar(255)" />
+            <column name="image_id" type="uuid" />
+            <column name="size" type="int" />
+            <column name="birth_date" type="date" />
+            <column name="smoker" type="varchar(255)" />
+            <column name="about_him" type="varchar(255)" />
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

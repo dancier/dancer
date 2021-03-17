@@ -18,7 +18,7 @@ cors:
 login:
   facebook:
     clientId: 1212105452524676
-    callbackUri: https://dancer.dancier.net/login/callback
+    callbackUri: http://localhost:8080/login/callback
     clientSecret: ${DW_LOGIN_FACEBOOK_CLIENT_SECRET:-never place that here! set it via the environment}
 
 database:

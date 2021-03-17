@@ -34,7 +34,7 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(User user) {
         user.setId(UUID.randomUUID());
-        userDao.insertBean(user);
+        userDao.insertUser(user);
         return Response.status(201).entity(user).build();
     }
 }
