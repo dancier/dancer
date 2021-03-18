@@ -1,24 +1,56 @@
 package net.dancier.resources;
 
+import com.google.common.base.Preconditions;
 import io.dropwizard.auth.Auth;
+import liquibase.pro.packaged.O;
 import net.dancier.api.Profile;
+import net.dancier.db.DancerDao;
+import net.dancier.domain.dance.Dancer;
+import net.dancier.service.ProfileService;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.Optional;
 import java.util.UUID;
 
 @Path("/profile")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProfileResource {
 
-    @GET
-    public Profile getProfile(@Auth DefaultJwtCookiePrincipal principal) {
-        Profile profile = new Profile();
-        profile.setId(UUID.randomUUID());
-        profile.setName("Xiaofei");
-        return profile;
+    public static Logger logger = LoggerFactory.getLogger(ProfileResource.class);
+
+    private ProfileService profileService;
+
+    public ProfileResource(ProfileService profileService) {
+        this.profileService = profileService;
     }
+
+    @GET
+    public Response getProfile(@Auth DefaultJwtCookiePrincipal principal) {
+        Optional<Profile> optionalProfile = profileService.getProfile(UUID.fromString(principal.getName()));
+        if (optionalProfile.isPresent()) {
+            return Response.ok(optionalProfile.get()).build();
+        } else {
+            return Response.status(404).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateProfile(@Auth DefaultJwtCookiePrincipal principal, Profile profile) {
+        if (profile==null) {
+            logger.debug("No profile from body");
+            profile = new Profile();
+        }
+        profile.setUserId(UUID.fromString(principal.getName()));
+        logger.debug("setting profile: " +  profile);
+        profileService.updateProfile(profile);
+        return Response.ok().build();
+    }
+
 }

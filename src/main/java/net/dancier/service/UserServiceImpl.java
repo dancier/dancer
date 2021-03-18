@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User assignUser(User.IdProvider idProvider, String foreignId, String email) throws ConflictingIdSystemException {
-        Optional<User> optionalUser = userDao.lookUpId(idProvider, foreignId);
+        Optional<User> optionalUser = userDao.lookUpByIdProviderAndForeignId(idProvider, foreignId);
         if (optionalUser.isPresent()) {
             logger.debug("Use existing user: " + optionalUser);
             return optionalUser.get();

@@ -28,7 +28,15 @@ public interface UserDao {
                AND foreign_id = :foreignId
               """)
     @RegisterRowMapper(UserMapper.class)
-    Optional<User> lookUpId(@Bind("idProvider") User.IdProvider idProvider, @Bind("foreignId") String foreignId);
+    Optional<User> lookUpByIdProviderAndForeignId(@Bind("idProvider") User.IdProvider idProvider, @Bind("foreignId") String foreignId);
+
+    @SqlQuery("""
+            SELECT * 
+              FROM "user"
+             WHERE id = :id
+              """)
+    @RegisterRowMapper(UserMapper.class)
+    Optional<User> lookUpById(@Bind("id") UUID userId);
 
     @SqlUpdate("""
                 INSERT INTO "user" 

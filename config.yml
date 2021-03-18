@@ -16,6 +16,7 @@ cors:
   allowedOrigin: https://dancier.net
 
 login:
+  devEnv: true
   facebook:
     clientId: 1212105452524676
     callbackUri: http://localhost:8080/login/callback

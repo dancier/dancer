@@ -1,5 +1,7 @@
 package net.dancier;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -17,6 +19,8 @@ import net.dancier.resources.ImageResource;
 import net.dancier.resources.ProfileResource;
 import net.dancier.resources.UserResource;
 import net.dancier.resources.login.LoginResource;
+import net.dancier.service.ProfileService;
+import net.dancier.service.ProfileServiceImpl;
 import net.dancier.service.UserService;
 import net.dancier.service.UserServiceImpl;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
@@ -67,7 +71,10 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         environment.jersey().register(corsFilter);
 
-        final ProfileResource profileResource = new ProfileResource();
+        ProfileService profileService = new ProfileServiceImpl(jdbi);
+
+        final ProfileResource profileResource = new ProfileResource(profileService);
+
         environment.jersey().register(profileResource);
 
         final UserService userService = new UserServiceImpl(jdbi);

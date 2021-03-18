@@ -49,4 +49,7 @@
             <column name="about_him" type="varchar(255)" />
         </createTable>
     </changeSet>
+    <changeSet id="7" author="marc">
+        <addUniqueConstraint tableName="dancer" columnNames="user_id"/>
+    </changeSet>
 </databaseChangeLog>

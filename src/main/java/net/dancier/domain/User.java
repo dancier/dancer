@@ -18,7 +18,5 @@ public class User {
 
     public enum IdProvider {
         FACEBOOK;
-
-
     }
 }

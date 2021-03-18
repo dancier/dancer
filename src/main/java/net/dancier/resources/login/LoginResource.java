@@ -40,6 +40,7 @@ public class LoginResource {
     public final static String REQUESTED_SCOPES = "email,public_profile";
     public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
 
+    public final static String MOCKED_USER = "mocked_user";
 
     public final static String OIDC_PARAM_CODE = "code";
     public final static String OIDC_PARAM_ERROR_REASON = "error_reason";
@@ -135,6 +136,13 @@ public class LoginResource {
     @Path("callback")
     public Response callback(@Context HttpServletRequest request, @Context ContainerRequestContext requestContext) {
         logger.debug("Received callback");
+        if (loginConfiguration.devEnv) {
+            logger.debug("Dev mode");
+            String userId = getParam(request.getParameterMap(),MOCKED_USER).get();
+            DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(userId);
+            cookiePrincipal.addInContext(requestContext);
+            Response.ok();
+        }
         if (getParam(request.getParameterMap(), OIDC_PARAM_CODE).isPresent()) {
             String accessToken = exchangeToken(request.getParameterMap().get(OIDC_PARAM_CODE)[0]);
             String userId = getUserId(accessToken);
