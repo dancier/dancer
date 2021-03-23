@@ -1,11 +1,7 @@
 package net.dancier.resources;
 
-import com.google.common.base.Preconditions;
 import io.dropwizard.auth.Auth;
-import liquibase.pro.packaged.O;
 import net.dancier.api.Profile;
-import net.dancier.db.DancerDao;
-import net.dancier.domain.dance.Dancer;
 import net.dancier.service.ProfileService;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
 import org.slf4j.Logger;

@@ -19,10 +19,7 @@ import net.dancier.resources.ImageResource;
 import net.dancier.resources.ProfileResource;
 import net.dancier.resources.UserResource;
 import net.dancier.resources.login.LoginResource;
-import net.dancier.service.ProfileService;
-import net.dancier.service.ProfileServiceImpl;
-import net.dancier.service.UserService;
-import net.dancier.service.UserServiceImpl;
+import net.dancier.service.*;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
 import org.jdbi.v3.core.Jdbi;
 
@@ -79,7 +76,9 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         final UserService userService = new UserServiceImpl(jdbi);
 
-        final LoginResource loginResource = new LoginResource(client, configuration.login, userService);
+        final FacebookAccessTokenService facebookAccessTokenService = new FacebookAccessTokenService(client, configuration.login);
+
+        final LoginResource loginResource = new LoginResource(client, configuration.login, userService, facebookAccessTokenService);
         environment.jersey().register(loginResource);
 
         final DancerResource dancerResource = new DancerResource(configuration.database.getUrl(), configuration);

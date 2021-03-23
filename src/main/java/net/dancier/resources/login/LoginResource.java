@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import net.dancier.LoginConfiguration;
 import net.dancier.domain.User;
+import net.dancier.service.FacebookAccessTokenService;
 import net.dancier.service.UserService;
 import org.dhatim.dropwizard.jwt.cookie.authentication.DefaultJwtCookiePrincipal;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class LoginResource {
     private final Logger logger = LoggerFactory.getLogger(LoginResource.class);
 
     private UserService userService;
+    private FacebookAccessTokenService facebookAccessTokenService;
 
     public final static String REQUESTED_SCOPES = "email,public_profile";
     public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
@@ -55,10 +57,11 @@ public class LoginResource {
     public final static String GRAPH_ENDPOINT = "https://graph.facebook.com/";
     public final static String GRAPH_FIELDS = "fields";
 
-    public LoginResource(Client client, LoginConfiguration loginConfiguration, UserService userService) {
+    public LoginResource(Client client, LoginConfiguration loginConfiguration, UserService userService, FacebookAccessTokenService facebookAccessTokenService) {
         this.client = client;
         this.loginConfiguration = loginConfiguration;
         this.userService = userService;
+        this.facebookAccessTokenService = facebookAccessTokenService;
     }
 
     @Data
@@ -144,8 +147,13 @@ public class LoginResource {
             Response.ok();
         }
         if (getParam(request.getParameterMap(), OIDC_PARAM_CODE).isPresent()) {
+            logger.debug("Code is present. Exchanging Token.");
             String accessToken = exchangeToken(request.getParameterMap().get(OIDC_PARAM_CODE)[0]);
-            String userId = getUserId(accessToken);
+            logger.debug("Got the token.");
+            String appAccessToken = facebookAccessTokenService.getAccessToken();
+            logger.debug("Got this app access token: " + appAccessToken) ;
+            String userId = getUserId(accessToken, appAccessToken);
+            logger.debug("Got Userid.");
             FacebookProfile facebookProfile = getFacebookProfile(userId, accessToken);
             logger.debug("Got Profile");
             User user = userService.assignUser(User.IdProvider.FACEBOOK, facebookProfile.id, facebookProfile.email);
@@ -170,12 +178,14 @@ public class LoginResource {
         return response.getAccessToken();
     }
 
-    private String getUserId(String accessToken) {
+    private String getUserId(String accessToken, String appAccessToken) {
+        logger.debug("Getting Userid from accesstoken.");
         WebTarget webTarget = client.target(OIDC_VERIFY_ENDPOINT);
         webTarget = webTarget.queryParam(OIDC_INPUT_TOKEN, accessToken);
-        webTarget = webTarget.queryParam(OIDC_ACCESS_TOKEN, accessToken);
+        webTarget = webTarget.queryParam(OIDC_ACCESS_TOKEN, appAccessToken);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         FacebookVerify response = invocationBuilder.get(FacebookVerify.class);
+        logger.debug("Got this Userid from Accesstoken: "+ response);
         return response.data.userId;
     }
 

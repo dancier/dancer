@@ -52,4 +52,7 @@
     <changeSet id="7" author="marc">
         <addUniqueConstraint tableName="dancer" columnNames="user_id"/>
     </changeSet>
+    <changeSet id="8" author="marc">
+        <dropNotNullConstraint tableName="user" columnName="email" />
+    </changeSet>
 </databaseChangeLog>
