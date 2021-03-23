@@ -19,3 +19,13 @@ paths:
       responses:
         '201':
           description: image was created
+  /profile:
+    get:
+      responses:
+        "200":
+          description: "The profile"      
+        "401":
+          description: "Unauthenticated"
+
+        "404":
+          description: "Not found"
