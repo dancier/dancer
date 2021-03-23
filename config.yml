@@ -8,7 +8,7 @@ jwtCookieAuth:
   secure: false
   httpOnly: true
   domain: null
-  sameSite: Lax
+  sameSite: null
   sessionExpiryVolatile: PT30m
   sessionExpiryPersistent: P7d
 

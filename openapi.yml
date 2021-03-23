@@ -29,3 +29,7 @@ paths:
 
         "404":
           description: "Not found"
+    post:
+      responses:
+        "200":
+          description: update
