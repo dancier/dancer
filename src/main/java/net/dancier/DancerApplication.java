@@ -22,6 +22,7 @@ import net.dancier.resources.login.LoginResource;
 import net.dancier.service.*;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.postgres.PostgresPlugin;
 
 import javax.ws.rs.client.Client;
 
@@ -62,7 +63,9 @@ public class DancerApplication extends Application<DancerConfiguration> {
                     final Environment environment) {
         final JdbiFactory factory = new JdbiFactory();
         final Jdbi jdbi = factory.build(environment, configuration.database, "postgresql");
+        jdbi.installPlugin(new PostgresPlugin());
 
+        
         final Client client = new JerseyClientBuilder(environment).using(configuration.jerseyClient).build(getName());
         final CorsFilter corsFilter = new CorsFilter(configuration.cors);
 
