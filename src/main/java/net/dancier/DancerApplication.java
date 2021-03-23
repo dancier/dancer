@@ -65,7 +65,6 @@ public class DancerApplication extends Application<DancerConfiguration> {
         final Jdbi jdbi = factory.build(environment, configuration.database, "postgresql");
         jdbi.installPlugin(new PostgresPlugin());
 
-        
         final Client client = new JerseyClientBuilder(environment).using(configuration.jerseyClient).build(getName());
         final CorsFilter corsFilter = new CorsFilter(configuration.cors);
 
