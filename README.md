@@ -82,3 +82,16 @@ check via ```\l```
 ```bash
 java -jar target/dancer-2.0-SNAPSHOT.jar db migrate config.yml
 ```
+### Create Sessions for arbitrary users
+To let the developer easily impersonate any user on non production systems, he can do the following.
+
+Set config value login.devMode to _true_.
+
+Invoke the login callback for facebook with an GET parameter called mocked_fb_user and the value of the foreign facebook id, you want to impersonate.
+
+```bash
+curl --request GET \
+  --url 'http://localhost:8080/login/callback?mocked_fb_user=the-foreing-fb-id'
+```
+
+If the provided user with the id, does not exist, an user will be created. Otherwise the already existing one will be used.

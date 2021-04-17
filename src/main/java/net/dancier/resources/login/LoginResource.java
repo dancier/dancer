@@ -42,7 +42,7 @@ public class LoginResource {
     public final static String REQUESTED_SCOPES = "email,public_profile";
     public final static String FACEBOOK_BASE = "https://www.facebook.com/v9.0/dialog/oauth?";
 
-    public final static String MOCKED_USER = "mocked_user";
+    public final static String MOCKED_FB_USER = "mocked_fb_user";
 
     public final static String OIDC_PARAM_CODE = "code";
     public final static String OIDC_PARAM_ERROR_REASON = "error_reason";
@@ -141,7 +141,7 @@ public class LoginResource {
         logger.debug("Received callback");
         if (loginConfiguration.devEnv) {
             logger.debug("Dev mode");
-            String foreignUserId = getParam(request.getParameterMap(),MOCKED_USER).get();
+            String foreignUserId = getParam(request.getParameterMap(),MOCKED_FB_USER).get();
             User user = userService.assignUser(User.IdProvider.FACEBOOK, foreignUserId, "bar");
             DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(user.getId().toString());
             cookiePrincipal.addInContext(requestContext);
