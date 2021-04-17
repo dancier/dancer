@@ -141,8 +141,9 @@ public class LoginResource {
         logger.debug("Received callback");
         if (loginConfiguration.devEnv) {
             logger.debug("Dev mode");
-            String userId = getParam(request.getParameterMap(),MOCKED_USER).get();
-            DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(userId);
+            String foreignUserId = getParam(request.getParameterMap(),MOCKED_USER).get();
+            User user = userService.assignUser(User.IdProvider.FACEBOOK, foreignUserId, "bar");
+            DefaultJwtCookiePrincipal cookiePrincipal = new DefaultJwtCookiePrincipal(user.getId().toString());
             cookiePrincipal.addInContext(requestContext);
             Response.ok();
         }
