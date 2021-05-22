@@ -1,7 +1,6 @@
 package net.dancier;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -14,10 +13,7 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import net.dancier.api.CorsFilter;
-import net.dancier.resources.DancerResource;
-import net.dancier.resources.ImageResource;
-import net.dancier.resources.ProfileResource;
-import net.dancier.resources.UserResource;
+import net.dancier.resources.*;
 import net.dancier.resources.login.LoginResource;
 import net.dancier.service.*;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
@@ -27,6 +23,8 @@ import org.jdbi.v3.postgres.PostgresPlugin;
 import javax.ws.rs.client.Client;
 
 public class DancerApplication extends Application<DancerConfiguration> {
+
+    private ObjectMapper objectMapper;
 
     public static void main(final String[] args) throws Exception {
         new DancerApplication().run(args);
@@ -91,6 +89,10 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         final ImageResource imageResource = new ImageResource();
         environment.jersey().register(imageResource);
-    }
 
+        final RecommendationsService recommendationsService = new MockedRecommendationsService();
+
+        final RecommendationsResource recommendationsResource = new RecommendationsResource(recommendationsService);
+        environment.jersey().register(recommendationsResource);
+    }
 }
