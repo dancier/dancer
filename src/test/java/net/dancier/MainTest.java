@@ -22,13 +22,11 @@ public class MainTest {
 
     @Test
     public void testGetRecommendations() {
-
         Response response = APP_EXTENSION.client().target(
                 String.format("http://localhost:%d/recommendations", APP_EXTENSION.getLocalPort()))
                 .request()
                 .get();
 
         assertThat(response.getStatus()).isEqualTo(200);
-
     }
 }
