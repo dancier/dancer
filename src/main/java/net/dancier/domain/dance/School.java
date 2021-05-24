@@ -7,6 +7,9 @@ import net.dancier.domain.User;
 
 import java.net.URL;
 
+/**
+ * A dancing school.
+ */
 @Data
 @Builder
 public class School implements Recommendable {

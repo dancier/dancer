@@ -3,14 +3,17 @@ package net.dancier.domain;
 import net.dancier.domain.dance.Dancer;
 import net.dancier.domain.dance.School;
 
+/**
+ * Wraps something that could be recommended.
+ * @param <T>
+ */
 public class Recommendation<T extends Recommendable> {
 
     public enum Type {
         DANCER,
         SCHOOL,
         WORKSHOP,
-        EVENING,
-        ETC
+        EVENING
     }
 
     public Type type;
@@ -22,7 +25,7 @@ public class Recommendation<T extends Recommendable> {
         } else if (recommendable instanceof School) {
             return new Recommendation(Type.SCHOOL, recommendable);
         } else {
-            return new Recommendation(Type.ETC, recommendable);
+            throw new IllegalArgumentException("Unprocessable recommendable: " + recommendable);
         }
     }
     private Recommendation(Type type, T recommendable) {

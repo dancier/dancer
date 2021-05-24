@@ -8,10 +8,14 @@ import net.dancier.domain.dance.School;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Just returns some static recommendations, without using db
+ * connections and not calculations at all.
+ */
 public class MockedRecommendationsService implements RecommendationsService {
 
     @Override
-    public List<Recommendation> get(User user) {
+    public List<Recommendation> read(User user) {
         List<Recommendation> recommendations = Arrays.asList(
             Recommendation.of(Dancer.
                     builder().

@@ -24,6 +24,6 @@ public class RecommendationsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIt() {
-        return Response.ok(recommendationsService.get(null)).build();
+        return Response.ok(recommendationsService.read(null)).build();
     }
 }
