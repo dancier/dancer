@@ -75,12 +75,13 @@ check via ```\l```
 
 (exit psql and docker bash)
 
-### Initalize database via Liquibase
+### Initialize database via Liquibase
 
 (Requires successful Maven build and ".env" to be processed)
 
 ```bash
-java -jar target/dancer-2.0-SNAPSHOT.jar db migrate config.yml
+docker exec -it dancer /bin/bash
+java -jar dancer-2.0-SNAPSHOT.jar db migrate config.yml
 ```
 ### Create Sessions for arbitrary users
 To let the developer easily impersonate any user on non production systems, he can do the following.
@@ -94,4 +95,4 @@ curl --request GET \
   --url 'http://localhost:8080/login/callback?mocked_fb_user=the-foreing-fb-id'
 ```
 
-If the provided user with the id, does not exist, an user will be created. Otherwise the already existing one will be used.
+If the provided user with the id, does not exist, a user will be created. Otherwise the already existing one will be used.
