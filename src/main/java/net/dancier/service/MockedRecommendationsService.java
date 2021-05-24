@@ -3,6 +3,7 @@ package net.dancier.service;
 import net.dancier.domain.Recommendation;
 import net.dancier.domain.User;
 import net.dancier.domain.dance.Dancer;
+import net.dancier.domain.dance.School;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,11 @@ public class MockedRecommendationsService implements RecommendationsService {
                     user(new User()).
                     aboutHim("Hallo").
                     userName("Halbekanne").
-                    build())
+                    build()),
+                Recommendation.of(School.
+                        builder().
+                        name("Pietra").
+                        build())
         );
         return recommendations;
     }

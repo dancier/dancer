@@ -24,8 +24,6 @@ import javax.ws.rs.client.Client;
 
 public class DancerApplication extends Application<DancerConfiguration> {
 
-    private ObjectMapper objectMapper;
-
     public static void main(final String[] args) throws Exception {
         new DancerApplication().run(args);
     }
