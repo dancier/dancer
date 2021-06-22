@@ -23,7 +23,7 @@ public class RecommendationsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIt() {
+    public Response getRecommendations() {
         return Response.ok(recommendationsService.read(null)).build();
     }
 }

@@ -139,7 +139,7 @@ public class LoginResource {
     @Path("callback")
     public Response callback(@Context HttpServletRequest request, @Context ContainerRequestContext requestContext) {
         logger.debug("Received callback");
-        if (loginConfiguration.devEnv) {
+        if (loginConfiguration.devEnv && !getParam(request.getParameterMap(), OIDC_PARAM_CODE).isPresent()) {
             logger.debug("Dev mode");
             String foreignUserId = getParam(request.getParameterMap(),MOCKED_FB_USER).get();
             User user = userService.assignUser(User.IdProvider.FACEBOOK, foreignUserId, "bar");
