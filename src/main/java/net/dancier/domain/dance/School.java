@@ -5,6 +5,8 @@ import lombok.Data;
 import net.dancier.domain.Recommendable;
 import net.dancier.domain.User;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.net.URL;
 
 /**
@@ -13,8 +15,11 @@ import java.net.URL;
 @Data
 @Builder
 public class School implements Recommendable {
-    private User user;
 
+    @NotNull
+    private User owner;
+
+    @NotEmpty
     private String name;
 
     private URL website;
