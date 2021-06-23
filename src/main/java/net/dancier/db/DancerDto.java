@@ -1,7 +1,7 @@
 package net.dancier.db;
 
 import lombok.Data;
-import net.dancier.domain.dance.Smoker;
+import net.dancier.domain.dance.SmokingBehaviour;
 
 import java.util.Date;
 import java.util.UUID;
@@ -14,5 +14,5 @@ public class DancerDto {
     Integer size;
     String aboutHim;
     Date birthDate;
-    Smoker smoker;
+    SmokingBehaviour smoker;
 }

@@ -1,6 +1,6 @@
 package net.dancier.db;
 
-import net.dancier.domain.dance.Smoker;
+import net.dancier.domain.dance.SmokingBehaviour;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
@@ -20,10 +20,10 @@ public class DancerDtoMapper implements RowMapper<DancerDto> {
             dancerDto.setImageId(UUID.fromString(rs.getString("image_id")));
         }
         dancerDto.setSize(rs.getInt("size"));
-        dancerDto.setBirthDate(rs.getDate("birth_date"));;
+        dancerDto.setBirthDate(rs.getDate("birth_date"));
         String possibleSmokerString = rs.getString("smoker");
         if (possibleSmokerString!=null) {
-            dancerDto.setSmoker(Smoker.valueOf(possibleSmokerString));
+            dancerDto.setSmoker(SmokingBehaviour.valueOf(possibleSmokerString));
         }
         dancerDto.setAboutHim(rs.getString("about_him"));
         return dancerDto;
