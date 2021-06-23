@@ -10,8 +10,9 @@ import net.dancier.domain.dance.preference.Preference;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
-import java.util.prefs.Preferences;
 
+@Data
+@Builder
 public class Dancer implements Recommendable {
 
     private User user;
