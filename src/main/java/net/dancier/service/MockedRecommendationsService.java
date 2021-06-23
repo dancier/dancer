@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Just returns some static recommendations, without using db
- * connections and not calculations at all.
+ * connections and no calculations at all.
  */
 public class MockedRecommendationsService implements RecommendationsService {
 
