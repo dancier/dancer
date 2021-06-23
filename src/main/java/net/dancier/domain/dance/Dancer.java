@@ -31,7 +31,7 @@ public class Dancer implements Recommendable {
     /**
      * Some information about the dancer.
      */
-    private String about;
+    private String aboutHim;
 
     /**
      * Capabilities the dancer has.
