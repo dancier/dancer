@@ -6,7 +6,12 @@ import net.dancier.domain.dance.School;
 import javax.validation.constraints.NotNull;
 
 /**
- * Wraps something that could be recommended.
+ * <p>
+ * Wraps something that could be recommended. The intended usage of this class
+ * is to be the direct representation of what is send as payload of the
+ * {@link net.dancier.resources.RecommendationsResource}-Endpoint.
+ * </p>
+ *
  * Instances are created with {@link #of(Recommendable)}
  * @param <T> the Class that implements {@link Recommendable}
  */
