@@ -6,6 +6,9 @@ import net.dancier.domain.User;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * Service for everything that deals with Recommendations ({@link Recommendation})
+ */
 public interface RecommendationsService {
     /**
      * returns whatever could be recommended (see {@link net.dancier.domain.Recommendable} and {@link Recommendation})
