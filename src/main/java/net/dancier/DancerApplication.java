@@ -1,7 +1,5 @@
 package net.dancier;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -14,10 +12,7 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import net.dancier.api.CorsFilter;
-import net.dancier.resources.DancerResource;
-import net.dancier.resources.ImageResource;
-import net.dancier.resources.ProfileResource;
-import net.dancier.resources.UserResource;
+import net.dancier.resources.*;
 import net.dancier.resources.login.LoginResource;
 import net.dancier.service.*;
 import org.dhatim.dropwizard.jwt.cookie.authentication.JwtCookieAuthBundle;
@@ -91,6 +86,10 @@ public class DancerApplication extends Application<DancerConfiguration> {
 
         final ImageResource imageResource = new ImageResource();
         environment.jersey().register(imageResource);
-    }
 
+        final RecommendationsService recommendationsService = new MockedRecommendationsService();
+
+        final RecommendationsResource recommendationsResource = new RecommendationsResource(recommendationsService);
+        environment.jersey().register(recommendationsResource);
+    }
 }

@@ -1,17 +1,19 @@
 package net.dancier.domain.dance;
 
+import lombok.Builder;
 import lombok.Data;
 import net.dancier.domain.Image;
+import net.dancier.domain.Recommendable;
 import net.dancier.domain.User;
 import net.dancier.domain.dance.preference.Preference;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
-import java.util.prefs.Preferences;
 
 @Data
-public class Dancer {
+@Builder
+public class Dancer implements Recommendable {
 
     private User user;
 
@@ -29,7 +31,7 @@ public class Dancer {
     /**
      * Some information about the dancer.
      */
-    private String about;
+    private String aboutHim;
 
     /**
      * Capabilities the dancer has.
