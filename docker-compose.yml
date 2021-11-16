@@ -1,42 +1,24 @@
-# Author: Marc Gorzala
-version: "3.9"
+version: '3.8'
+
 services:
-  traefik:
-    image: ${TRAEFIK_IMAGE}
-    command:
-      - "--log.level=${TRAEFIK_LOG_LEVEL}"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
-      #- "--certificatesresolvers.mytlschallenge.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.mytlschallenge.acme.email=${ACME_MAIL}"
-      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+  dancer-db:
+    image: postgres
     restart: always
     ports:
-      - "443:443"
-    volumes:
-      - "${VOLUMES_LETSENCRYPT}:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  dancer:
-    image: ${DANCER_IMAGE}
-    restart: always
-    volumes:
-      - "./config.yml:/config.yml"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dancer.rule=Host(`${DANCER_HOSTNAME}`)"
-      - "traefik.http.routers.dancer.entrypoints=websecure"
-      - "traefik.http.routers.dancer.tls.certresolver=mytlschallenge"
+      - "5432:5432"
     environment:
-      - DW_DB_JDBC_URL=jdbc:postgresql://postgres/dancier
-      - DW_LOGIN_FACEBOOK_CLIENT_SECRET
-    depends_on:
-      - postgres
-      - traefik
-  postgres:
-    image: postgres
-    environment:
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_DB=dancier
+      POSTGRES_USER: dancer
+      POSTGRES_PASSWORD: dancer
+      POSTGRES_DB: dancer
+    volumes:
+      - ./dancer-data:/var/lib/postgresql/data
+
+  pg-admin:
+    image: dpage/pgadmin4
     restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+
