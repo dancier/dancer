@@ -7,4 +7,18 @@
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+    <changeSet id="insertBaseUserRoles" author="Marc">
+        <sql>
+            INSERT INTO roles(id, name)
+                 SELECT gen_random_uuid(), 'ROLE_ADMIN'
+                  WHERE NOT EXISTS (
+                     SELECT * FROM roles WHERE name = 'ROLE_ADMIN'
+                  );
+            INSERT INTO roles(id, name)
+                 SELECT gen_random_uuid(), 'ROLE_USER'
+                  WHERE NOT EXISTS (
+                      SELECT * FROM roles WHERE name = 'ROLE_USER'
+                  )
+        </sql>
+    </changeSet>
 </databaseChangeLog>
