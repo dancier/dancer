@@ -1,0 +1,185 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="marc (generated)" id="1637142311048-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-2">
+        <createTable tableName="choices">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="VARCHAR(40)"/>
+            <column name="poll_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-3">
+        <createTable tableName="customer">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-4">
+        <createTable tableName="dancer">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-5">
+        <createTable tableName="polls">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"/>
+            <column name="updated_by" type="UUID"/>
+            <column name="expiration_date_time" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question" type="VARCHAR(140)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-6">
+        <createTable tableName="roles">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(60)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-7">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-8">
+        <createTable tableName="users">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(40)"/>
+            <column name="name" type="VARCHAR(40)"/>
+            <column name="password" type="VARCHAR(100)"/>
+            <column name="username" type="VARCHAR(15)"/>
+            <column name="address" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-9">
+        <createTable tableName="votes">
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="choice_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="poll_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-10">
+        <addPrimaryKey columnNames="id" constraintName="choices_pkey" tableName="choices"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-11">
+        <addPrimaryKey columnNames="id" constraintName="customer_pkey" tableName="customer"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-12">
+        <addPrimaryKey columnNames="id" constraintName="dancer_pkey" tableName="dancer"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-13">
+        <addPrimaryKey columnNames="id" constraintName="polls_pkey" tableName="polls"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-14">
+        <addPrimaryKey columnNames="id" constraintName="roles_pkey" tableName="roles"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-15">
+        <addPrimaryKey columnNames="user_id, role_id" constraintName="user_roles_pkey" tableName="user_roles"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-16">
+        <addPrimaryKey columnNames="id" constraintName="users_pkey" tableName="users"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-17">
+        <addPrimaryKey columnNames="id" constraintName="votes_pkey" tableName="votes"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-18">
+        <addUniqueConstraint columnNames="email" constraintName="uk6dotkott2kjsp8vw4d0m25fb7" tableName="users"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-19">
+        <addUniqueConstraint columnNames="poll_id, user_id" constraintName="uk8um9h2wxsdjrgx3rjjwvny676" tableName="votes"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-20">
+        <addUniqueConstraint columnNames="name" constraintName="uk_nb4h0p6txrmfc0xbrd1kglp9t" tableName="roles"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-21">
+        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="choices" constraintName="fk1i68hpih40n447wqx4lpef6ot" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="polls"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-22">
+        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="votes" constraintName="fk7trt3uyihr4g13hva9d31puxg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="polls"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-23">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fkh8ciramu9cc9q3qcqiv4ue8a6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="roles"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-24">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fkhfh9dx7w3ubf1co1vdev94g3f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-25">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="votes" constraintName="fkli4uj3ic2vypf5pialchj925e" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="marc (generated)" id="1637142311048-26">
+        <addForeignKeyConstraint baseColumnNames="choice_id" baseTableName="votes" constraintName="fkomskymhxde3qq9mcukyp1puio" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="choices"/>
+    </changeSet>
+    <changeSet id="insertBaseUserRoles" author="Marc">
+        <sql>
+            INSERT INTO roles(id, name)
+            SELECT gen_random_uuid(), 'ROLE_ADMIN'
+            WHERE NOT EXISTS (
+            SELECT * FROM roles WHERE name = 'ROLE_ADMIN'
+            );
+            INSERT INTO roles(id, name)
+            SELECT gen_random_uuid(), 'ROLE_USER'
+            WHERE NOT EXISTS (
+            SELECT * FROM roles WHERE name = 'ROLE_USER'
+            )
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
