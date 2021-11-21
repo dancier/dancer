@@ -181,5 +181,27 @@
             )
         </sql>
     </changeSet>
-
+    <changeSet id="emailValidated added" author="Marc">
+        <sql>
+            ALTER TABLE users
+            ADD COLUMN email_validated boolean;
+            UPDATE users SET email_validated = true;
+            ALTER TABLE users ALTER COLUMN email SET NOT NULL;
+        </sql>
+    </changeSet>
+    <changeSet id="validationCode" author="Marc">
+        <sql>
+            CREATE TABLE validation_codes (
+            id uuid PRIMARY KEY,
+            code varchar(256) NOT NULL,
+            expires_at TIMESTAMP WITHOUT TIME ZONE
+            )
+        </sql>
+    </changeSet>
+    <changeSet id="adUserRef" author="Marc">
+        <sql>
+            ALTER TABLE validation_codes
+            ADD COLUMN user_id uuid NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

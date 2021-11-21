@@ -68,26 +68,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
                 .antMatchers("/user/checkUsernameAvailability", "/user/checkEmailAvailability")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/polls/**", "/users/**")
                 .permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/validation/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
 ;
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
