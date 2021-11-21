@@ -25,18 +25,22 @@ public class UserPrincipal implements UserDetails {
 
     private String password;
 
+    private boolean isEmailValidated;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(UUID id,
                          String name,
                          String username,
                          String email,
+                         boolean isEmailValidated,
                          String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
+        this.isEmailValidated = isEmailValidated;
         this.password = password;
         this.authorities = authorities;
     }
@@ -51,6 +55,7 @@ public class UserPrincipal implements UserDetails {
                 user.getName(),
                 user.getUsername(),
                 user.getEmail(),
+                user.isEmailValidated(),
                 user.getPassword(),
                 authorities);
     }
@@ -67,6 +72,14 @@ public class UserPrincipal implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean isEmailValidated() {
+        return isEmailValidated;
+    }
+
+    public void setEmailValidated(boolean emailValidated) {
+        this.isEmailValidated = emailValidated;
     }
 
     @Override

@@ -1,11 +1,16 @@
 package net.dancier.dancer.controller.payload;
 
-public class ApiResponse {  private Boolean success;
-    private String message;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    public ApiResponse(Boolean success, String message) {
+public class ApiResponse {  private Boolean success;
+    private List<String> messages;
+
+    public ApiResponse(Boolean success,
+                       String... message) {
         this.success = success;
-        this.message = message;
+        this.messages = Arrays.asList(message);
     }
 
     public Boolean getSuccess() {
@@ -16,11 +21,11 @@ public class ApiResponse {  private Boolean success;
         this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public List<String> getMessages() {
+        return messages;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(List<String> messages) {
+        this.messages = messages;
     }
 }

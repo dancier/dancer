@@ -8,8 +8,10 @@ import net.dancier.dancer.exception.AppException;
 import net.dancier.dancer.model.Role;
 import net.dancier.dancer.model.RoleName;
 import net.dancier.dancer.model.User;
+import net.dancier.dancer.model.ValidationCode;
 import net.dancier.dancer.repository.RoleRepository;
 import net.dancier.dancer.repository.UserRepository;
+import net.dancier.dancer.repository.ValidationCodeRepository;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -51,6 +56,9 @@ public class AuthController {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @Autowired
+    ValidationCodeRepository validationCodeRepository;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -97,6 +105,11 @@ public class AuthController {
 
         User result = userRepository.save(user);
 
+        ValidationCode validationCode = new ValidationCode();
+        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        validationCode.setUserId(result.getId());
+        validationCode.setCode(UUID.randomUUID().toString());
+        validationCodeRepository.save(validationCode);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();

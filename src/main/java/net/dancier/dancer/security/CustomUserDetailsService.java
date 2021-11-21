@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 // https://www.netsurfingzone.com/hibernate/failed-to-lazily-initialize-a-collection-of-role-could-not-initialize-proxy-no-session/
     @Transactional
-    public UserDetails loadUserById(UUID id) throws UsernameNotFoundException {
+    public UserPrincipal loadUserById(UUID id) throws UsernameNotFoundException {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with id : " + id)
         );

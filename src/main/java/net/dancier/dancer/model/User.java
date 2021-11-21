@@ -1,6 +1,5 @@
 package net.dancier.dancer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.dancier.dancer.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
 
@@ -37,6 +36,10 @@ public class User extends DateAudit {
     @Email
     private String email;
 
+    @Column(name = "email_validated")
+    @NotNull
+    private boolean isEmailValidated;
+
     @NotBlank
     @Size(max = 100)
     private String password;
@@ -56,6 +59,7 @@ public class User extends DateAudit {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isEmailValidated = false;
     }
 
     public UUID getId() {
@@ -88,6 +92,14 @@ public class User extends DateAudit {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEmailValidated() {
+        return this.isEmailValidated;
+    }
+
+    public void setEmailValidated(boolean isEmailValidated) {
+        this.isEmailValidated = isEmailValidated;
     }
 
     public String getPassword() {
