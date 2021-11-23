@@ -7,7 +7,7 @@ import net.dancier.dancer.controller.payload.polls.PollRequest;
 import net.dancier.dancer.controller.payload.polls.VoteRequest;
 import net.dancier.dancer.model.polls.Poll;
 import net.dancier.dancer.repository.PollRepository;
-import net.dancier.dancer.repository.UserRepository;
+import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.repository.VoteRepository;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;

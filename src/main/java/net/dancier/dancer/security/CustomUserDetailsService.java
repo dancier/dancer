@@ -1,7 +1,7 @@
 package net.dancier.dancer.security;
 
-import net.dancier.dancer.model.User;
-import net.dancier.dancer.repository.UserRepository;
+import net.dancier.dancer.authentication.model.User;
+import net.dancier.dancer.authentication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

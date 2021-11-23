@@ -1,6 +1,6 @@
-package net.dancier.dancer.repository;
+package net.dancier.dancer.authentication.repository;
 
-import net.dancier.dancer.model.User;
+import net.dancier.dancer.authentication.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

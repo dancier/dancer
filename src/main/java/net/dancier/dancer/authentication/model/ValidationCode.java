@@ -1,4 +1,4 @@
-package net.dancier.dancer.model;
+package net.dancier.dancer.authentication.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

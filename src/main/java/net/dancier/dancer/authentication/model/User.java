@@ -1,4 +1,4 @@
-package net.dancier.dancer.model;
+package net.dancier.dancer.authentication.model;
 
 import net.dancier.dancer.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;

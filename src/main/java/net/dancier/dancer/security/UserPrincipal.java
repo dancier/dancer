@@ -1,7 +1,7 @@
 package net.dancier.dancer.security;
 
 import lombok.ToString;
-import net.dancier.dancer.model.User;
+import net.dancier.dancer.authentication.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

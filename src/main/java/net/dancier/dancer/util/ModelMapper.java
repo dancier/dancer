@@ -3,7 +3,7 @@ package net.dancier.dancer.util;
 import net.dancier.dancer.controller.payload.PollResponse;
 import net.dancier.dancer.controller.payload.UserSummary;
 import net.dancier.dancer.controller.payload.polls.ChoiceResponse;
-import net.dancier.dancer.model.User;
+import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.model.polls.Poll;
 
 import java.time.Instant;

@@ -71,17 +71,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**")
+                .antMatchers("/authentication/**")
                 .permitAll()
                 .antMatchers("/user/checkUsernameAvailability", "/user/checkEmailAvailability")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/polls/**", "/users/**")
                 .permitAll()
-                .antMatchers("/validation/**")
-                .permitAll()
                 .anyRequest()
-                .authenticated()
-;
+                .authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

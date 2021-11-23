@@ -1,10 +1,10 @@
-package net.dancier.dancer.controller;
+package net.dancier.dancer.authentication;
 
+import net.dancier.dancer.authentication.model.User;
+import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.controller.payload.*;
 import net.dancier.dancer.exception.ResourceNotFoundException;
-import net.dancier.dancer.model.User;
 import net.dancier.dancer.repository.PollRepository;
-import net.dancier.dancer.repository.UserRepository;
 import net.dancier.dancer.repository.VoteRepository;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;
