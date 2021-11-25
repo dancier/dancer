@@ -97,7 +97,6 @@ public class AuthenticationController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        errors.put("foo", "bar");
         return errors;
     }
 }

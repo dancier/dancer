@@ -39,7 +39,7 @@ public class User extends DateAudit {
     @Column(name = "email_validated")
     @NotNull
     private boolean isEmailValidated;
-
+    
     @NotBlank
     @Size(max = 100)
     private String password;

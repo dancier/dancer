@@ -204,4 +204,88 @@
             ADD COLUMN user_id uuid NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addAddress" author="Marc">
+        <sql>
+            CREATE TABLE address (
+            id uuid PRIMARY KEY,
+            name varchar(256),
+            street varchar(256),
+            city varchar(256)
+            )
+        </sql>
+    </changeSet>
+    <changeSet id="updateDancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            DROP column email;
+
+            ALTER TABLE dancer
+            DROP column name;
+
+            ALTER table dancer
+            ADD column size bigint;
+
+        </sql>
+    </changeSet>
+    <changeSet id="addsex" author="marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD column sex varchar(100)
+        </sql>
+    </changeSet>
+    <changeSet id="addUseridInDancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD column user_id uuid;
+        </sql>
+    </changeSet>
+    <changeSet id="createTableDance" author="Marc">
+        <sql>
+            CREATE TABLE dance (
+                id uuid PRIMARY KEY,
+                name varchar(256) NOT NULL
+            );
+            INSERT INTO dance(id, name)
+            SELECT gen_random_uuid(), 'Tango'
+            WHERE NOT EXISTS (
+            SELECT * FROM roles WHERE name = 'Tango'
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="createDanceProfil" author="Marc">
+        <sql>
+            CREATE TABLE dance_profile (
+            id uuid PRIMARY KEY,
+            dance_id uuid,
+            level varchar(50),
+            leader varchar(50)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="createAbleTo" author="Marc">
+        <sql>
+            CREATE TABLE able_to (
+              able_to_id uuid,
+              dance_id uuid
+            )
+        </sql>
+    </changeSet>
+    <changeSet id="fixAbleTo" author="Marc">
+        <sql>
+            ALTER TABLE able_to
+            RENAME COLUMN able_to_id
+            TO dancer_id;
+            ALTER TABLE able_to
+            RENAME COLUMN dance_id
+            TO dance_profile_id;
+        </sql>
+    </changeSet>
+    <changeSet id="wantsTo" author="Marc">
+        <sql>
+            CREATE TABLE wants_to (
+            dancer_id uuid,
+            dance_profile_id uuid
+            )
+        </sql>
+    </changeSet>
 </databaseChangeLog>
