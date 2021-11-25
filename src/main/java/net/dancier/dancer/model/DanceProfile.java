@@ -3,7 +3,6 @@ package net.dancier.dancer.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 @Data
@@ -25,4 +24,5 @@ public class DanceProfile {
     @Enumerated(EnumType.STRING)
     @Column(name = "leader")
     private Leading leading;
+
 }

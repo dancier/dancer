@@ -1,9 +1,14 @@
 package net.dancier.dancer.util;
 
+import net.dancier.dancer.DanceProfileDto;
+import net.dancier.dancer.DancerDto;
 import net.dancier.dancer.controller.payload.PollResponse;
 import net.dancier.dancer.controller.payload.UserSummary;
 import net.dancier.dancer.controller.payload.polls.ChoiceResponse;
 import net.dancier.dancer.authentication.model.User;
+import net.dancier.dancer.model.DanceProfile;
+import net.dancier.dancer.model.Dancer;
+import net.dancier.dancer.model.Sex;
 import net.dancier.dancer.model.polls.Poll;
 
 import java.time.Instant;
@@ -48,4 +53,29 @@ public class ModelMapper {
 
         return pollResponse;
     }
+    public static DancerDto dancerToDancerDto(Dancer dancer) {
+        DancerDto dancerDto = new DancerDto();
+        dancerDto.setSex(dancer.getSex());
+        dancerDto.setId(dancer.getId());
+        dancerDto.setSize(dancer.getSize());
+        dancerDto.setAbleTo(dancer
+                .getAbleTo()
+                .stream()
+                .map(ModelMapper::danceProfile2danceProfile).collect(Collectors.toSet()));
+        dancerDto.setWantsTo(dancer
+                .getWantsTo()
+                .stream()
+                .map(ModelMapper::danceProfile2danceProfile).collect(Collectors.toSet())
+        );
+        return dancerDto;
+    }
+
+    public static DanceProfileDto danceProfile2danceProfile(DanceProfile danceProfile) {
+        DanceProfileDto danceProfileDto = new DanceProfileDto();
+        danceProfileDto.setDance(danceProfile.getDance().getName());
+        danceProfileDto.setLeading(danceProfile.getLeading());
+        danceProfileDto.setLevel(danceProfile.getLevel());
+        return danceProfileDto;
+    }
+
 }

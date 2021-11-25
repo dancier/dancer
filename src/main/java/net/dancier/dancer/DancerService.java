@@ -3,6 +3,7 @@ package net.dancier.dancer;
 import net.dancier.dancer.exception.AppException;
 import net.dancier.dancer.model.Dancer;
 import net.dancier.dancer.repository.DancerRepository;
+import net.dancier.dancer.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,14 @@ public class DancerService {
     @Autowired
     DancerRepository dancerRepository;
 
-    public Dancer getDancerById(UUID userId) {
-        return dancerRepository.findByUserId(userId)
+    public DancerDto getDancerById(UUID userId) {
+        return ModelMapper.dancerToDancerDto(dancerRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Dancer tmp = new Dancer();
                     tmp.setUserId(userId
                     );
                     return tmp;
-                });
+                }));
     }
 
     public void save(Dancer dancer) {
