@@ -1,30 +1,67 @@
 openapi: 3.0.2
 info:
-  title: dancer
+  title: Dancier
   version: '1.0'
 servers:
-  - url: 'https://dancer.dancier.net'
+  - url: 'https://backend.dancier.net'
+  - url: 'http://localhost:8080'
 paths:
-  /login:
-    get:
-      responses:
-        '200':
-          description: OK
-  /image:
-    get:
-      responses:
-        '200':
-          description: The image
+  /authentication/register:
     post:
+      summary: starts user registrations process
+      description: Returns all pets from the system that the user has access to
       responses:
         '201':
-          description: image was created
-  /profile:
-    get:
+          description: In case the account could be created. The user still has to validate his email adresse.
+        '409':
+          description: In case the provided username or email-adress already exists
+  /authentication/login:
+    post:
+      description: The customer will be logged in. It ist necessary that the customer has already successfully validated his email-address.
       responses:
         '200':
-          description: The profile
+          description: In case the login was successfull.
         '401':
-          description: Unauthenticated
-        '404':
-          description: Not found
+          description: In case the provided credentials were not correct.
+        '403':
+          description: in case we have not validated the email yet.
+  /authentication/email/validation:
+    post:
+      description: creates validation code and send it per mail
+      responses:
+        '200':
+          description: when the code could be generated
+  /authentication/email/validate/{validationCode}:
+    get:
+      parameters:
+        - in: path
+          name: validationCode
+          schema:
+            type: string
+          required: true
+          description: Numeric ID of the user to get
+      description: validate
+      responses:
+        '301':
+          description: if the validation happend
+        '400':
+          description: in case of any problems like, code not present, not correct...
+  /authentication/password/reset:
+    post:
+      description: send a mail to reset password
+      responses:
+        '200':
+          description: mail was send
+  /authentication/password/reset/{validationCode}:
+    get:
+      parameters:
+        - in: path
+          name: validationCode
+          schema:
+            type: string
+          required: true
+          description: the code to check that it is really the user with access to the mail account
+      description: resets the password
+      responses:
+        '200':
+          description: contains the new password
