@@ -35,10 +35,14 @@ public class AuthenticationService {
     @Autowired
     ValidationCodeRepository validationCodeRepository;
 
+    public User getUser(UUID userId) {
+        return this.userRepository.getById(userId);
+    }
+
     public User registerUser(SignUpRequest signUpRequest) {
-        log. info("Checking for existins user: " + signUpRequest.getUsername());
+        log. info("Checking for existing user: " + signUpRequest.getUsername());
         if(userRepository.findByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail()).isPresent()) {
-            log.info("User or email already exist.");
+            log.info("User or email already exists.");
             throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getUsername() + " or " + signUpRequest.getEmail() + " already exists.");
         }
         log.info("creating user");
@@ -55,11 +59,11 @@ public class AuthenticationService {
         log.info("Saving new user: " + user);
 
         User result = userRepository.save(user);
-        ValidationCode validationCode = new ValidationCode();
-        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        validationCode.setUserId(result.getId());
-        validationCode.setCode(UUID.randomUUID().toString());
-        validationCodeRepository.save(validationCode);
+            ValidationCode validationCode = new ValidationCode();
+            validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+            validationCode.setUserId(result.getId());
+            validationCode.setCode(UUID.randomUUID().toString());
+            validationCodeRepository.save(validationCode);
 
         return result;
     }
@@ -85,5 +89,12 @@ public class AuthenticationService {
     }
 
     public void createValidationCodeForUserId(UUID userId) {
+        User user = userRepository.getById(userId);
+        ValidationCode validationCode = validationCodeRepository.findById(userId).orElseGet(() -> new ValidationCode());
+        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        validationCode.setUserId(user.getId());
+        validationCode.setCode(UUID.randomUUID().toString());
+        validationCodeRepository.save(validationCode);
+        log.debug("Created validationcode: " + validationCode.getCode() + " for user: " + user);
     }
 }

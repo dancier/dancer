@@ -2,7 +2,6 @@ package net.dancier.dancer.controller;
 
 import net.dancier.dancer.DancerDto;
 import net.dancier.dancer.DancerService;
-import net.dancier.dancer.model.Dancer;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class DancerController {
 
     @GetMapping
     public ResponseEntity get(@CurrentUser UserPrincipal userPrincipal) {
-        DancerDto dancerDto = dancerService.getDancerById(userPrincipal.getId());
+        DancerDto dancerDto = dancerService.getDancerByUserId(userPrincipal.getId());
         return ResponseEntity.ok(dancerDto);
     }
 

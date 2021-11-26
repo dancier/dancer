@@ -18,7 +18,8 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity get(@CurrentUser UserPrincipal userPrincipal) {
-        return ResponseEntity.ok(dancerService.getDancerById(userPrincipal.getId()));
+        return ResponseEntity.ok(dancerService.getDancerByUserId(userPrincipal.getId()));
     }
 
+    
 }

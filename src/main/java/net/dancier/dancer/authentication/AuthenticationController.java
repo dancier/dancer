@@ -7,6 +7,7 @@ import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.controller.payload.LoginRequest;
 import net.dancier.dancer.controller.payload.SignUpRequest;
 import net.dancier.dancer.security.JwtTokenProvider;
+import net.dancier.dancer.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
@@ -44,7 +47,7 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -52,10 +55,20 @@ public class AuthenticationController {
                         loginRequest.getPassword()
                 )
         );
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User user = authenticationService.getUser(userPrincipal.getId());
+        if (!user.isEmailValidated()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false, "You have to validate the email."));
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = tokenProvider.generateToken(authentication);
+        Cookie cookie = new Cookie("jwt-token", jwt);
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
@@ -80,7 +93,7 @@ public class AuthenticationController {
         authenticationService.checkValidationCode(validationCode);
     }
 
-    @PostMapping()
+    @PostMapping("/validation/")
     public void create(@NotNull @RequestBody String uuid) {
         log.info("sending mail for " + uuid);
         UUID userId = UUID.fromString(uuid);

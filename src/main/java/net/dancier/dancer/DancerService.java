@@ -15,7 +15,7 @@ public class DancerService {
     @Autowired
     DancerRepository dancerRepository;
 
-    public DancerDto getDancerById(UUID userId) {
+    public DancerDto getDancerByUserId(UUID userId) {
         return ModelMapper.dancerToDancerDto(dancerRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Dancer tmp = new Dancer();

@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -53,6 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
+        }
+        if (request.getCookies()!=null) {
+            String jwt = null;
+            for (Cookie cookie: request.getCookies()) {
+                if("jwt-token".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                }
+            }
+            return jwt;
         }
         return null;
     }}

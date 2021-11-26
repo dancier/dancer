@@ -22,7 +22,7 @@ public class Dancer {
     @JoinTable(name = "able_to",
             joinColumns = @JoinColumn(name = "dancer_id"),
             inverseJoinColumns = @JoinColumn(name = "dance_profile_id"))
-    private Set<DanceProfile> ableTo;
+    private Set<DanceProfile> ableTo = new HashSet<>();
 
     @OneToMany
     @JoinTable(name = "wants_to",
