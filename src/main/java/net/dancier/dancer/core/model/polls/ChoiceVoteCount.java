@@ -1,4 +1,4 @@
-package net.dancier.dancer.model.polls;
+package net.dancier.dancer.core.model.polls;
 
 import java.util.UUID;
 

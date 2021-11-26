@@ -1,4 +1,4 @@
-package net.dancier.dancer.model.audit;
+package net.dancier.dancer.core.model.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;

@@ -1,7 +1,7 @@
 package net.dancier.dancer.controller;
 
-import net.dancier.dancer.DancerDto;
-import net.dancier.dancer.DancerService;
+import net.dancier.dancer.core.DancerDto;
+import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;

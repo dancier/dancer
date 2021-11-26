@@ -1,7 +1,7 @@
-package net.dancier.dancer.model.polls;
+package net.dancier.dancer.core.model.polls;
 
 import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.model.audit.DateAudit;
+import net.dancier.dancer.core.model.audit.DateAudit;
 
 import javax.persistence.*;
 import java.util.UUID;

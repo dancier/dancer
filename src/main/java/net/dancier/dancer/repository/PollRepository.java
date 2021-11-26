@@ -1,6 +1,6 @@
 package net.dancier.dancer.repository;
 
-import net.dancier.dancer.model.polls.Poll;
+import net.dancier.dancer.core.model.polls.Poll;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

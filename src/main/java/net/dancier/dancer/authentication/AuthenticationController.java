@@ -1,13 +1,14 @@
 package net.dancier.dancer.authentication;
 
 import net.dancier.dancer.authentication.dto.NewPasswortDto;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.controller.payload.ApiResponse;
 import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.controller.payload.LoginRequest;
-import net.dancier.dancer.authentication.dto.RegisterRequestDto;
-import net.dancier.dancer.exception.AppException;
+import net.dancier.dancer.controller.payload.UserIdentityAvailability;
+import net.dancier.dancer.core.exception.AppException;
 import net.dancier.dancer.security.JwtTokenProvider;
 import net.dancier.dancer.security.UserPrincipal;
 import org.slf4j.Logger;
@@ -32,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/authentication")
@@ -117,6 +117,18 @@ public class AuthenticationController {
     public ResponseEntity validatePassword(@PathVariable String validationCode) {
         String newPassword = authenticationService.checkPasswortCodeRequest(validationCode);
         return ResponseEntity.ok(new NewPasswortDto(newPassword));
+    }
+
+    @GetMapping("/user/checkUsernameAvailability")
+    public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
+        Boolean isAvailable = !authenticationService.existsByUsername(username);
+        return new UserIdentityAvailability(isAvailable);
+    }
+
+    @GetMapping("/user/checkEmailAvailability")
+    public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
+        Boolean isAvailable = !authenticationService.existsByEmail(email);
+        return new UserIdentityAvailability(isAvailable);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

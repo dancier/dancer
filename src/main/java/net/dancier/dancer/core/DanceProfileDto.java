@@ -1,8 +1,8 @@
-package net.dancier.dancer;
+package net.dancier.dancer.core;
 
 import lombok.Data;
-import net.dancier.dancer.model.Leading;
-import net.dancier.dancer.model.Level;
+import net.dancier.dancer.core.model.Leading;
+import net.dancier.dancer.core.model.Level;
 
 @Data
 public class DanceProfileDto {

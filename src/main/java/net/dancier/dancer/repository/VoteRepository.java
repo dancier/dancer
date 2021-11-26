@@ -1,7 +1,7 @@
 package net.dancier.dancer.repository;
 
-import net.dancier.dancer.model.polls.ChoiceVoteCount;
-import net.dancier.dancer.model.polls.Vote;
+import net.dancier.dancer.core.model.polls.ChoiceVoteCount;
+import net.dancier.dancer.core.model.polls.Vote;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,10 +16,10 @@ import java.util.UUID;
 public interface VoteRepository extends JpaRepository<Vote, UUID> {
 
     // Constructor Style: https://docs.oracle.com/cd/E12839_01/apirefs.1111/e13946/ejb3_langref.html#ejb3_langref_constructor
-    @Query("SELECT NEW net.dancier.dancer.model.polls.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id in :pollIds GROUP BY v.choice.id")
+    @Query("SELECT NEW net.dancier.dancer.core.model.polls.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id in :pollIds GROUP BY v.choice.id")
     List<ChoiceVoteCount> countByPollIdInGroupByChoiceId(@Param("pollIds") List<UUID> pollIds);
 
-    @Query("SELECT NEW net.dancier.dancer.model.polls.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id = :pollId GROUP BY v.choice.id")
+    @Query("SELECT NEW net.dancier.dancer.core.model.polls.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id = :pollId GROUP BY v.choice.id")
     List<ChoiceVoteCount> countByPollIdGroupByChoiceId(@Param("pollId") UUID pollId);
 
     @Query("SELECT v FROM Vote v where v.user.id = :userId and v.poll.id in :pollIds")

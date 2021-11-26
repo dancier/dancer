@@ -1,8 +1,6 @@
-package net.dancier.dancer;
+package net.dancier.dancer.core;
 
-import net.dancier.dancer.exception.AppException;
-import net.dancier.dancer.model.Dancer;
-import net.dancier.dancer.repository.DancerRepository;
+import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

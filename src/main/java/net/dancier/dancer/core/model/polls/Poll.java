@@ -1,6 +1,6 @@
-package net.dancier.dancer.model.polls;
+package net.dancier.dancer.core.model.polls;
 
-import net.dancier.dancer.model.audit.UserDateAudit;
+import net.dancier.dancer.core.model.audit.UserDateAudit;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

@@ -1,7 +1,7 @@
-package net.dancier.dancer;
+package net.dancier.dancer.core;
 
 import lombok.Data;
-import net.dancier.dancer.model.Sex;
+import net.dancier.dancer.core.model.Sex;
 
 import java.util.Set;
 import java.util.UUID;

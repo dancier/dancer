@@ -1,6 +1,6 @@
-package net.dancier.dancer.util;
+package net.dancier.dancer.core;
 
-import net.dancier.dancer.DancerService;
+import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;

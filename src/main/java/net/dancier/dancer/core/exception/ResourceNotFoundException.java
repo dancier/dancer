@@ -1,4 +1,4 @@
-package net.dancier.dancer.exception;
+package net.dancier.dancer.core.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     private String resourceName;

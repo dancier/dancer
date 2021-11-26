@@ -1,6 +1,6 @@
-package net.dancier.dancer.repository;
+package net.dancier.dancer.core;
 
-import net.dancier.dancer.model.Dancer;
+import net.dancier.dancer.core.model.Dancer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

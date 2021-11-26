@@ -1,7 +1,7 @@
 package net.dancier.dancer.authentication.model;
 
 import lombok.Data;
-import net.dancier.dancer.model.audit.DateAudit;
+import net.dancier.dancer.core.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;

@@ -1,15 +1,14 @@
 package net.dancier.dancer.util;
 
-import net.dancier.dancer.DanceProfileDto;
-import net.dancier.dancer.DancerDto;
+import net.dancier.dancer.core.DanceProfileDto;
+import net.dancier.dancer.core.DancerDto;
 import net.dancier.dancer.controller.payload.PollResponse;
 import net.dancier.dancer.controller.payload.UserSummary;
 import net.dancier.dancer.controller.payload.polls.ChoiceResponse;
 import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.model.DanceProfile;
-import net.dancier.dancer.model.Dancer;
-import net.dancier.dancer.model.Sex;
-import net.dancier.dancer.model.polls.Poll;
+import net.dancier.dancer.core.model.DanceProfile;
+import net.dancier.dancer.core.model.Dancer;
+import net.dancier.dancer.core.model.polls.Poll;
 
 import java.time.Instant;
 import java.util.List;

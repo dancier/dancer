@@ -8,7 +8,7 @@ import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
-import net.dancier.dancer.exception.AppException;
+import net.dancier.dancer.core.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +136,13 @@ public class AuthenticationService {
         passwordResetCode.setCode(UUID.randomUUID().toString());
         passwordResetCodeRepository.save(passwordResetCode);
         log.debug("Create password code: " + passwordResetCode.getCode());
+    }
+
+    public boolean existsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
     }
 }
