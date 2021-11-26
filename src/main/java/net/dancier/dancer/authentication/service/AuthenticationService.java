@@ -1,12 +1,13 @@
 package net.dancier.dancer.authentication.service;
 
+import net.bytebuddy.utility.RandomString;
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
 import net.dancier.dancer.authentication.model.*;
-import net.dancier.dancer.controller.payload.SignUpRequest;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class AuthenticationService {
     }
 
 
-    public User registerUser(SignUpRequest signUpRequest) {
+    public User registerUser(RegisterRequestDto signUpRequest) {
         log. info("Checking for existing user: " + signUpRequest.getUsername());
         if(userRepository.findByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail()).isPresent()) {
             log.info("User or email already exists.");
@@ -76,7 +77,14 @@ public class AuthenticationService {
 
     public String checkPasswortCodeRequest(String code) {
         PasswordResetCode passwordResetCode = this.passwordResetCodeRepository.findByCode(code).orElseThrow(() ->new AppException("d"));
-        return null;
+        RandomString randomString = new RandomString();
+        String newPassword = randomString.nextString();
+        User user = userRepository.getById(passwordResetCode.getUserId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeRepository.delete(passwordResetCode);
+        log.info(passwordResetCode.toString());
+        return newPassword;
     }
 
     @Transactional
@@ -96,17 +104,28 @@ public class AuthenticationService {
         log.debug("All fine...");
         User user = userRepository.findById(validationCode.getUserId()).orElseThrow(() -> new AppException(""));
         user.setEmailValidated(true);
+        validationCodeRepository.delete(validationCode);
         userRepository.save(user);
     }
 
-    public void createEmailValidationCodeForUserId(UUID userId) {
-        User user = userRepository.getById(userId);
-        ValidationCode validationCode = validationCodeRepository.findById(userId).orElseGet(() -> new ValidationCode());
+
+    public void createEmailValidationCodeForUserOrEmail(String userOrEmail) {
+        User user = userRepository.findByUsernameOrEmail(userOrEmail,userOrEmail).orElseThrow(()->new AppException(""));
+        createEmailValidationCodeForUser(user);
+    }
+
+    public void createEmailValidationCodeForUser(User user) {
+        ValidationCode validationCode = validationCodeRepository.findById(user.getId()).orElseGet(() -> new ValidationCode());
         validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
         validationCode.setUserId(user.getId());
         validationCode.setCode(UUID.randomUUID().toString());
         validationCodeRepository.save(validationCode);
         log.debug("Created validationcode: " + validationCode.getCode() + " for user: " + user);
+    }
+
+    public void createEmailValidationCodeForUserId(UUID userId) {
+        User user = userRepository.getById(userId);
+        createEmailValidationCodeForUser(user);
     }
 
     public void createPasswordValidationCodeForUserOrEmail(String userOrEmail) {

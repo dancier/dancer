@@ -17,7 +17,7 @@ app:
     tokenExpirationMsec: 864000000
   cors:
     allowedOrigins: http://localhost:3000 # Comma separated list of allowed origins
-
+  redirectAfterEmailValidation: http://google.de
 logging:
   level:
     root: INFO

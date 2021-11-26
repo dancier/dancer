@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "password_reset_codes")
+@Table(name = "password_reset_code")
 public class PasswordResetCode {
 
     @Id

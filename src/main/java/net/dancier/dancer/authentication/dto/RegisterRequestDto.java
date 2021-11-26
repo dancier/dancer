@@ -1,4 +1,4 @@
-package net.dancier.dancer.controller.payload;
+package net.dancier.dancer.authentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
-public class SignUpRequest {
+public class RegisterRequestDto {
 
     @NotBlank
     @Size(min = 4, max = 40)

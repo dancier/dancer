@@ -1,16 +1,19 @@
 package net.dancier.dancer.authentication;
 
+import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.controller.payload.ApiResponse;
 import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.controller.payload.LoginRequest;
-import net.dancier.dancer.controller.payload.SignUpRequest;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.exception.AppException;
 import net.dancier.dancer.security.JwtTokenProvider;
 import net.dancier.dancer.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +40,9 @@ public class AuthenticationController {
 
     private static Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
+    @Value("${app.redirectAfterEmailValidation}")
+    String redirectAfterEmailValidation;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -45,6 +51,21 @@ public class AuthenticationController {
 
     @Autowired
     AuthenticationService authenticationService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto signUpRequest) {
+        log.info("Checking for existing user: " + signUpRequest.getUsername());
+        User result;
+        try {
+            result = authenticationService.registerUser(signUpRequest);
+        } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "Username already exist"));
+        }
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/users/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
@@ -72,44 +93,30 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
-    @PostMapping("/reset")
+    @PostMapping("/email/validation")
+    public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailOrUsername) {
+        log.info("sending mail for " + emailOrUsername);
+        authenticationService.createEmailValidationCodeForUserOrEmail(emailOrUsername);
+        return ResponseEntity.ok().body(new ApiResponse(true, "ValidationCode send."));
+    }
+
+    @GetMapping("/email/validate/{validationCode}")
+    public ResponseEntity emailValidation(@PathVariable String validationCode) {
+        log.info("Got Validation code " + validationCode);
+        authenticationService.checkEmailCode(validationCode);
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectAfterEmailValidation)).build();
+    }
+
+    @PostMapping("/password/reset")
     public ResponseEntity resetPasswort(@RequestBody String userOrEmail) {
-        // send Mail with link
         authenticationService.createPasswordValidationCodeForUserOrEmail(userOrEmail);
         return ResponseEntity.ok(new ApiResponse(true, "super"));
     }
 
-    @GetMapping("/reset/validate/{validationCode}")
+    @GetMapping("/password/reset/{validationCode}")
     public ResponseEntity validatePassword(@PathVariable String validationCode) {
-        return null;
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-        log.info("Checking for existing user: " + signUpRequest.getUsername());
-        User result;
-        try {
-            result = authenticationService.registerUser(signUpRequest);
-        } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "Username already exist"));
-        }
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-    }
-
-    @GetMapping("validation/{validationCode}")
-    public void validate(@PathVariable String validationCode) {
-        log.info("Got Validation code " + validationCode);
-        authenticationService.checkEmailCode(validationCode);
-    }
-
-    @PostMapping("/validation/")
-    public void create(@NotNull @RequestBody String uuid) {
-        log.info("sending mail for " + uuid);
-        UUID userId = UUID.fromString(uuid);
-        authenticationService.createEmailValidationCodeForUserId(userId);
+        String newPassword = authenticationService.checkPasswortCodeRequest(validationCode);
+        return ResponseEntity.ok(new NewPasswortDto(newPassword));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -123,5 +130,11 @@ public class AuthenticationController {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AppException.class)
+    public String handle(AppException ae) {
+        return ae.getLocalizedMessage();
     }
 }

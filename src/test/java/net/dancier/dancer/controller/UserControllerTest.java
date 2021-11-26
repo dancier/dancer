@@ -2,7 +2,7 @@ package net.dancier.dancer.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.dancer.controller.payload.SignUpRequest;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +54,6 @@ public class UserControllerTest {
     private String stubSignUpRequest(
             String username,
             String email) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(new SignUpRequest("xxxx", username, email, "xxxxxxx"));
+        return objectMapper.writeValueAsString(new RegisterRequestDto("xxxx", username, email, "xxxxxxx"));
     }
 }
