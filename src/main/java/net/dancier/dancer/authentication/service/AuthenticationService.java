@@ -1,6 +1,8 @@
 package net.dancier.dancer.authentication.service;
 
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
+import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
+import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
 import net.dancier.dancer.authentication.model.*;
@@ -35,9 +37,13 @@ public class AuthenticationService {
     @Autowired
     ValidationCodeRepository validationCodeRepository;
 
+    @Autowired
+    PasswordResetCodeRepository passwordResetCodeRepository;
+
     public User getUser(UUID userId) {
         return this.userRepository.getById(userId);
     }
+
 
     public User registerUser(SignUpRequest signUpRequest) {
         log. info("Checking for existing user: " + signUpRequest.getUsername());
@@ -68,8 +74,13 @@ public class AuthenticationService {
         return result;
     }
 
+    public String checkPasswortCodeRequest(String code) {
+        PasswordResetCode passwordResetCode = this.passwordResetCodeRepository.findByCode(code).orElseThrow(() ->new AppException("d"));
+        return null;
+    }
+
     @Transactional
-    public void checkValidationCode(String code) {
+    public void checkEmailCode(String code) {
         log.info("Checking");
         ValidationCode validationCode = validationCodeRepository
                 .findByCode(code).orElseThrow(() ->new AppException("Unable to validate"));
@@ -88,7 +99,7 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public void createValidationCodeForUserId(UUID userId) {
+    public void createEmailValidationCodeForUserId(UUID userId) {
         User user = userRepository.getById(userId);
         ValidationCode validationCode = validationCodeRepository.findById(userId).orElseGet(() -> new ValidationCode());
         validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
@@ -96,5 +107,15 @@ public class AuthenticationService {
         validationCode.setCode(UUID.randomUUID().toString());
         validationCodeRepository.save(validationCode);
         log.debug("Created validationcode: " + validationCode.getCode() + " for user: " + user);
+    }
+
+    public void createPasswordValidationCodeForUserOrEmail(String userOrEmail) {
+        User user = userRepository.findByUsernameOrEmail(userOrEmail, userOrEmail).orElseThrow(() -> new AppException(""));
+        PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
+        passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        passwordResetCode.setUserId(user.getId());
+        passwordResetCode.setCode(UUID.randomUUID().toString());
+        passwordResetCodeRepository.save(passwordResetCode);
+        log.debug("Create password code: " + passwordResetCode.getCode());
     }
 }

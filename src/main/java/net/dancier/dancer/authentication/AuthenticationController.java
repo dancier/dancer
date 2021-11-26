@@ -72,6 +72,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
+    @PostMapping("/reset")
+    public ResponseEntity resetPasswort(@RequestBody String userOrEmail) {
+        // send Mail with link
+        authenticationService.createPasswordValidationCodeForUserOrEmail(userOrEmail);
+        return ResponseEntity.ok(new ApiResponse(true, "super"));
+    }
+
+    @GetMapping("/reset/validate/{validationCode}")
+    public ResponseEntity validatePassword(@PathVariable String validationCode) {
+        return null;
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         log.info("Checking for existing user: " + signUpRequest.getUsername());
@@ -90,14 +102,14 @@ public class AuthenticationController {
     @GetMapping("validation/{validationCode}")
     public void validate(@PathVariable String validationCode) {
         log.info("Got Validation code " + validationCode);
-        authenticationService.checkValidationCode(validationCode);
+        authenticationService.checkEmailCode(validationCode);
     }
 
     @PostMapping("/validation/")
     public void create(@NotNull @RequestBody String uuid) {
         log.info("sending mail for " + uuid);
         UUID userId = UUID.fromString(uuid);
-        authenticationService.createValidationCodeForUserId(userId);
+        authenticationService.createEmailValidationCodeForUserId(userId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

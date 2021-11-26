@@ -21,5 +21,4 @@ public class ProfileController {
         return ResponseEntity.ok(dancerService.getDancerByUserId(userPrincipal.getId()));
     }
 
-    
 }
