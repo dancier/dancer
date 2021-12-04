@@ -26,20 +26,27 @@ public class AuthenticationService {
 
     public static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
-    @Autowired
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    ValidationCodeRepository validationCodeRepository;
+    private ValidationCodeRepository validationCodeRepository;
 
-    @Autowired
-    PasswordResetCodeRepository passwordResetCodeRepository;
+    private PasswordResetCodeRepository passwordResetCodeRepository;
+
+    public AuthenticationService(RoleRepository roleRepository,
+                                 UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 ValidationCodeRepository validationCodeRepository,
+                                 PasswordResetCodeRepository passwordResetCodeRepository) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder =  passwordEncoder;
+        this.validationCodeRepository = validationCodeRepository;
+        this.passwordResetCodeRepository = passwordResetCodeRepository;
+    }
 
     public User getUser(UUID userId) {
         return this.userRepository.getById(userId);

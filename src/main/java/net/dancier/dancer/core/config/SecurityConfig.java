@@ -1,4 +1,4 @@
-package net.dancier.dancer.config;
+package net.dancier.dancer.core.config;
 
 import net.dancier.dancer.security.CustomUserDetailsService;
 import net.dancier.dancer.security.JwtAuthenticationEntryPoint;

@@ -3,6 +3,7 @@ package net.dancier.dancer.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,6 @@ public class UserControllerTest {
         url = String.format("http://localhost:%d", port);
     }
 
-    @Test
     public void signUpShould() throws Exception {
         mvc.perform(
                 post("/auth/signup")
