@@ -103,7 +103,7 @@ public class AuthenticationController {
     @GetMapping("/email/validate/{validationCode}")
     public ResponseEntity emailValidation(@PathVariable String validationCode) {
         log.info("Got Validation code " + validationCode);
-        authenticationService.checkEmailCode(validationCode);
+        authenticationService.checkEmailValidationCode(validationCode);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectAfterEmailValidation)).build();
     }
 

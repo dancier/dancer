@@ -102,6 +102,14 @@ class AuthenticationServiceTest {
                 () -> underTest.registerUser(dummyRegisterRequestDto(dummyUser())));
     }
 
+    @Test
+    void createEmailValidationCodeForUser() {
+
+    }
+
+
+
+
     private User dummyUser() {
         return new User("foo", "bar", "info@foo.de", "secret");
     }
