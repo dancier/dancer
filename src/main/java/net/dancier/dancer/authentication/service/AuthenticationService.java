@@ -1,26 +1,29 @@
 package net.dancier.dancer.authentication.service;
 
+import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
-import net.dancier.dancer.authentication.model.*;
-import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.core.exception.AppException;
+import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class AuthenticationService {
 
@@ -28,30 +31,21 @@ public class AuthenticationService {
 
     private final RoleRepository roleRepository;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private ValidationCodeRepository validationCodeRepository;
+    private final ValidationCodeRepository validationCodeRepository;
 
-    private PasswordResetCodeRepository passwordResetCodeRepository;
-
-    public AuthenticationService(RoleRepository roleRepository,
-                                 UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 ValidationCodeRepository validationCodeRepository,
-                                 PasswordResetCodeRepository passwordResetCodeRepository) {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder =  passwordEncoder;
-        this.validationCodeRepository = validationCodeRepository;
-        this.passwordResetCodeRepository = passwordResetCodeRepository;
-    }
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
 
     public User getUser(UUID userId) {
-        return this.userRepository.getById(userId);
+        try {
+            return this.userRepository.getById(userId);
+        } catch (EntityNotFoundException entityNotFoundException) {
+            throw new NotFoundException("No User Found with this userId: " + userId, entityNotFoundException);
+        }
     }
-
 
     public User registerUser(RegisterRequestDto signUpRequest) {
         log. info("Checking for existing user: " + signUpRequest.getUsername());
@@ -59,27 +53,23 @@ public class AuthenticationService {
             log.info("User or email already exists.");
             throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getUsername() + " or " + signUpRequest.getEmail() + " already exists.");
         }
-        log.info("creating user");
-        // Creating user's account
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
                 signUpRequest.getEmail(), signUpRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        log.info("created");
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
 
         user.setRoles(Collections.singleton(userRole));
-        log.info("Saving new user: " + user);
 
-        User result = userRepository.save(user);
-            ValidationCode validationCode = new ValidationCode();
-            validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-            validationCode.setUserId(result.getId());
-            validationCode.setCode(UUID.randomUUID().toString());
-            validationCodeRepository.save(validationCode);
+        User savedUser = userRepository.save(user);
+        ValidationCode validationCode = new ValidationCode();
+        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        validationCode.setUserId(savedUser.getId());
+        validationCode.setCode(UUID.randomUUID().toString());
+        validationCodeRepository.save(validationCode);
 
-        return result;
+        return savedUser;
     }
 
     public String checkPasswortCodeRequest(String code) {
