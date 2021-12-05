@@ -9,7 +9,8 @@ import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
-import net.dancier.dancer.core.exception.AppException;
+import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class AuthenticationService {
         try {
             return this.userRepository.getById(userId);
         } catch (EntityNotFoundException entityNotFoundException) {
-            throw new NotFoundException("No User Found with this userId: " + userId, entityNotFoundException);
+            throw new NotFoundException("No user found with this userId: " + userId, entityNotFoundException);
         }
     }
 
@@ -61,20 +63,70 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role could not be set."));
+                .orElseThrow(() -> new AppliationException("User Role could not be set."));
         user.setRoles(Collections.singleton(userRole));
 
         User savedUser = userRepository.save(user);
-        ValidationCode validationCode = new ValidationCode();
-        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        validationCode.setUserId(savedUser.getId());
-        validationCode.setCode(UUID.randomUUID().toString());
-        validationCodeRepository.save(validationCode);
+        EmailValidationCode emailValidationCode = new EmailValidationCode();
+        emailValidationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        emailValidationCode.setUserId(savedUser.getId());
+        emailValidationCode.setCode(UUID.randomUUID().toString());
+        validationCodeRepository.save(emailValidationCode);
         return savedUser;
     }
 
-    public String checkPasswortCodeRequest(String code) {
-        PasswordResetCode passwordResetCode = this.passwordResetCodeRepository.findByCode(code).orElseThrow(() ->new AppException("d"));
+    public void createEmailValidationCode(User user) {
+        Objects.requireNonNull(user.getId());
+        EmailValidationCode emailValidationCode = validationCodeRepository
+                .findById(user.getId())
+                .orElseGet(() -> new EmailValidationCode());
+        emailValidationCode.setExpiresAt(Instant
+                .now()
+                .plus(3, ChronoUnit.HOURS));
+        emailValidationCode.setUserId(user.getId());
+        emailValidationCode.setCode(UUID.randomUUID().toString());
+        validationCodeRepository.save(emailValidationCode);
+        log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
+    }
+
+    public void createEmailValidationCode(String userOrEmail) {
+        User user = userRepository.findByUsernameOrEmail(userOrEmail,userOrEmail).orElseThrow(()->new AppliationException(""));
+        createEmailValidationCode(user);
+    }
+
+    @Transactional
+    public void checkEmailValidationCode(String code) {
+        EmailValidationCode emailValidationCode = validationCodeRepository
+                .findByCode(code).orElseThrow(() ->new AppliationException("Unable to validate"));
+        if (emailValidationCode.getExpiresAt().isBefore(Instant.now())) {
+            throw new AppliationException("Unable to Validate");
+        };
+        if (!emailValidationCode.getCode().contentEquals(code)) {
+            throw new AppliationException("unable to validate");
+        }
+        User user = userRepository.findById(emailValidationCode.getUserId()).orElseThrow(() -> new AppliationException(""));
+        user.setEmailValidated(true);
+        validationCodeRepository.delete(emailValidationCode);
+        userRepository.save(user);
+    }
+
+    public String createPasswordValidationCode(String userOrEmail) {
+        User user = userRepository.findByUsernameOrEmail(userOrEmail, userOrEmail).orElseThrow(() -> new AppliationException(""));
+        PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
+        passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        passwordResetCode.setUserId(user.getId());
+        passwordResetCode.setCode(UUID.randomUUID().toString());
+        passwordResetCodeRepository.save(passwordResetCode);
+        log.debug("Create password code: " + passwordResetCode.getCode());
+        return passwordResetCode.getCode();
+    }
+
+    public String checkPasswortCodeRequestAndCreateNew(String code) {
+        PasswordResetCode passwordResetCode = this.passwordResetCodeRepository
+                .findByCode(code)
+                .orElseThrow(
+                        () ->
+                                new BusinessException("No such code"));
         RandomString randomString = new RandomString();
         String newPassword = randomString.nextString();
         User user = userRepository.getById(passwordResetCode.getUserId());
@@ -83,47 +135,6 @@ public class AuthenticationService {
         passwordResetCodeRepository.delete(passwordResetCode);
         log.info(passwordResetCode.toString());
         return newPassword;
-    }
-
-    public void createEmailValidationCodeForUser(User user) {
-        ValidationCode validationCode = validationCodeRepository.findById(user.getId()).orElseGet(() -> new ValidationCode());
-        validationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        validationCode.setUserId(user.getId());
-        validationCode.setCode(UUID.randomUUID().toString());
-        validationCodeRepository.save(validationCode);
-        log.debug("Created validationcode: " + validationCode.getCode() + " for user: " + user);
-    }
-
-    public void createEmailValidationCodeForUserOrEmail(String userOrEmail) {
-        User user = userRepository.findByUsernameOrEmail(userOrEmail,userOrEmail).orElseThrow(()->new AppException(""));
-        createEmailValidationCodeForUser(user);
-    }
-
-    @Transactional
-    public void checkEmailValidationCode(String code) {
-        ValidationCode validationCode = validationCodeRepository
-                .findByCode(code).orElseThrow(() ->new AppException("Unable to validate"));
-        if (validationCode.getExpiresAt().isBefore(Instant.now())) {
-            throw new AppException("Unable to Validate");
-        };
-        if (!validationCode.getCode().contentEquals(code)) {
-            throw new AppException("unable to validate");
-        }
-        User user = userRepository.findById(validationCode.getUserId()).orElseThrow(() -> new AppException(""));
-        user.setEmailValidated(true);
-        validationCodeRepository.delete(validationCode);
-        userRepository.save(user);
-    }
-
-
-    public void createPasswordValidationCodeForUserOrEmail(String userOrEmail) {
-        User user = userRepository.findByUsernameOrEmail(userOrEmail, userOrEmail).orElseThrow(() -> new AppException(""));
-        PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
-        passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        passwordResetCode.setUserId(user.getId());
-        passwordResetCode.setCode(UUID.randomUUID().toString());
-        passwordResetCodeRepository.save(passwordResetCode);
-        log.debug("Create password code: " + passwordResetCode.getCode());
     }
 
     public boolean existsByUsername(String username) {

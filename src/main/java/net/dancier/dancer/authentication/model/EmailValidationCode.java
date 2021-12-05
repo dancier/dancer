@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name="validation_codes")
-public class ValidationCode {
+public class EmailValidationCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

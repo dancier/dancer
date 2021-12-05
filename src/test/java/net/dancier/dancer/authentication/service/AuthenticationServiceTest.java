@@ -2,15 +2,11 @@ package net.dancier.dancer.authentication.service;
 
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
-import net.dancier.dancer.authentication.model.Role;
-import net.dancier.dancer.authentication.model.RoleName;
-import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.authentication.model.ValidationCode;
+import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
-import net.dancier.dancer.core.exception.AppException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -104,14 +102,77 @@ class AuthenticationServiceTest {
 
     @Test
     void createEmailValidationCodeForUser() {
+        User userToHaveItsEmailValidated = dummyUser(true);
 
+        when(validationCodeRepositoryMock
+                .findById(userToHaveItsEmailValidated.getId()))
+                .thenReturn(Optional.empty());
+
+        underTest.createEmailValidationCode(userToHaveItsEmailValidated);
+        verify(validationCodeRepositoryMock).save(any());
     }
 
+    @Test
+    void createEmailValidationCodeForUnsavedUser() {
+        User userToHaveItsEmailValidated = dummyUser(false);
 
+        assertThrows(NullPointerException.class,
+                () -> underTest.createEmailValidationCode(userToHaveItsEmailValidated));
+    }
 
+    @Test
+    void checkEmailValidationCode() {
+        String dummyEmailValidationCode = "foo";
+        when(validationCodeRepositoryMock.findByCode(dummyEmailValidationCode))
+                .thenReturn(
+                        Optional.of(
+                                dummyValidationCode(dummyEmailValidationCode)
+                        )
+                );
+        when(userRepositoryMock.findById(userId))
+                .thenReturn(Optional.of(dummyUser(true)));
+
+        underTest.checkEmailValidationCode(dummyEmailValidationCode);
+
+        verify(validationCodeRepositoryMock).delete(any());
+        verify(userRepositoryMock).save(any());
+    }
+
+    @Test
+    void createPasswordValidationCode() {
+        User userToHaveAPasswordValidationCode = dummyUser(true);
+
+        when(userRepositoryMock.findByUsernameOrEmail(any(),any()))
+                .thenReturn(Optional.of(userToHaveAPasswordValidationCode));
+
+        String passwordValidationCode = underTest.createPasswordValidationCode(userToHaveAPasswordValidationCode.getUsername());
+
+        assertThat(passwordValidationCode).isNotNull();
+    }
+
+    @Test
+    void checkPasswortCodeRequestAndCreateNewPassword() {
+        String newPasswortCode = "foo";
+
+        when(passwordResetCodeRepositoryMock.findByCode(newPasswortCode))
+                .thenReturn(Optional.of(dummyPasswortResetCode(newPasswortCode)));
+        when(userRepositoryMock.getById(userId)).thenReturn(dummyUser(true));
+
+        String newPassword = underTest.checkPasswortCodeRequestAndCreateNew(newPasswortCode);
+
+        assertThat(newPassword).isNotNull();
+    }
 
     private User dummyUser() {
-        return new User("foo", "bar", "info@foo.de", "secret");
+        return dummyUser(false);
+    }
+
+    private User dummyUser(Boolean savedUser) {
+        User user = new User("foo", "bar", "info@foo.de", "secret");
+        if (savedUser) {
+            user.setId(userId);
+        }
+        return user;
     }
 
     private RegisterRequestDto  dummyRegisterRequestDto(User user) {
@@ -128,5 +189,20 @@ class AuthenticationServiceTest {
         role.setId(UUID.randomUUID());
         role.setName(RoleName.ROLE_USER);
         return role;
+    }
+
+    private EmailValidationCode dummyValidationCode(String code) {
+        EmailValidationCode emailValidationCode = new EmailValidationCode();
+        emailValidationCode.setUserId(userId);
+        emailValidationCode.setCode(code);
+        emailValidationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        return emailValidationCode;
+    }
+
+    private PasswordResetCode dummyPasswortResetCode(String code) {
+        PasswordResetCode passwordResetCode = new PasswordResetCode();
+        passwordResetCode.setUserId(userId);
+        passwordResetCode.setCode(code);
+        return passwordResetCode;
     }
 }

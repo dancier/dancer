@@ -8,7 +8,7 @@ import net.dancier.dancer.controller.payload.ApiResponse;
 import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.controller.payload.LoginRequest;
 import net.dancier.dancer.controller.payload.UserIdentityAvailability;
-import net.dancier.dancer.core.exception.AppException;
+import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.security.JwtTokenProvider;
 import net.dancier.dancer.security.UserPrincipal;
 import org.slf4j.Logger;
@@ -96,7 +96,7 @@ public class AuthenticationController {
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailOrUsername) {
         log.info("sending mail for " + emailOrUsername);
-        authenticationService.createEmailValidationCodeForUserOrEmail(emailOrUsername);
+        authenticationService.createEmailValidationCode(emailOrUsername);
         return ResponseEntity.ok().body(new ApiResponse(true, "ValidationCode send."));
     }
 
@@ -109,13 +109,13 @@ public class AuthenticationController {
 
     @PostMapping("/password/reset")
     public ResponseEntity resetPasswort(@RequestBody String userOrEmail) {
-        authenticationService.createPasswordValidationCodeForUserOrEmail(userOrEmail);
+        authenticationService.createPasswordValidationCode(userOrEmail);
         return ResponseEntity.ok(new ApiResponse(true, "super"));
     }
 
     @GetMapping("/password/reset/{validationCode}")
     public ResponseEntity validatePassword(@PathVariable String validationCode) {
-        String newPassword = authenticationService.checkPasswortCodeRequest(validationCode);
+        String newPassword = authenticationService.checkPasswortCodeRequestAndCreateNew(validationCode);
         return ResponseEntity.ok(new NewPasswortDto(newPassword));
     }
 
@@ -145,8 +145,8 @@ public class AuthenticationController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(AppException.class)
-    public String handle(AppException ae) {
+    @ExceptionHandler(AppliationException.class)
+    public String handle(AppliationException ae) {
         return ae.getLocalizedMessage();
     }
 }

@@ -1,6 +1,6 @@
 package net.dancier.dancer.core.exception;
 
-public class NotFoundException extends AppException {
+public class NotFoundException extends AppliationException {
 
     public NotFoundException(String message) {
         super(message);
