@@ -1,5 +1,6 @@
 package net.dancier.dancer.authentication;
 
+import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/authentication")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private static Logger log = LoggerFactory.getLogger(AuthenticationController.class);
@@ -43,14 +45,11 @@ public class AuthenticationController {
     @Value("${app.redirectAfterEmailValidation}")
     String redirectAfterEmailValidation;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
-    @Autowired
-    AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto signUpRequest) {
