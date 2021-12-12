@@ -1,5 +1,6 @@
 package net.dancier.dancer.security;
 
+import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {

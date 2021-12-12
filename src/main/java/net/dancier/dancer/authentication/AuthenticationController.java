@@ -10,15 +10,12 @@ import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.controller.payload.LoginRequest;
 import net.dancier.dancer.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.exception.AppliationException;
-import net.dancier.dancer.security.JwtTokenProvider;
 import net.dancier.dancer.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,10 +42,6 @@ public class AuthenticationController {
     @Value("${app.redirectAfterEmailValidation}")
     String redirectAfterEmailValidation;
 
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtTokenProvider tokenProvider;
-
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
@@ -69,7 +62,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
 
-        Authentication authentication = authenticationManager.authenticate(
+        Authentication authentication = authenticationService.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsernameOrEmail(),
                         loginRequest.getPassword()
@@ -82,7 +75,7 @@ public class AuthenticationController {
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
+        String jwt = authenticationService.generateToken(authentication);
         Cookie cookie = new Cookie("jwt-token", jwt);
         cookie.setMaxAge(30 * 24 * 60 * 60);
         cookie.setSecure(false);
