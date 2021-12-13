@@ -3,7 +3,6 @@ package net.dancier.dancer.core.model;
 import javax.persistence.*;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "address")
 public class Address {

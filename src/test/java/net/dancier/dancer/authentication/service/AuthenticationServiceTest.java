@@ -6,7 +6,7 @@ import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
-import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
+import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class AuthenticationServiceTest {
     private PasswordEncoder passwordEncoderMock;
 
     @Mock
-    private ValidationCodeRepository validationCodeRepositoryMock;
+    private EmailValidationCodeRepository validationCodeRepositoryMock;
 
     @Mock
     private PasswordResetCodeRepository passwordResetCodeRepositoryMock;

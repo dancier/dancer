@@ -1,10 +1,12 @@
 package net.dancier.dancer.authentication.model;
 
+import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -25,19 +27,4 @@ public class Role {
         this.name = name;
     }
 
-    public UUID getId() {
-        return this.id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public RoleName getName() {
-        return this.name;
-    }
-
-    public void setName(RoleName name) {
-        this.name = name;
-    }
 }

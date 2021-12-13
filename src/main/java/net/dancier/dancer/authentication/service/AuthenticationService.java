@@ -8,7 +8,7 @@ import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
-import net.dancier.dancer.authentication.repository.ValidationCodeRepository;
+import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
@@ -16,7 +16,6 @@ import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class AuthenticationService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final ValidationCodeRepository validationCodeRepository;
+    private final EmailValidationCodeRepository emailValidationCodeRepository;
 
     private final PasswordResetCodeRepository passwordResetCodeRepository;
 
@@ -86,13 +85,13 @@ public class AuthenticationService {
         emailValidationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
         emailValidationCode.setUserId(savedUser.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
-        validationCodeRepository.save(emailValidationCode);
+        emailValidationCodeRepository.save(emailValidationCode);
         return savedUser;
     }
 
     public void createEmailValidationCode(User user) {
         Objects.requireNonNull(user.getId());
-        EmailValidationCode emailValidationCode = validationCodeRepository
+        EmailValidationCode emailValidationCode = emailValidationCodeRepository
                 .findById(user.getId())
                 .orElseGet(() -> new EmailValidationCode());
         emailValidationCode.setExpiresAt(Instant
@@ -100,7 +99,7 @@ public class AuthenticationService {
                 .plus(3, ChronoUnit.HOURS));
         emailValidationCode.setUserId(user.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
-        validationCodeRepository.save(emailValidationCode);
+        emailValidationCodeRepository.save(emailValidationCode);
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
     }
 
@@ -111,7 +110,7 @@ public class AuthenticationService {
 
     @Transactional
     public void checkEmailValidationCode(String code) {
-        EmailValidationCode emailValidationCode = validationCodeRepository
+        EmailValidationCode emailValidationCode = emailValidationCodeRepository
                 .findByCode(code).orElseThrow(() ->new AppliationException("Unable to validate"));
         if (emailValidationCode.getExpiresAt().isBefore(Instant.now())) {
             throw new AppliationException("Unable to Validate");
@@ -121,7 +120,7 @@ public class AuthenticationService {
         }
         User user = userRepository.findById(emailValidationCode.getUserId()).orElseThrow(() -> new AppliationException(""));
         user.setEmailValidated(true);
-        validationCodeRepository.delete(emailValidationCode);
+        emailValidationCodeRepository.delete(emailValidationCode);
         userRepository.save(user);
     }
 

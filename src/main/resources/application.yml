@@ -2,7 +2,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
   datasource:
     url: jdbc:postgresql://localhost:5432/dancer
     username: dancer
@@ -10,6 +10,9 @@ spring:
   database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:liquibase-changeLog.xml
+  test:
+    database:
+      replace: none
 
 app:
   auth:

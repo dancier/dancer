@@ -298,4 +298,16 @@
             )
         </sql>
     </changeSet>
+    <changeSet id="2021-12-13-add-zipcode" author="Marc">
+        <sql>
+            ALTER TABLE address
+            add column zip_code varchar(64)
+        </sql>
+    </changeSet>
+    <changeSet id="2021-12-13-change-size-type" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ALTER COLUMN size TYPE INTEGER
+        </sql>
+    </changeSet>
 </databaseChangeLog>

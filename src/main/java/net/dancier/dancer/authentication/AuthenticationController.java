@@ -45,11 +45,11 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto signUpRequest) {
-        log.info("Checking for existing user: " + signUpRequest.getUsername());
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
+        log.info("Checking for existing user: " + registerRequest.getUsername());
         User result;
         try {
-            result = authenticationService.registerUser(signUpRequest);
+            result = authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "Username already exist"));
         }

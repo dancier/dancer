@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ValidationCodeRepository extends JpaRepository<EmailValidationCode, UUID> {
+public interface EmailValidationCodeRepository extends JpaRepository<EmailValidationCode, UUID> {
     Optional<EmailValidationCode> findByCode(String code);
 }
