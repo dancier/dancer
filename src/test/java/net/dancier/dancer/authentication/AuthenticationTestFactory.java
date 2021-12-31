@@ -3,8 +3,8 @@ package net.dancier.dancer.authentication;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
 
-public class AuthenticationStubbing {
-    public static RegisterRequestDto dummyRegisterRequestDto() {
+public class AuthenticationTestFactory {
+    public static RegisterRequestDto registerRequestDto() {
         RegisterRequestDto registerRequestDto = new RegisterRequestDto();
         registerRequestDto.setEmail("foo@bar.de");
         registerRequestDto.setName("foos");

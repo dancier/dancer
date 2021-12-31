@@ -1,7 +1,7 @@
 package net.dancier.dancer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.dancer.authentication.AuthenticationStubbing;
+import net.dancier.dancer.authentication.AuthenticationTestFactory;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,6 @@ public class EndToEndTest extends AbstractPostgrSQLEnabledTest {
 
     @Test
     void withValidInput_thenAccountCreated() {
-        RegisterRequestDto registerRequestDto = AuthenticationStubbing.dummyRegisterRequestDto();
+        RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto();
     }
 }

@@ -40,11 +40,11 @@ class AuthenticationControllerTest extends AbstractPostgrSQLEnabledTest {
 
     @Test
     void whenRegisterWithValidInput_thenReturns201() throws Exception {
-        when(authenticationService.registerUser(any())).thenReturn(AuthenticationStubbing.dummyUser());
+        when(authenticationService.registerUser(any())).thenReturn(AuthenticationTestFactory.dummyUser());
         mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsBytes(AuthenticationStubbing.dummyRegisterRequestDto()))
+                        .content(objectMapper.writeValueAsBytes(AuthenticationTestFactory.registerRequestDto()))
         ).andExpect(
                 status().isCreated()
         );
