@@ -10,10 +10,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = AbstractPostgrSQLEnabledIT.DockerPostgreSQLDataSourceInitializer.class)
+@ContextConfiguration(initializers = AbstractPostgrSQLEnabledTest.DockerPostgreSQLDataSourceInitializer.class)
 @Testcontainers
 @Transactional
-public abstract class AbstractPostgrSQLEnabledIT {
+public abstract class AbstractPostgrSQLEnabledTest {
 
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 

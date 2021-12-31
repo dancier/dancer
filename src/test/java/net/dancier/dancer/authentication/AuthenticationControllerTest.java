@@ -1,7 +1,7 @@
 package net.dancier.dancer.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.dancer.AbstractPostgrSQLEnabledIT;
+import net.dancier.dancer.AbstractPostgrSQLEnabledTest;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AuthenticationControllerIT extends AbstractPostgrSQLEnabledIT {
+class AuthenticationControllerTest extends AbstractPostgrSQLEnabledTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -49,5 +49,5 @@ class AuthenticationControllerIT extends AbstractPostgrSQLEnabledIT {
                 status().isCreated()
         );
     }
-    
+
 }
