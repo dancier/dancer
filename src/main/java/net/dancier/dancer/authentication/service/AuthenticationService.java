@@ -85,6 +85,7 @@ public class AuthenticationService {
         emailValidationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
         emailValidationCode.setUserId(savedUser.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
+        log.debug("Validation code: " + emailValidationCode.getCode());
         emailValidationCodeRepository.save(emailValidationCode);
         return savedUser;
     }
