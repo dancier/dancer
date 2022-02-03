@@ -1,4 +1,4 @@
-package net.dancier.dancer.controller.payload;
+package net.dancier.dancer.core.controller.payload;
 
 import java.time.Instant;
 import java.util.UUID;

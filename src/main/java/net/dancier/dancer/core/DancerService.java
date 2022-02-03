@@ -1,7 +1,7 @@
 package net.dancier.dancer.core;
 
 import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.util.ModelMapper;
+import net.dancier.dancer.core.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

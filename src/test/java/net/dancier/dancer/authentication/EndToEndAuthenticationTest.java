@@ -1,10 +1,11 @@
-package net.dancier.dancer;
+package net.dancier.dancer.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.dancer.authentication.AuthenticationTestFactory;
+import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
+import net.dancier.dancer.TestDatabaseHelper;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.controller.payload.LoginRequestDto;
+import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

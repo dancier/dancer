@@ -1,4 +1,4 @@
-package net.dancier.dancer.controller.payload;
+package net.dancier.dancer.core.controller.payload;
 
 public class UserIdentityAvailability {
     private Boolean available;

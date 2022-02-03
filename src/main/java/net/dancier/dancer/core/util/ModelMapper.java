@@ -1,4 +1,4 @@
-package net.dancier.dancer.util;
+package net.dancier.dancer.core.util;
 
 import net.dancier.dancer.core.DanceProfileDto;
 import net.dancier.dancer.core.DancerDto;

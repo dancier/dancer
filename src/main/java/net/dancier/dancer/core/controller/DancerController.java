@@ -1,4 +1,4 @@
-package net.dancier.dancer.controller;
+package net.dancier.dancer.core.controller;
 
 import net.dancier.dancer.core.DancerDto;
 import net.dancier.dancer.core.DancerService;

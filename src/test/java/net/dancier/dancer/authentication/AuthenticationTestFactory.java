@@ -2,7 +2,7 @@ package net.dancier.dancer.authentication;
 
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.controller.payload.LoginRequestDto;
+import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 
 public class AuthenticationTestFactory {
 
