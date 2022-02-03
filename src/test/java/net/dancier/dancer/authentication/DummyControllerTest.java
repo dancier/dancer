@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashSet;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +42,7 @@ public class DummyControllerTest {
         {
             User user = new User();
             user.setUsername("xxx");
+            user.setRoles(new HashSet<>());
             UserPrincipal userPrincipal = UserPrincipal.create(user);
             CustomUserDetailsService mock = Mockito.mock(CustomUserDetailsService.class);
             when(mock.loadUserById(any())).thenReturn(userPrincipal);

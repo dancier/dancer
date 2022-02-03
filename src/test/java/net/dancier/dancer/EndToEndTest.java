@@ -22,7 +22,7 @@ public class EndToEndTest extends AbstractPostgreSQLEnabledTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    TestDatabaseHelper testDatabaseHelper;
+    private TestDatabaseHelper testDatabaseHelper;
 
     @Test
     void registrationWorks() throws Exception {
@@ -41,18 +41,11 @@ public class EndToEndTest extends AbstractPostgreSQLEnabledTest {
         loginUser(dummyUser)
                 .andExpect(status().isForbidden());
 
-        //validateEmailAddress(emailValidationCode)
-        //        .andExpect(status().is4xxClientError());
+        validateEmailAddress(emailValidationCode)
+                .andExpect(status().isFound());
 
-        // validating the email-adress works
-        //// first we invoke the endpoint the user would invoke when he clicks on the link in the mail he got from us.
-
-        //// then we try to login again
-
-        // using
-        //String validationCode = getCode();
-        //invoke validation endpoint
-        // 3)
+        loginUser(dummyUser)
+                .andExpect(status().isOk());
 
     }
 
