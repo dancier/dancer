@@ -1,7 +1,6 @@
 package net.dancier.dancer.authentication.model;
 
 import lombok.Data;
-import net.dancier.dancer.core.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -10,8 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -19,7 +16,7 @@ import java.util.UUID;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
-public class User extends DateAudit {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

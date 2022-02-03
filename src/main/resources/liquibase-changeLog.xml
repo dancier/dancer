@@ -310,4 +310,16 @@
             ALTER COLUMN size TYPE INTEGER
         </sql>
     </changeSet>
+    <changeSet id="2022-02-03-remove-unused-columns" author="Marc">
+        <sql>
+            ALTER TABLE users
+            DROP COLUMN created_at;
+        </sql>
+    </changeSet>
+    <changeSet id="2022-02-03-remove-updted-at" author="Marc">
+        <sql>
+            ALTER TABLE users
+            DROP COLUMN updated_at;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
