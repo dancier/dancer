@@ -1,4 +1,4 @@
-package net.dancier.dancer.authentication.service;
+package net.dancier.dancer.authentication;
 
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
@@ -7,6 +7,7 @@ import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
+import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
