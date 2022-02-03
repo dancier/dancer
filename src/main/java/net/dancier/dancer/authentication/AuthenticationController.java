@@ -7,7 +7,7 @@ import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.controller.payload.ApiResponse;
 import net.dancier.dancer.controller.payload.JwtAuthenticationResponse;
-import net.dancier.dancer.controller.payload.LoginRequest;
+import net.dancier.dancer.controller.payload.LoginRequestDto;
 import net.dancier.dancer.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.security.UserPrincipal;
@@ -51,7 +51,8 @@ public class AuthenticationController {
         try {
             result = authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "Username already exist"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ApiResponse(false, "Username already exist"));
         }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
@@ -60,12 +61,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequestDto,
+                                              HttpServletResponse httpServletResponse) {
 
         Authentication authentication = authenticationService.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
+                        loginRequestDto.getUsernameOrEmail(),
+                        loginRequestDto.getPassword()
                 )
         );
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();

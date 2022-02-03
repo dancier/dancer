@@ -14,7 +14,8 @@ import java.util.TimeZone;
 		Jsr310JpaConverters.class
 })
 public class DancerApplication {
-//https://www.callicoder.com/spring-boot-spring-security-jwt-mysql-react-app-part-1/
+
+    //https://www.callicoder.com/spring-boot-spring-security-jwt-mysql-react-app-part-1/
 	@PostConstruct
 	void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

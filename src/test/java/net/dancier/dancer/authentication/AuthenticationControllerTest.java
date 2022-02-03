@@ -1,7 +1,9 @@
 package net.dancier.dancer.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.dancer.AbstractPostgrSQLEnabledTest;
+import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
+import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AuthenticationControllerTest extends AbstractPostgrSQLEnabledTest {
+class AuthenticationControllerTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -40,11 +42,14 @@ class AuthenticationControllerTest extends AbstractPostgrSQLEnabledTest {
 
     @Test
     void whenRegisterWithValidInput_thenReturns201() throws Exception {
-        when(authenticationService.registerUser(any())).thenReturn(AuthenticationTestFactory.dummyUser());
+        User dummyUser = AuthenticationTestFactory.dummyUser();
+        RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(dummyUser);
+
+        when(authenticationService.registerUser(any())).thenReturn(dummyUser);
         mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsBytes(AuthenticationTestFactory.registerRequestDto()))
+                        .content(objectMapper.writeValueAsBytes(registerRequestDto))
         ).andExpect(
                 status().isCreated()
         );

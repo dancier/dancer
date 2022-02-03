@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class RegisterRequestDto {
 
     @NotBlank
-    @Size(min = 4, max = 40)
+    @Size(max = 40)
     private String name;
 
     @NotBlank
