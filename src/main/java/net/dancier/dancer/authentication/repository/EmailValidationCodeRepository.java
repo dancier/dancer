@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface EmailValidationCodeRepository extends JpaRepository<EmailValidationCode, UUID> {
     Optional<EmailValidationCode> findByCode(String code);
+    Optional<EmailValidationCode> findByUserId(UUID userId);
 }

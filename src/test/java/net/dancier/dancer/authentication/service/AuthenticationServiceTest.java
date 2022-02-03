@@ -105,7 +105,7 @@ class AuthenticationServiceTest {
         User userToHaveItsEmailValidated = dummyUser(true);
 
         when(validationCodeRepositoryMock
-                .findById(userToHaveItsEmailValidated.getId()))
+                .findByUserId(userToHaveItsEmailValidated.getId()))
                 .thenReturn(Optional.empty());
 
         underTest.createEmailValidationCode(userToHaveItsEmailValidated);

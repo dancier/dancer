@@ -93,7 +93,7 @@ public class AuthenticationService {
     public void createEmailValidationCode(User user) {
         Objects.requireNonNull(user.getId());
         EmailValidationCode emailValidationCode = emailValidationCodeRepository
-                .findById(user.getId())
+                .findByUserId(user.getId())
                 .orElseGet(() -> new EmailValidationCode());
         emailValidationCode.setExpiresAt(Instant
                 .now()

@@ -7,6 +7,7 @@ import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.controller.payload.LoginRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-public class EndToEndTest extends AbstractPostgreSQLEnabledTest {
+public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -25,7 +26,7 @@ public class EndToEndTest extends AbstractPostgreSQLEnabledTest {
     private TestDatabaseHelper testDatabaseHelper;
 
     @Test
-    void registrationWorks() throws Exception {
+    void registrationHappyPath() throws Exception {
 
         User dummyUser = AuthenticationTestFactory.dummyUser();
 
@@ -47,6 +48,41 @@ public class EndToEndTest extends AbstractPostgreSQLEnabledTest {
         loginUser(dummyUser)
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    public void registrationLostMail() throws Exception {
+        User dummyUser = AuthenticationTestFactory.dummyUser();
+
+        registerUser(dummyUser)
+                .andExpect(status().isCreated());
+
+        String initalEmailValidationCode = testDatabaseHelper
+                .getEmailValidationCodeForEmail(dummyUser.getEmail());
+        assertThat(initalEmailValidationCode).isNotNull();
+
+        reRequestEmailValidationCode(dummyUser)
+                .andExpect(status().isOk());
+
+        String reRequestedEmailValidationCode = testDatabaseHelper.getEmailValidationCodeForEmail(dummyUser.getEmail());
+
+        assertThat(initalEmailValidationCode).isNotEqualToIgnoringCase(reRequestedEmailValidationCode);
+
+        loginUser(dummyUser)
+                .andExpect(status().isForbidden());
+
+        validateEmailAddress(reRequestedEmailValidationCode)
+                .andExpect(status().isFound());
+
+        loginUser(dummyUser)
+                .andExpect(status().isOk());
+    }
+
+    private ResultActions reRequestEmailValidationCode(User user) throws Exception {
+        return mockMvc.perform(
+                post("/authentication/email/validation")
+                        .contentType(MediaType.TEXT_PLAIN).content(user.getEmail())
+        );
     }
 
     private ResultActions validateEmailAddress(String emailValidationCode) throws Exception{
