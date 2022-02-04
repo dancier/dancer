@@ -20,7 +20,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -138,8 +140,7 @@ public class AuthenticationService {
         PasswordResetCode passwordResetCode = this.passwordResetCodeRepository
                 .findByCode(code)
                 .orElseThrow(
-                        () ->
-                                new BusinessException("No such code"));
+                        () -> new BusinessException("No such code"));
         RandomString randomString = new RandomString();
         String newPassword = randomString.nextString();
         User user = userRepository.getById(passwordResetCode.getUserId());

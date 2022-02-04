@@ -16,7 +16,7 @@ public class AuthenticationTestFactory {
     public static LoginRequestDto loginRequestDto(User user) {
         LoginRequestDto loginRequestDto = new LoginRequestDto();
         loginRequestDto.setPassword(user.getPassword());
-        loginRequestDto.setUsernameOrEmail(user.getEmail());
+        loginRequestDto.setEmail(user.getEmail());
         return loginRequestDto;
     }
 

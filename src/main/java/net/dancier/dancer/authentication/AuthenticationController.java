@@ -60,19 +60,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequestDto,
-                                              HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDto loginRequestDto,
+                                       HttpServletResponse httpServletResponse) {
 
         Authentication authentication = authenticationService.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getUsernameOrEmail(),
+                        loginRequestDto.getEmail(),
                         loginRequestDto.getPassword()
                 )
         );
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = authenticationService.getUser(userPrincipal.getId());
         if (!user.isEmailValidated()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false, "You have to validate the email."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse(false, "You have to validate the email."));
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -87,10 +88,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/email/validation")
-    public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailOrUsername) {
-        log.info("sending mail for " + emailOrUsername);
-        authenticationService.createEmailValidationCode(emailOrUsername);
-        return ResponseEntity.ok().body(new ApiResponse(true, "ValidationCode send."));
+    public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
+        log.info("sending mail for " + emailAddress);
+        authenticationService.createEmailValidationCode(emailAddress);
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "ValidationCode send."));
     }
 
     @GetMapping("/email/validate/{validationCode}")
