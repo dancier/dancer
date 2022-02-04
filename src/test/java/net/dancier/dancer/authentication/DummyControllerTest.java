@@ -41,7 +41,6 @@ public class DummyControllerTest {
         public CustomUserDetailsService customUserDetailsService()
         {
             User user = new User();
-            user.setUsername("xxx");
             user.setRoles(new HashSet<>());
             UserPrincipal userPrincipal = UserPrincipal.create(user);
             CustomUserDetailsService mock = Mockito.mock(CustomUserDetailsService.class);

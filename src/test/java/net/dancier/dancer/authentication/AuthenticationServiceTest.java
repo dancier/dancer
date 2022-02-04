@@ -74,8 +74,7 @@ class AuthenticationServiceTest {
 
     @Test
     void register() {
-        when(userRepositoryMock.findByUsernameOrEmail(
-                dummyUser().getUsername(),
+        when(userRepositoryMock.findByEmail(
                 dummyUser().getEmail()))
                 .thenReturn(Optional.empty());
         when(passwordEncoderMock.encode(any())).thenReturn("bar");
@@ -92,8 +91,7 @@ class AuthenticationServiceTest {
 
     @Test
     void registerThrowsExceptionWhenUserAlreadyExists() {
-        when(userRepositoryMock.findByUsernameOrEmail(
-                dummyUser().getUsername(),
+        when(userRepositoryMock.findByEmail(
                 dummyUser().getEmail()))
                 .thenReturn(Optional.of(dummyUser()));
 
@@ -143,10 +141,10 @@ class AuthenticationServiceTest {
     void createPasswordValidationCode() {
         User userToHaveAPasswordValidationCode = dummyUser(true);
 
-        when(userRepositoryMock.findByUsernameOrEmail(any(),any()))
+        when(userRepositoryMock.findByEmail(any()))
                 .thenReturn(Optional.of(userToHaveAPasswordValidationCode));
 
-        String passwordValidationCode = underTest.createPasswordValidationCode(userToHaveAPasswordValidationCode.getUsername());
+        String passwordValidationCode = underTest.createPasswordValidationCode(userToHaveAPasswordValidationCode.getEmail());
 
         assertThat(passwordValidationCode).isNotNull();
     }
@@ -169,7 +167,7 @@ class AuthenticationServiceTest {
     }
 
     private User dummyUser(Boolean savedUser) {
-        User user = new User("foo", "bar", "info@foo.de", "secret");
+        User user = new User("info@foo.de", "secret");
         if (savedUser) {
             user.setId(userId);
         }
@@ -178,8 +176,6 @@ class AuthenticationServiceTest {
 
     private RegisterRequestDto  dummyRegisterRequestDto(User user) {
         RegisterRequestDto registerRequestDto = new RegisterRequestDto();
-        registerRequestDto.setName(user.getName());
-        registerRequestDto.setUsername(user.getUsername());
         registerRequestDto.setEmail(user.getEmail());
         registerRequestDto.setPassword(user.getPassword());
         return registerRequestDto;

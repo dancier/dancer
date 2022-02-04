@@ -1,7 +1,6 @@
 package net.dancier.dancer.authentication.model;
 
 import lombok.Data;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -24,15 +23,6 @@ public class User {
 
     @NotBlank
     @Size(max = 40)
-    private String name;
-
-    @NotBlank
-    @Size(max = 15)
-    private String username;
-
-    @NaturalId
-    @NotBlank
-    @Size(max = 40)
     @Email
     private String email;
 
@@ -52,9 +42,7 @@ public class User {
 
     public User() {}
 
-    public User(String name, String username, String email, String password) {
-        this.name = name;
-        this.username = username;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
         this.isEmailValidated = false;

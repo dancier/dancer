@@ -64,14 +64,12 @@ public class AuthenticationService {
     }
 
     public User registerUser(RegisterRequestDto signUpRequest) {
-        log.info("Attempting to register user: " + signUpRequest.getUsername());
-        if(userRepository.findByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail()).isPresent()) {
+        log.info("Attempting to register user: " + signUpRequest.getEmail());
+        if(userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             log.info("User or email already exists.");
-            throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getUsername() + " or " + signUpRequest.getEmail() + " already exists.");
+            throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getEmail() + " already exists.");
         }
         User user = new User(
-                signUpRequest.getName(),
-                signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 signUpRequest.getPassword());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -104,8 +102,8 @@ public class AuthenticationService {
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
     }
 
-    public void createEmailValidationCode(String userOrEmail) {
-        User user = userRepository.findByUsernameOrEmail(userOrEmail,userOrEmail).orElseThrow(()->new AppliationException(""));
+    public void createEmailValidationCode(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()->new AppliationException(""));
         createEmailValidationCode(user);
     }
 
@@ -125,8 +123,8 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public String createPasswordValidationCode(String userOrEmail) {
-        User user = userRepository.findByUsernameOrEmail(userOrEmail, userOrEmail).orElseThrow(() -> new AppliationException(""));
+    public String createPasswordValidationCode(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppliationException(""));
         PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
         passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
         passwordResetCode.setUserId(user.getId());
@@ -150,10 +148,6 @@ public class AuthenticationService {
         passwordResetCodeRepository.delete(passwordResetCode);
         log.info(passwordResetCode.toString());
         return newPassword;
-    }
-
-    public boolean existsByUsername(String username) {
-        return this.userRepository.existsByUsername(username);
     }
 
     public boolean existsByEmail(String email) {

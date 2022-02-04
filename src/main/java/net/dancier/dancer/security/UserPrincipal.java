@@ -17,10 +17,6 @@ public class UserPrincipal implements UserDetails {
 
     private UUID id;
 
-    private String name;
-
-    private String username;
-
     private String email;
 
     private String password;
@@ -30,15 +26,11 @@ public class UserPrincipal implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(UUID id,
-                         String name,
-                         String username,
                          String email,
                          boolean isEmailValidated,
                          String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.name = name;
-        this.username = username;
         this.email = email;
         this.isEmailValidated = isEmailValidated;
         this.password = password;
@@ -52,8 +44,6 @@ public class UserPrincipal implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
         return new UserPrincipal(
                 user.getId(),
-                user.getName(),
-                user.getUsername(),
                 user.getEmail(),
                 user.isEmailValidated(),
                 user.getPassword(),
@@ -66,25 +56,13 @@ public class UserPrincipal implements UserDetails {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public boolean isEmailValidated() {
         return isEmailValidated;
     }
 
-    public void setEmailValidated(boolean emailValidated) {
-        this.isEmailValidated = emailValidated;
-    }
-
     @Override
     public String getUsername() {
-        return username;
+        return this.email;
     }
 
     @Override

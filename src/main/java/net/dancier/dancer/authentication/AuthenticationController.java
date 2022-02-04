@@ -46,7 +46,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
-        log.info("Checking for existing user: " + registerRequest.getUsername());
         User result;
         try {
             result = authenticationService.registerUser(registerRequest);
@@ -56,7 +55,7 @@ public class AuthenticationController {
         }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
+                .buildAndExpand(result.getId()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
@@ -115,8 +114,9 @@ public class AuthenticationController {
 
     @GetMapping("/user/checkUsernameAvailability")
     public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
-        Boolean isAvailable = !authenticationService.existsByUsername(username);
-        return new UserIdentityAvailability(isAvailable);
+        // TODO
+        //Boolean isAvailable = !authenticationService.existsByUsername(username);
+        return new UserIdentityAvailability(true);
     }
 
     @GetMapping("/user/checkEmailAvailability")
