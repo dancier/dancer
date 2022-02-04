@@ -322,4 +322,12 @@
             DROP COLUMN updated_at;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-04-remove-username-and-name-from-user" author="Marc">
+        <sql>
+            ALTER TABLE users
+            DROP COLUMN username;
+            ALTER TABLE users
+            DROP COLUMN name;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
