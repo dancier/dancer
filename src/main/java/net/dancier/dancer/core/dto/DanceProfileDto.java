@@ -1,4 +1,4 @@
-package net.dancier.dancer.core;
+package net.dancier.dancer.core.dto;
 
 import lombok.Data;
 import net.dancier.dancer.core.model.Leading;

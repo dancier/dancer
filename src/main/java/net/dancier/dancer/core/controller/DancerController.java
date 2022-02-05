@@ -1,6 +1,6 @@
 package net.dancier.dancer.core.controller;
 
-import net.dancier.dancer.core.DancerDto;
+import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.UserPrincipal;
@@ -19,8 +19,8 @@ public class DancerController {
 
     @GetMapping
     public ResponseEntity get(@CurrentUser UserPrincipal userPrincipal) {
-        DancerDto dancerDto = dancerService.getDancerByUserId(userPrincipal.getId());
-        return ResponseEntity.ok(dancerDto);
+        ProfileDto profileDto = dancerService.getProfileByUserId(userPrincipal.getId());
+        return ResponseEntity.ok(profileDto);
     }
 
 }
