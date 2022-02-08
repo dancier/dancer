@@ -1,5 +1,6 @@
 package net.dancier.dancer.core;
 
+import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.AuthenticatedUser;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/profile")
+@RequiredArgsConstructor
 public class ProfileController {
 
-    @Autowired
-    private DancerService dancerService;
+    private final ProfileService profileService;
 
     @GetMapping
     public ResponseEntity get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
-                dancerService.getProfileByUserId(authenticatedUser.getId())
+                profileService.getProfileByUserId(authenticatedUser.getId())
         );
     }
 
