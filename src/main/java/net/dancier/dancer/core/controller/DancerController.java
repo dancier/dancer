@@ -3,7 +3,7 @@ package net.dancier.dancer.core.controller;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.security.CurrentUser;
-import net.dancier.dancer.security.UserPrincipal;
+import net.dancier.dancer.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +18,8 @@ public class DancerController {
     DancerService dancerService;
 
     @GetMapping
-    public ResponseEntity get(@CurrentUser UserPrincipal userPrincipal) {
-        ProfileDto profileDto = dancerService.getProfileByUserId(userPrincipal.getId());
+    public ResponseEntity get(@CurrentUser AuthenticatedUser authenticatedUser) {
+        ProfileDto profileDto = dancerService.getProfileByUserId(authenticatedUser.getId());
         return ResponseEntity.ok(profileDto);
     }
 

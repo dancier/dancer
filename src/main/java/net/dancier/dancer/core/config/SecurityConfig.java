@@ -52,26 +52,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+            http
                 .cors()
-                .and()
+            .and()
                 .csrf()
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
-                .and()
+            .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and()
+            .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/**")
-                .permitAll()
-                .antMatchers("/user/checkUsernameAvailability", "/user/checkEmailAvailability")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/polls/**", "/users/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+                    .antMatchers("/authentication/**", "/user/checkUsernameAvailability", "/user/checkEmailAvailability")
+                        .permitAll()
+                    .anyRequest()
+                        .authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

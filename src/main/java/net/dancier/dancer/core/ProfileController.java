@@ -2,7 +2,7 @@ package net.dancier.dancer.core;
 
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.security.CurrentUser;
-import net.dancier.dancer.security.UserPrincipal;
+import net.dancier.dancer.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,9 +18,9 @@ public class ProfileController {
     private DancerService dancerService;
 
     @GetMapping
-    public ResponseEntity get(@CurrentUser UserPrincipal userPrincipal) {
+    public ResponseEntity get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
-                dancerService.getProfileByUserId(userPrincipal.getId())
+                dancerService.getProfileByUserId(authenticatedUser.getId())
         );
     }
 

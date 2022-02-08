@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ToString
-public class UserPrincipal implements UserDetails {
+public class AuthenticatedUser implements UserDetails {
 
     private UUID id;
 
@@ -25,11 +25,11 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(UUID id,
-                         String email,
-                         boolean isEmailValidated,
-                         String password,
-                         Collection<? extends GrantedAuthority> authorities) {
+    public AuthenticatedUser(UUID id,
+                             String email,
+                             boolean isEmailValidated,
+                             String password,
+                             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.isEmailValidated = isEmailValidated;
@@ -37,20 +37,19 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user) {
+    public static AuthenticatedUser create(User user) {
         List<GrantedAuthority> authorities = user
                 .getRoles()
                 .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
-        return new UserPrincipal(
+                .map(role -> new SimpleGrantedAuthority(
+                        role.getName().name())).collect(Collectors.toList());
+        return new AuthenticatedUser(
                 user.getId(),
                 user.getEmail(),
                 user.isEmailValidated(),
                 user.getPassword(),
                 authorities);
     }
-
-
 
     public UUID getId() {
         return id;
@@ -99,13 +98,12 @@ public class UserPrincipal implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserPrincipal that = (UserPrincipal) o;
+        AuthenticatedUser that = (AuthenticatedUser) o;
         return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 }

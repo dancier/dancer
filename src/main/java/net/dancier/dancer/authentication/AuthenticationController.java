@@ -10,7 +10,7 @@ import net.dancier.dancer.core.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 import net.dancier.dancer.core.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.exception.AppliationException;
-import net.dancier.dancer.security.UserPrincipal;
+import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,8 +69,8 @@ public class AuthenticationController {
                         loginRequestDto.getPassword()
                 )
         );
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        User user = authenticationService.getUser(userPrincipal.getId());
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        User user = authenticationService.getUser(authenticatedUser.getId());
         if (!user.isEmailValidated()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse(false, "You have to validate the email."));
