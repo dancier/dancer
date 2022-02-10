@@ -15,11 +15,11 @@ public class ProfileDto {
 
     private Set<DanceProfileDto> wantsTo;
 
-    private int size;
+    private Integer size;
 
     private Sex sex;
 
-    private int age;
+    private Integer age;
 
     private String userName;
 

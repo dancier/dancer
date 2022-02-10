@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.util.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -26,5 +28,19 @@ public class ProfileService {
 
         return ModelMapper.dancerAndUserToProfile(dancer, user);
     }
+
+    @Transactional
+    public void updateProfileForUserId(UUID userId, ProfileDto profileDto) {
+        Dancer dancer = dancerRepository
+                .findByUserId(userId)
+                .orElseGet(
+                () -> {
+                    Dancer d = new Dancer();
+                    d.setUserId(userId);
+                    return d;
+                });
+        dancer.setSex(profileDto.getSex());
+        dancerRepository.save(dancer);
+    };
 
 }

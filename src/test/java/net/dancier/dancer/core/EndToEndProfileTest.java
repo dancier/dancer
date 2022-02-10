@@ -1,25 +1,59 @@
 package net.dancier.dancer.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
+import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.model.Sex;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     @WithUserDetails("user@dancier.net")
-    void profileOfVirginUser() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/profile"));
-        resultActions.andExpect(status().isOk())
+    void fromVirginProfileToPopulatedProfile() throws Exception {
+        ResultActions initialGetOfProfile = mockMvc.perform(get("/profile"));
+        initialGetOfProfile.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isEmpty())
                 .andExpect(jsonPath("$.sex").isEmpty())
+                .andExpect(jsonPath("$.size").isEmpty())
+                .andExpect(jsonPath("$.age").isEmpty())
                 .andExpect(jsonPath("$.email").isNotEmpty());
 
+        ProfileDto profileDto = objectMapper.readValue(
+                initialGetOfProfile
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString(),
+                ProfileDto.class);
+
+        profileDto.setSex(Sex.DIVERS);
+
+        ResultActions changeDaProfile = mockMvc
+                .perform(post("/profile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsBytes(profileDto))
+                );
+
+        changeDaProfile.andExpect(status().isOk());
+
+        ResultActions getTheProfileAfterChangedProperties = mockMvc.perform(get("/profile"));
+        getTheProfileAfterChangedProperties
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.sex").isNotEmpty());
     }
 
     @Test

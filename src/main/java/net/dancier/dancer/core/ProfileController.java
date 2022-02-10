@@ -1,15 +1,12 @@
 package net.dancier.dancer.core;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.security.CurrentUser;
 import net.dancier.dancer.security.AuthenticatedUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/profile")
@@ -23,6 +20,12 @@ public class ProfileController {
         return ResponseEntity.ok(
                 profileService.getProfileByUserId(authenticatedUser.getId())
         );
+    }
+
+    @PostMapping
+    public ResponseEntity post(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
+        profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler({NotFoundException.class})

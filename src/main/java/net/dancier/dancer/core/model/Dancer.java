@@ -30,7 +30,7 @@ public class Dancer {
             inverseJoinColumns = @JoinColumn(name = "dance_profile_id"))
     private Set<DanceProfile> wantsTo = new HashSet<>();
 
-    private int size;
+    private Integer size;
 
     @Enumerated(EnumType.STRING)
     private Sex sex;
