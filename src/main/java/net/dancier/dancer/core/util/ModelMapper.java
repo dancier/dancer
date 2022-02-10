@@ -24,6 +24,7 @@ public class ModelMapper {
                 .stream()
                 .map(ModelMapper::danceProfile2danceProfile).collect(Collectors.toSet())
         );
+        profileDto.setEmail(user.getEmail());
         return profileDto;
     }
 
