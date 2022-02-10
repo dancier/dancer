@@ -27,7 +27,6 @@ public class ProfileController {
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity handle(Throwable throwable) {
-        System.out.println("");
         return ResponseEntity.notFound().build();
     }
 }

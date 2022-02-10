@@ -330,4 +330,10 @@
             DROP COLUMN name;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-09-remove-address-from-users" author="Marc">
+        <sql>
+            ALTER TABLE users
+            DROP COLUMN address;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
