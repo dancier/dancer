@@ -11,6 +11,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.util.Date;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,7 +32,6 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(jsonPath("$.id").isEmpty())
                 .andExpect(jsonPath("$.sex").isEmpty())
                 .andExpect(jsonPath("$.size").isEmpty())
-                .andExpect(jsonPath("$.age").isEmpty())
                 .andExpect(jsonPath("$.email").isNotEmpty());
 
         ProfileDto profileDto = objectMapper.readValue(
@@ -41,6 +42,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 ProfileDto.class);
 
         profileDto.setSex(Sex.DIVERS);
+        profileDto.setBirthDate(new Date());
 
         ResultActions changeDaProfile = mockMvc
                 .perform(post("/profile")
@@ -53,7 +55,8 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         ResultActions getTheProfileAfterChangedProperties = mockMvc.perform(get("/profile"));
         getTheProfileAfterChangedProperties
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.sex").isNotEmpty());
+                .andExpect(jsonPath("$.sex").isNotEmpty())
+                .andExpect(jsonPath("$.birthDate").isNotEmpty());
     }
 
     @Test

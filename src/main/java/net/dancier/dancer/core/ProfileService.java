@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.ProfileDto;
-import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.util.ModelMapper;
@@ -40,7 +39,8 @@ public class ProfileService {
                     return d;
                 });
         dancer.setSex(profileDto.getSex());
+        dancer.setBirthDate(profileDto.getBirthDate());
+        dancer.setSize(profileDto.getSize());
         dancerRepository.save(dancer);
     };
-
 }

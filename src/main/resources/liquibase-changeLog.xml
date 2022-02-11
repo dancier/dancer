@@ -336,4 +336,10 @@
             DROP COLUMN address;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-11-add-birthdate" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN birth_date date;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

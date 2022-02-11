@@ -1,8 +1,11 @@
 package net.dancier.dancer.core.model;
 
+import ch.qos.logback.classic.db.names.ColumnName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +34,10 @@ public class Dancer {
     private Set<DanceProfile> wantsTo = new HashSet<>();
 
     private Integer size;
+
+    @Column(name = "birth_date")
+    @Temporal(TemporalType.DATE)
+    private Date birthDate;
 
     @Enumerated(EnumType.STRING)
     private Sex sex;

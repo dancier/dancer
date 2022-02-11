@@ -14,6 +14,7 @@ public class ModelMapper {
         ProfileDto profileDto = new ProfileDto();
         profileDto.setSex(dancer.getSex());
         profileDto.setId(dancer.getId());
+        profileDto.setBirthDate(dancer.getBirthDate());
         profileDto.setSize(dancer.getSize());
         profileDto.setAbleTo(dancer
                 .getAbleTo()

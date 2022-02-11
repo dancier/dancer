@@ -4,6 +4,7 @@ public enum Leading {
 
     FOLLOW,
     LEAD,
-    BOTH
+    BOTH,
+    NA
 
 }
