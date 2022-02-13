@@ -83,7 +83,13 @@ paths:
       summary: retrieves all the information that shows up in the profile
       tags:
         - Profile
+      responses:
+        '200':
+          description: the information for the profile of the looged in user
     post:
       summary: change profile information of the user
       tags:
         - Profile
+      responses:
+        '200':
+          description: indicates that the request was successfull
