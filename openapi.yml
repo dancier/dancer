@@ -9,30 +9,18 @@ paths:
   /authentication/register:
     post:
       summary: starts user registrations process
+      tags:
+        - IAM
       description: Returns all pets from the system that the user has access to
       responses:
         '201':
           description: In case the account could be created. The user still has to validate his email adresse.
         '409':
           description: In case the provided username or email-adress already exists
-  /authentication/login:
-    post:
-      description: The customer will be logged in. It ist necessary that the customer has already successfully validated his email-address.
-      responses:
-        '200':
-          description: In case the login was successfull.
-        '401':
-          description: In case the provided credentials were not correct.
-        '403':
-          description: in case we have not validated the email yet.
-  /authentication/email/validation:
-    post:
-      description: creates validation code and send it per mail
-      responses:
-        '200':
-          description: when the code could be generated
   /authentication/email/validate/{validationCode}:
     get:
+      tags:
+        - IAM
       parameters:
         - in: path
           name: validationCode
@@ -46,14 +34,39 @@ paths:
           description: if the validation happend
         '400':
           description: in case of any problems like, code not present, not correct...
+  /authentication/email/validation:
+    post:
+      tags:
+        - IAM
+      description: creates validation code and send it per mail
+      responses:
+        '200':
+          description: when the code could be generated
+  /authentication/login:
+    post:
+      tags:
+        - IAM
+      description: The customer will be logged in. It ist necessary that the customer has already successfully validated his email-address.
+      responses:
+        '200':
+          description: In case the login was successfull.
+        '401':
+          description: In case the provided credentials were not correct.
+        '403':
+          description: in case we have not validated the email yet.
   /authentication/password/reset:
     post:
+      tags:
+        - IAM
       description: send a mail to reset password
       responses:
         '200':
           description: mail was send
+
   /authentication/password/reset/{validationCode}:
     get:
+      tags:
+        - IAM
       parameters:
         - in: path
           name: validationCode
@@ -65,3 +78,12 @@ paths:
       responses:
         '200':
           description: contains the new password
+  /profile:
+    get:
+      summary: retrieves all the information that shows up in the profile
+      tags:
+        - Profile
+    post:
+      summary: change profile information of the user
+      tags:
+        - Profile
