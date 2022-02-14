@@ -56,7 +56,9 @@ paths:
           text/plain:
             examples:
               create_email_validation_code:
-                $ref: '#/components/examples/create_password_reset_code'
+                $ref: '#/components/examples/create_email_validation_code'
+            schema:
+              $ref: '#/components/schemas/create_email_validation_code'
       responses:
         '200':
           description: when the code could be generated
@@ -65,6 +67,16 @@ paths:
       tags:
         - IAM
       description: The customer will be logged in. It ist necessary that the customer has already successfully validated his email-address.
+      requestBody:
+        description: attempt to login the user
+        required: true
+        content:
+          application/json:
+            examples:
+              login_user:
+                $ref: '#/components/examples/login_user'
+            schema:
+              $ref: '#/components/schemas/login_user'
       responses:
         '200':
           description: In case the login was successfull.
@@ -77,6 +89,16 @@ paths:
       tags:
         - IAM
       description: send a mail to reset password
+      requestBody:
+        description: request a code to be send to the user via email to reset the passwort
+        required: true
+        content:
+          text/plain:
+            examples:
+              create_password_reset_code:
+                $ref: '#/components/examples/create_password_reset_code'
+            schema:
+                $ref: '#/components/schemas/create_password_reset_code'
       responses:
         '200':
           description: mail was send
@@ -165,3 +187,20 @@ components:
       type: string
     create_password_reset_code:
       type: string
+    api_response:
+      type: object
+      properties:
+        "success":
+          type: boolean
+        "messages":
+          type: array
+          items: {
+            type: string
+          }
+    login_response:
+      type: object
+      properties:
+        "accessToken":
+          type: string
+        "tokenType":
+          type: string
