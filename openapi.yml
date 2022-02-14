@@ -114,9 +114,10 @@ paths:
     post:
       tags:
         - IAM
-      description: send a mail to reset password
+      summary: send a link via mail to enable password reset
+      description: requests a code to be send to the user via email to reset 
+        the passwort
       requestBody:
-        description: request a code to be send to the user via email to reset the passwort
         required: true
         content:
           text/plain:
