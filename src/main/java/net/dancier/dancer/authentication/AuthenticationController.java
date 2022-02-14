@@ -51,7 +51,7 @@ public class AuthenticationController {
             result = authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ApiResponse(false, "Username already exist"));
+                    new ApiResponse(false, "Email address already exist"));
         }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
@@ -97,7 +97,6 @@ public class AuthenticationController {
 
     @GetMapping("/email/validate/{validationCode}")
     public ResponseEntity emailValidation(@PathVariable String validationCode) {
-        log.info("Got Validation code " + validationCode);
         authenticationService.checkEmailValidationCode(validationCode);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectAfterEmailValidation)).build();
     }

@@ -8,10 +8,9 @@ servers:
 paths:
   /authentication/register:
     post:
-      summary: starts user registrations process
+      summary: starts the user registrations process
       tags:
         - IAM
-      description: Returns all pets from the system that the user has access to
       requestBody:
         description: contains the email and password for the user to be setup
         required: true
@@ -24,9 +23,27 @@ paths:
               $ref: '#/components/schemas/change_profile'
       responses:
         '201':
-          description: In case the account could be created. The user still has to validate his email adresse.
+          description: In case the account could be created. 
+            The user still has to validate his email address.
+            An Email has been send out to the provided address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api_response"
+              example:
+                "success": true
+                "messages":
+                  - User registrated successfully
         '409':
-          description: In case the provided username or email-adress already exists
+          description: In case the provided email-adress already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api_response'
+              example:
+                "success": false
+                "messages":
+                  - Email address already exist
   /authentication/email/validate/{validationCode}:
     get:
       tags:
@@ -38,17 +55,24 @@ paths:
             type: string
           required: true
           description: Numeric ID of the user to get
-      description: validate
+      summary: validates the email address of a user
+      description: Validates the email address, that the user provided when he started 
+        the registration process. He should have got a link sent via email. This mail
+        includes a link that points to this endpoint. 
       responses:
         '301':
-          description: if the validation happend
+          description: if the validation was successfully. The customer will be
+           redirected to a configurable url. This url should inform the User, that his 
+           mail is no validated and he can login.
         '400':
-          description: in case of any problems like, code not present, not correct...
+          description: in case of any problems like the code not known in the system, 
+            outdated or any other problem like this.
+
   /authentication/email/validation:
     post:
       tags:
         - IAM
-      description: creates email validation code and send it per mail
+      summary: creates email validation code and send it per mail
       requestBody:
         description: request to get a code send via email, so reset the password
         required: true
@@ -66,7 +90,9 @@ paths:
     post:
       tags:
         - IAM
-      description: The customer will be logged in. It ist necessary that the customer has already successfully validated his email-address.
+      summary: The customer will be logged in.
+      description:  It ist necessary that the customer has already
+       successfully validated his email-address.
       requestBody:
         description: attempt to login the user
         required: true
