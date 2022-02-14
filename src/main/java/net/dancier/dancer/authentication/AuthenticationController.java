@@ -103,8 +103,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/password/reset")
-    public ResponseEntity resetPasswort(@RequestBody String userOrEmail) {
-        authenticationService.createPasswordValidationCode(userOrEmail);
+    public ResponseEntity createPasswortResetCode(@RequestBody String userOrEmail) {
+        authenticationService.createPasswordResetCode(userOrEmail);
         return ResponseEntity.ok(new ApiResponse(true, "super"));
     }
 

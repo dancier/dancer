@@ -1,6 +1,5 @@
 package net.dancier.dancer.authentication;
 
-import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
@@ -144,7 +143,7 @@ class AuthenticationServiceTest {
         when(userRepositoryMock.findByEmail(any()))
                 .thenReturn(Optional.of(userToHaveAPasswordValidationCode));
 
-        String passwordValidationCode = underTest.createPasswordValidationCode(userToHaveAPasswordValidationCode.getEmail());
+        String passwordValidationCode = underTest.createPasswordResetCode(userToHaveAPasswordValidationCode.getEmail());
 
         assertThat(passwordValidationCode).isNotNull();
     }

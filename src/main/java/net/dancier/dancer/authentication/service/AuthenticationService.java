@@ -123,7 +123,7 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public String createPasswordValidationCode(String email) {
+    public String createPasswordResetCode(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppliationException(""));
         PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
         passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));

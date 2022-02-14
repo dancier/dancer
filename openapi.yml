@@ -12,6 +12,16 @@ paths:
       tags:
         - IAM
       description: Returns all pets from the system that the user has access to
+      requestBody:
+        description: contains the email and password for the user to be setup
+        required: true
+        content:
+          application/json:
+            examples:
+              register_user:
+                $ref: '#/components/examples/register_user'
+            schema:
+              $ref: '#/components/schemas/change_profile'
       responses:
         '201':
           description: In case the account could be created. The user still has to validate his email adresse.
@@ -38,7 +48,15 @@ paths:
     post:
       tags:
         - IAM
-      description: creates validation code and send it per mail
+      description: creates email validation code and send it per mail
+      requestBody:
+        description: request to get a code send via email, so reset the password
+        required: true
+        content:
+          text/plain:
+            examples:
+              create_email_validation_code:
+                $ref: '#/components/examples/create_password_reset_code'
       responses:
         '200':
           description: when the code could be generated
@@ -90,6 +108,60 @@ paths:
       summary: change profile information of the user
       tags:
         - Profile
+      requestBody:
+        description: The complete information what should be shown in the profile
+        required: true
+        content:
+          application/json:
+            examples:
+              change_profile:
+                $ref: '#/components/examples/change_profile'
+            schema:
+              $ref: '#/components/schemas/change_profile'
       responses:
         '200':
           description: indicates that the request was successfull
+
+components:
+  examples:
+    register_user:
+      value:
+        "email": "foo@bar.de"
+        "password": "secrect"
+    login_user:
+      value:
+        "email": "foo@bar.de"
+        "password": "secret"
+    create_email_validation_code:
+      value:
+        foobar
+    create_password_reset_code:
+      value:
+        foobar
+    change_profile:
+      value:
+        "bla": string
+  schemas:
+    change_profile:
+      type: object
+      properties:
+        foo:
+          type: string
+    register_user:
+      type: object
+      properties:
+        "email":
+          type: string
+        "password":
+          type: string
+    login_user:
+      type: object
+      properties:
+        "email":
+          type: string
+        "password":
+          type: string
+    create_email_validation_code:
+      type: string
+    create_password_reset_code:
+      type: string
