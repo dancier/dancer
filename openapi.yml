@@ -132,6 +132,10 @@ paths:
 
   /authentication/password/reset/{validationCode}:
     get:
+      summary: reset the password
+      description: the link with the validationCode has been send to the 
+        user. So we can be sure, das the link is used by the user and
+        change the password.
       tags:
         - IAM
       parameters:
@@ -141,10 +145,15 @@ paths:
             type: string
           required: true
           description: the code to check that it is really the user with access to the mail account
-      description: resets the password
       responses:
         '200':
           description: contains the new password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/password_reset"
+              example:
+                password: secret
   /profile:
     get:
       summary: retrieves all the information that shows up in the profile
@@ -208,6 +217,11 @@ components:
       properties:
         "email":
           type: string
+        "password":
+          type: string
+    password_reset:
+      type: object
+      properties:
         "password":
           type: string
     create_email_validation_code:
