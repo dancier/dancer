@@ -162,6 +162,10 @@ paths:
       responses:
         '200':
           description: the information for the profile of the looged in user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/get_profile"
     post:
       summary: change profile information of the user
       tags:
@@ -171,9 +175,6 @@ paths:
         required: true
         content:
           application/json:
-            examples:
-              change_profile:
-                $ref: '#/components/examples/change_profile'
             schema:
               $ref: '#/components/schemas/change_profile'
       responses:
@@ -203,7 +204,36 @@ components:
     change_profile:
       type: object
       properties:
-        foo:
+        size:
+          type: integer
+        sex:
+          type: string
+        username:
+          type: string
+        birthDate:
+          type: string
+        ableTo:
+          type: object
+        wantsTo:
+          type: object
+    get_profile:
+      type: object
+      properties:
+        id:
+          type: string
+        size:
+          type: integer
+        sex:
+          type: string
+        username:
+          type: string
+        birthDate:
+          type: string
+        ableTo:
+          type: object
+        wantsTo:
+          type: object
+        email:
           type: string
     register_user:
       type: object
