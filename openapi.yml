@@ -201,23 +201,53 @@ components:
       value:
         "bla": string
   schemas:
+    gender:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+        - DIVERS
+        - NA
+    dance_profile:
+      type: object
+      properties:
+        dance:
+          type: string
+        level:
+          type: string
+          enum:
+            - NO_EXPERIENCE
+            - BASIC
+            - INTERMEDIATE
+            - ADVANCED
+            - PRO
+        leading:
+          type: string
+          enum:
+            - FOLLOW
+            - LEAD
+            - BOTH
+            - NA
     change_profile:
       type: object
       properties:
         size:
           type: integer
         sex:
-          type: string
-          enum: [MALE, FEMALE, DIVERS, NA]
+          $ref: "#/components/schemas/gender"
         username:
           type: string
         birthDate:
           type: string
           format: date
         ableTo:
-          type: object
+          type: array
+          items:
+            $ref: "#/components/schemas/dance_profile"
         wantsTo:
-          type: object
+          type: array
+          items:
+            $ref: "#/components/schemas/dance_profile"
     get_profile:
       type: object
       properties:
@@ -226,15 +256,20 @@ components:
         size:
           type: integer
         sex:
-          type: string
+          $ref: "#/components/schemas/gender"
         username:
           type: string
         birthDate:
           type: string
+          format: date
         ableTo:
-          type: object
+          type: array
+          items:
+            $ref: '#/components/schemas/dance_profile'
         wantsTo:
-          type: object
+          type: array
+          items:
+            $ref: '#/components/schemas/dance_profile'
         email:
           type: string
     register_user:
