@@ -208,10 +208,12 @@ components:
           type: integer
         sex:
           type: string
+          enum: [MALE, FEMALE, DIVERS, NA]
         username:
           type: string
         birthDate:
           type: string
+          format: date
         ableTo:
           type: object
         wantsTo:

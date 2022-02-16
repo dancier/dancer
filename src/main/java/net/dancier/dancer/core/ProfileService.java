@@ -5,7 +5,7 @@ import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.core.model.Dancer;
+import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.core.util.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

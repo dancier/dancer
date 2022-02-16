@@ -1,7 +1,5 @@
 package net.dancier.dancer.core.model;
 
-import ch.qos.logback.classic.db.names.ColumnName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;

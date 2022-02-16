@@ -1,5 +1,6 @@
 package net.dancier.dancer.core.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Builder
 @Table(name = "dance_profile")
 public class DanceProfile {
 
