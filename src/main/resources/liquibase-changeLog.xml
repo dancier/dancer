@@ -342,4 +342,10 @@
             ADD COLUMN birth_date date;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-17-rename-column-sex" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            RENAME COLUMN sex TO gender;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

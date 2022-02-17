@@ -12,7 +12,7 @@ public class ModelMapper {
 
     public static ProfileDto dancerAndUserToProfile(Dancer dancer, User user) {
         ProfileDto profileDto = new ProfileDto();
-        profileDto.setSex(dancer.getSex());
+        profileDto.setGender(dancer.getGender());
         profileDto.setId(dancer.getId());
         profileDto.setBirthDate(dancer.getBirthDate());
         profileDto.setSize(dancer.getSize());

@@ -2,7 +2,7 @@ package net.dancier.dancer.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import net.dancier.dancer.core.model.Sex;
+import net.dancier.dancer.core.model.Gender;
 
 import java.util.Date;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class ProfileDto {
 
     private Integer size;
 
-    private Sex sex;
+    private Gender gender;
 
     private String userName;
 

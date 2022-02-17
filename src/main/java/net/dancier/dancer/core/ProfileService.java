@@ -45,7 +45,7 @@ public class ProfileService {
                     d.setUserId(userId);
                     return d;
                 });
-        dancer.setSex(profileDto.getSex());
+        dancer.setGender(profileDto.getGender());
         dancer.setBirthDate(profileDto.getBirthDate());
         dancer.setSize(profileDto.getSize());
         handleDancerProfiles(dancer, profileDto);

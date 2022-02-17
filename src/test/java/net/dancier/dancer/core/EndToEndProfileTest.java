@@ -31,7 +31,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         ResultActions initialGetOfProfile = mockMvc.perform(get("/profile"));
         initialGetOfProfile.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isEmpty())
-                .andExpect(jsonPath("$.sex").isEmpty())
+                .andExpect(jsonPath("$.gender").isEmpty())
                 .andExpect(jsonPath("$.size").isEmpty())
                 .andExpect(jsonPath("$.email").isNotEmpty());
 
@@ -47,7 +47,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         danceProfileDto.setLevel(Level.BASIC);
         danceProfileDto.setLeading(Leading.FOLLOW);
 
-        profileDto.setSex(Sex.DIVERS);
+        profileDto.setGender(Gender.DIVERS);
         profileDto.setBirthDate(new Date());
         profileDto.setAbleTo(Set.of(danceProfileDto));
         profileDto.setWantsTo(Set.of(danceProfileDto));
@@ -63,7 +63,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         ResultActions getTheProfileAfterChangedProperties = mockMvc.perform(get("/profile"));
         getTheProfileAfterChangedProperties
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.sex").isNotEmpty())
+                .andExpect(jsonPath("$.gender").isNotEmpty())
                 .andExpect(jsonPath("$.birthDate").isNotEmpty())
                 .andExpect(jsonPath("$.wantsTo").isNotEmpty())
                 .andExpect(jsonPath("$.ableTo").isNotEmpty());

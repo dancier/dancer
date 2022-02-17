@@ -40,6 +40,6 @@ public class Dancer {
     private Date birthDate;
 
     @Enumerated(EnumType.STRING)
-    private Sex sex;
+    private Gender gender;
 
 }
