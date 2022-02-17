@@ -1,14 +1,13 @@
 package net.dancier.dancer.core.model;
 
-import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Data
 @Entity
-@Builder
 @Table(name = "dance_profile")
 public class DanceProfile {
 
@@ -16,7 +15,8 @@ public class DanceProfile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JoinColumn(name = "dance_id", referencedColumnName = "id")
     private Dance dance;
 

@@ -19,17 +19,17 @@ public class ModelMapper {
         profileDto.setAbleTo(dancer
                 .getAbleTo()
                 .stream()
-                .map(ModelMapper::danceProfile2danceProfile).collect(Collectors.toSet()));
+                .map(ModelMapper::danceProfile2danceProfileDto).collect(Collectors.toSet()));
         profileDto.setWantsTo(dancer
                 .getWantsTo()
                 .stream()
-                .map(ModelMapper::danceProfile2danceProfile).collect(Collectors.toSet())
+                .map(ModelMapper::danceProfile2danceProfileDto).collect(Collectors.toSet())
         );
         profileDto.setEmail(user.getEmail());
         return profileDto;
     }
 
-    public static DanceProfileDto danceProfile2danceProfile(DanceProfile danceProfile) {
+    public static DanceProfileDto danceProfile2danceProfileDto(DanceProfile danceProfile) {
         DanceProfileDto danceProfileDto = new DanceProfileDto();
         danceProfileDto.setDance(danceProfile.getDance().getName());
         danceProfileDto.setLeading(danceProfile.getLeading());

@@ -2,8 +2,9 @@ package net.dancier.dancer.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
+import net.dancier.dancer.core.dto.DanceProfileDto;
 import net.dancier.dancer.core.dto.ProfileDto;
-import net.dancier.dancer.core.model.Sex;
+import net.dancier.dancer.core.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,6 +12,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Date;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,8 +42,15 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                         .getContentAsString(),
                 ProfileDto.class);
 
+        DanceProfileDto danceProfileDto = new DanceProfileDto();
+        danceProfileDto.setDance("Tango");
+        danceProfileDto.setLevel(Level.BASIC);
+        danceProfileDto.setLeading(Leading.FOLLOW);
+
         profileDto.setSex(Sex.DIVERS);
         profileDto.setBirthDate(new Date());
+        profileDto.setAbleTo(Set.of(danceProfileDto));
+        profileDto.setWantsTo(Set.of(danceProfileDto));
 
         ResultActions changeDaProfile = mockMvc
                 .perform(post("/profile")
@@ -55,7 +64,9 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         getTheProfileAfterChangedProperties
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.sex").isNotEmpty())
-                .andExpect(jsonPath("$.birthDate").isNotEmpty());
+                .andExpect(jsonPath("$.birthDate").isNotEmpty())
+                .andExpect(jsonPath("$.wantsTo").isNotEmpty())
+                .andExpect(jsonPath("$.ableTo").isNotEmpty());
     }
 
     @Test

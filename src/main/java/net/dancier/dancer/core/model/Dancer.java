@@ -1,6 +1,7 @@
 package net.dancier.dancer.core.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class Dancer {
     private Set<DanceProfile> ableTo = new HashSet<>();
 
     @OneToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JoinTable(name = "wants_to",
             joinColumns = @JoinColumn(name = "dancer_id"),
             inverseJoinColumns = @JoinColumn(name = "dance_profile_id"))

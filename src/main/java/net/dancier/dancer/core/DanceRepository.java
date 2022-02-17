@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface DanceRepository extends JpaRepository<Dance, UUID> {
+    Dance findByName(String name);
 }
