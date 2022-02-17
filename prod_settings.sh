@@ -1,0 +1,16 @@
+export DANCER_DB_HOSTNAME=dancer-db
+export DANCER_DB_USER=dancer
+export DANCER_DB_PASSWORD=dancer
+export DANCER_DB_DB=dancer
+
+export PG_ADMIN_PASSWORD=secret
+
+export SPRING_DATASOURCE_URL=jdbc:postgresql://${DANCER_DB_HOSTNAME}:5432/${DANCER_DB_DB}
+export SPRING_DATASOURCE_USERNAME=dancer
+export SPRING_DATASOURCE_PASSWORD=dancer
+
+export APP_AUTH_TOKENSECRET=04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+
+export APP_CORS_ALLOWED_ORIGINS=https://dancier.net
+
+export APP_redirectAfterEmailValidation=http://becheftigt.de
