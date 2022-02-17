@@ -25,18 +25,18 @@ jobs:
       run:  docker build -t dancier/dancer:1.0 .
     - name: Publish the Docker image on hub.docker.com
       run:  docker push dancier/dancer:1.0
-    - name: Install the Hetzner cloud api
-      run:  |
-            sudo apt -y install python3-pip
-            sudo apt -y install python3-setuptools
-            sudo -H pip3 install hcloud
-    - name: Create ssh key for deployment
-      run:  |
-            echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier.key
-            chmod 400 ./deploy/dancier.key
-    - name: Create cloud api token
-      run:  |
-        echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/cloud-api-token
-        chmod 400 ./deploy/cloud-api-token
-    - name: Let the dancer dance
-      run: ./deploy/deploy.sh
+#    - name: Install the Hetzner cloud api
+#      run:  |
+#            sudo apt -y install python3-pip
+#            sudo apt -y install python3-setuptools
+#            sudo -H pip3 install hcloud
+#    - name: Create ssh key for deployment
+#      run:  |
+#            echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier.key
+#            chmod 400 ./deploy/dancier.key
+#    - name: Create cloud api token
+ #     run:  |
+ #       echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/cloud-api-token
+ #       chmod 400 ./deploy/cloud-api-token
+ #   - name: Let the dancer dance
+ #     run: ./deploy/deploy.sh
