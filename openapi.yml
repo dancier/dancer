@@ -180,6 +180,20 @@ paths:
       responses:
         '200':
           description: indicates that the request was successfull
+  /profile/allDances:
+    get:
+      summary: retrieves a List of all dance names
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: retrives an array of strings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 
 components:
   examples:
@@ -233,7 +247,7 @@ components:
       properties:
         size:
           type: integer
-        sex:
+        gender:
           $ref: "#/components/schemas/gender"
         username:
           type: string
@@ -255,7 +269,7 @@ components:
           type: string
         size:
           type: integer
-        sex:
+        gender:
           $ref: "#/components/schemas/gender"
         username:
           type: string
