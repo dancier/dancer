@@ -104,7 +104,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>dancier</finalName>
+		<finalName>dancer</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
