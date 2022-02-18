@@ -18,7 +18,7 @@ services:
       - "443:443"
       - "8088:8080"
     volumes:
-      - "./letsencrypt:/letsencrypt"
+      - "./volumes/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   dancer:
