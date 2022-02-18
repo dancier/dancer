@@ -66,7 +66,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(jsonPath("$.gender").isNotEmpty())
                 .andExpect(jsonPath("$.birthDate").isNotEmpty())
                 .andExpect(jsonPath("$.wantsTo").isNotEmpty())
-                .andExpect(jsonPath("$.ableTo").isNotEmpty());
+                .andExpect(jsonPath("$.ableTo").isEmpty());
     }
 
     @Test
