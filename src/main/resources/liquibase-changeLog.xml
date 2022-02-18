@@ -348,4 +348,10 @@
             RENAME COLUMN sex TO gender;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-18-add-unique-constraint-to-profile_dancer_id" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD CONSTRAINT one_user_one_profile UNIQUE (user_id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

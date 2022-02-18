@@ -1,11 +1,35 @@
 version: '3.8'
 
 services:
+  traefik:
+    image: "traefik:v2.6"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      #- "--certificatesresolvers.mytlschallenge.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.mytlschallenge.acme.email=marc@becheftigt.de"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+    restart: always
+    ports:
+      - "443:443"
+      - "8088:8080"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   dancer:
     image: dancier/dancer:1.0
     restart: always
-    ports:
-      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dancer.rule=Host(`dancer.dancier.net`)"
+      - "traefik.http.routers.dancer.entrypoints=websecure"
+      - "traefik.http.routers.dancer.tls.certresolver=mytlschallenge"
+
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
@@ -19,8 +43,6 @@ services:
   dancer-db:
     image: postgres
     restart: always
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: ${DANCER_DB_USER}
       POSTGRES_PASSWORD: ${DANCER_DB_PASSWORD}
@@ -31,8 +53,11 @@ services:
   pg-admin:
     image: dpage/pgadmin4:latest
     restart: always
-    ports:
-      - "5050:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.dancier.net`)"
+      - "traefik.http.routers.pgadmin.entrypoints=websecure"
+      - "traefik.http.routers.pgadmin.tls.certresolver=mytlschallenge"
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@dancier.net
       PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
