@@ -354,4 +354,11 @@
             ADD CONSTRAINT one_user_one_profile UNIQUE (user_id);
         </sql>
     </changeSet>
+    <changeSet id="2022-02-18-drop-table-choices-polls" author="Marc">
+        <sql>
+            DROP TABLE choices CASCADE;
+            DROP TABLE polls CASCADE;
+            DROP TABLE votes CASCADE;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
