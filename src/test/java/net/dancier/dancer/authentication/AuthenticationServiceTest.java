@@ -8,6 +8,8 @@ import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.core.exception.NotFoundException;
+import net.dancier.dancer.mail.service.MailCreationService;
+import net.dancier.dancer.mail.service.MailEnqueueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +32,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
-    //https://reflectoring.io/unit-testing-spring-boot/
 
     @InjectMocks
     private AuthenticationService underTest;
@@ -43,6 +44,12 @@ class AuthenticationServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoderMock;
+
+    @Mock
+    private MailCreationService mailCreationService;
+
+    @Mock
+    private MailEnqueueService mailEnqueueService;
 
     @Mock
     private EmailValidationCodeRepository validationCodeRepositoryMock;
@@ -78,7 +85,7 @@ class AuthenticationServiceTest {
                 .thenReturn(Optional.empty());
         when(passwordEncoderMock.encode(any())).thenReturn("bar");
         when(roleRepositoryMock.findByName(any())).thenReturn(Optional.of(dummyRole()));
-        when(userRepositoryMock.save(any())).thenReturn(dummyUser());
+        when(userRepositoryMock.save(any())).thenReturn(dummyUser(true));
 
         User user = underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
 

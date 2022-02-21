@@ -361,4 +361,21 @@
             DROP TABLE votes CASCADE;
         </sql>
     </changeSet>
+    <changeSet id="2022-02-21-mail-outgoing" author="Marc">
+        <sql>
+            CREATE TABLE mail_outgoing (
+                id UUID NOT NULL,
+                status VARCHAR(64),
+                retry INTEGER,
+                mail jsonb,
+                PRIMARY KEY(id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2022-02-21-rename-outgoing-mai-table" author="Marc">
+        <sql>
+            ALTER TABLE mail_outgoing
+            RENAME TO outgoing_mail;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

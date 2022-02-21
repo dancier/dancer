@@ -69,9 +69,4 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(jsonPath("$.ableTo").isNotEmpty());
     }
 
-    @Test
-    void changeOfBaseAttributes() {
-
-    }
-
 }

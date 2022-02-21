@@ -12,6 +12,8 @@ import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
+import net.dancier.dancer.mail.service.MailCreationService;
+import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -48,6 +51,10 @@ public class AuthenticationService {
 
     private final JwtTokenProvider tokenProvider;
 
+    private final MailEnqueueService mailEnqueueService;
+
+    private final MailCreationService mailCreationService;
+
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
     }
@@ -63,6 +70,7 @@ public class AuthenticationService {
         }
     }
 
+    @Transactional
     public User registerUser(RegisterRequestDto signUpRequest) {
         log.info("Attempting to register user: " + signUpRequest.getEmail());
         if(userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
@@ -79,15 +87,11 @@ public class AuthenticationService {
         user.setRoles(Collections.singleton(userRole));
 
         User savedUser = userRepository.save(user);
-        EmailValidationCode emailValidationCode = new EmailValidationCode();
-        emailValidationCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        emailValidationCode.setUserId(savedUser.getId());
-        emailValidationCode.setCode(UUID.randomUUID().toString());
-        log.debug("Validation code: " + emailValidationCode.getCode());
-        emailValidationCodeRepository.save(emailValidationCode);
+        createEmailValidationCode(savedUser);
         return savedUser;
     }
 
+    @Transactional
     public void createEmailValidationCode(User user) {
         Objects.requireNonNull(user.getId());
         EmailValidationCode emailValidationCode = emailValidationCodeRepository
@@ -99,6 +103,7 @@ public class AuthenticationService {
         emailValidationCode.setUserId(user.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
         emailValidationCodeRepository.save(emailValidationCode);
+        enqueueValidationCodeMail(user, emailValidationCode.getCode());
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
     }
 
@@ -151,5 +156,16 @@ public class AuthenticationService {
 
     public boolean existsByEmail(String email) {
         return this.userRepository.existsByEmail(email);
+    }
+
+    private void enqueueValidationCodeMail(User user, String validationCode) {
+        mailEnqueueService.enqueueMail(
+                mailCreationService.createDancierMessageFromTemplate(
+                        user.getEmail(),
+                        MailCreationService.NO_REPLY_FROM,
+                        "Dancier - bestätige Deine E-Mail-Adresse!",
+                        MailCreationService.NEW_USER_VALIDATE_EMAIL,
+                        Map.of( "validationLink", validationCode)
+                ));
     }
 }

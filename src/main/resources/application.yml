@@ -13,6 +13,8 @@ spring:
   test:
     database:
       replace: none
+  profiles:
+    default: dev
 
 app:
   auth:
@@ -21,7 +23,11 @@ app:
   cors:
     allowedOrigins: http://localhost:4200 # Comma separated list of allowed origins
   redirectAfterEmailValidation: http://google.de
-
+  mail:
+    host: mail.your-server.de
+    port: 465
+    user: username
+    pass: password
 logging:
   level:
     root: INFO
