@@ -9,8 +9,19 @@ import java.util.UUID;
 
 public interface OutgoingMailRepository extends CrudRepository<OutgoingMail, UUID> {
     @Query(
-            value = "SELECT * FROM outgoing_mail",
+            value = """
+                       UPDATE outgoing_mail
+                          SET status = 'IN_PROGRESS'
+                        WHERE id IN (
+                    			SELECT id
+                    			  FROM outgoing_mail
+                    			 WHERE status = 'QUEUED'
+                    			 LIMIT 1
+                    		FOR UPDATE
+                        )
+                    	RETURNING *;
+                    """,
             nativeQuery = true
     )
-    Collection<OutgoingMail> selectToProcess();
+    Collection<OutgoingMail> lockAndList();
 }

@@ -26,8 +26,9 @@ app:
   mail:
     host: mail.your-server.de
     port: 465
-    user: username
-    pass: password
+    user: user
+    pass: pass
+    allForOneAddress: gorzala@gmx.de
 logging:
   level:
     root: INFO

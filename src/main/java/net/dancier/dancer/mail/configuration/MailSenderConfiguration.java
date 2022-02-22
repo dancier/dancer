@@ -1,6 +1,5 @@
 package net.dancier.dancer.mail.configuration;
 
-import liquibase.pro.packaged.P;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,9 +40,15 @@ public class MailSenderConfiguration {
             @Value("${app.mail.host}") String hostname,
             @Value("${app.mail.port}") String port,
             @Value("${app.mail.user}") String user,
-            @Value("${app.mail.pass}") String pass
+            @Value("${app.mail.pass}") String pass,
+            @Value("${app.mail.allForOneAddress}") String allForOneAddress
     ) {
-        JavaMailSender javaMailSender = new AllForOneMailSender(hostname, Integer.valueOf(port), user, pass);
+        JavaMailSender javaMailSender = new AllForOneMailSender(
+                hostname,
+                Integer.valueOf(port),
+                user,
+                pass,
+                allForOneAddress);
         return javaMailSender;
     }
 

@@ -19,9 +19,9 @@ public class AllForOneMailSender implements JavaMailSender {
 
     private final JavaMailSenderImpl springJavaMailSenderImpl;
 
-    private final String allForOneAddress = "gorzala@gmx.de";
+    private final String allForOneAddress;
 
-    public AllForOneMailSender(String hostname, Integer port, String user, String pass) {
+    public AllForOneMailSender(String hostname, Integer port, String user, String pass, String allForOneAddress) {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(hostname);
         javaMailSender.setPort(Integer.valueOf(port));
@@ -32,6 +32,7 @@ public class AllForOneMailSender implements JavaMailSender {
         Properties props = javaMailSender.getJavaMailProperties();
         props.put("mail.smtp.ssl.enable", "true");
         props.put("mail.debug", "true");
+        this.allForOneAddress = allForOneAddress;
         this.springJavaMailSenderImpl = javaMailSender;
     }
 
@@ -41,6 +42,7 @@ public class AllForOneMailSender implements JavaMailSender {
         simpleMessage.setCc();
         simpleMessage.setReplyTo(allForOneAddress);
         simpleMessage.setTo(allForOneAddress);
+        log.debug("Sending mail: " + simpleMessage);
         this.springJavaMailSenderImpl.send(simpleMessage);
     }
 
