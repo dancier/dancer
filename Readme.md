@@ -26,7 +26,7 @@ Here can configure the connection the postgres instance:
 
 ### Run the dancer locally
 ````shell
-mvn spring-boot:run
+./mvnw spring-boot:run
 ````
 This will bootstrap the database. You can start using it.
 See the api-documentation to see what you can do:
@@ -35,13 +35,13 @@ See the api-documentation to see what you can do:
 
 ### Building
 
-``mvn clean install`
+``./mvnw clean install`
 
 This will also run the test _and_ integration tests.
 
 You can then inspect the test-coverage:
 
-[Show test coverage](.target/site/jacoco/index.html)
+[Show test coverage in target/site/jacoco/index.html](.target/site/jacoco/index.html)
 
 ### local mailing
 Wenn working locally the mailing-system of the backend is configured to _not_ send the mails, but to dump them only to the log.
