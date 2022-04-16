@@ -10,4 +10,6 @@ public interface DancerRepository extends JpaRepository<Dancer, UUID> {
 
     Optional<Dancer> findByUserId(UUID uuid);
 
+    Boolean existsByDancerName(String dancerName);
+
 }

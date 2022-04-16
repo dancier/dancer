@@ -10,6 +10,12 @@ spring:
   database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:liquibase-changeLog.xml
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 15MB
+      max-request-size: 17MB
   test:
     database:
       replace: none
@@ -29,6 +35,8 @@ app:
     user: user
     pass: pass
     allForOneAddress: gorzala@gmx.de
+  file:
+    dir: ./images-dir
 logging:
   level:
     root: INFO

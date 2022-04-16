@@ -8,6 +8,8 @@ import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.core.util.ModelMapper;
+import net.dancier.dancer.location.ZipCode;
+import net.dancier.dancer.location.ZipCodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,8 @@ public class ProfileService {
     private final DanceRepository danceRepository;
 
     private final DancerRepository dancerRepository;
+
+    private final ZipCodeRepository zipCodeRepository;
 
     public ProfileDto getProfileByUserId(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -48,6 +52,14 @@ public class ProfileService {
         dancer.setGender(profileDto.getGender());
         dancer.setBirthDate(profileDto.getBirthDate());
         dancer.setSize(profileDto.getSize());
+        dancer.setZipCode(profileDto.getZipCode());
+        ZipCode zipCode = zipCodeRepository.findByCountryAndZipCode(profileDto.getCountry(), profileDto.getZipCode());
+        if (zipCode!=null) {
+            dancer.setCity(zipCode.getCity());
+            dancer.setLatitude(zipCode.getLatitude());
+            dancer.setLongitude(zipCode.getLongitude());
+            dancer.setCountry(Country.valueOf(zipCode.getCountry()));
+        }
         handleDancerProfiles(dancer, profileDto);
         dancerRepository.save(dancer);
     };
@@ -94,6 +106,10 @@ public class ProfileService {
 
     public Set<Dance> getAllDances() {
         return new HashSet<>(this.danceRepository.findAll());
+    }
+
+    public boolean existsByDancerName(String dancerName) {
+        return this.dancerRepository.existsByDancerName(dancerName);
     }
 
     Set<Dance> getNeededDances(ProfileDto profileDto) {

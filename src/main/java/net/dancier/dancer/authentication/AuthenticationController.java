@@ -8,7 +8,6 @@ import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.core.controller.payload.ApiResponse;
 import net.dancier.dancer.core.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
-import net.dancier.dancer.core.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
@@ -78,15 +77,29 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = authenticationService.generateToken(authentication);
+        Cookie cookie = createCookieExceptMaxAge(jwt);
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        httpServletResponse.addCookie(cookie);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletResponse httpServletResponse) {
+        Cookie cookie = createCookieExceptMaxAge(null);
+        cookie.setMaxAge(0);
+        httpServletResponse.addCookie(cookie);
+        return ResponseEntity.ok().build();
+    }
+
+
+    private Cookie createCookieExceptMaxAge(String jwt) {
         Cookie cookie = new Cookie("jwt-token", jwt);
         cookie.setMaxAge(30 * 24 * 60 * 60);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        httpServletResponse.addCookie(cookie);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return cookie;
     }
-
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
@@ -113,17 +126,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(new NewPasswortDto(newPassword));
     }
 
-    @GetMapping("/user/checkUsernameAvailability")
-    public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
-        // TODO
-        //Boolean isAvailable = !authenticationService.existsByUsername(username);
-        return new UserIdentityAvailability(true);
-    }
-
-    @GetMapping("/user/checkEmailAvailability")
-    public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
-        Boolean isAvailable = !authenticationService.existsByEmail(email);
-        return new UserIdentityAvailability(isAvailable);
+    @GetMapping("/checkEmailAvailability/{email}")
+    public ResponseEntity<?> checkEmailAvailability(@PathVariable String email) {
+        return ResponseEntity.ok(!authenticationService.existsByEmail(email));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

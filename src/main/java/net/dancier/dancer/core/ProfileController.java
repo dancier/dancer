@@ -1,6 +1,7 @@
 package net.dancier.dancer.core;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.core.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dance;
@@ -19,8 +20,14 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
+    @GetMapping("/checkDancerNameAvailability/{dancerName}")
+    public ResponseEntity<?> checkUsernameAvailability(@PathVariable String dancerName) {
+        return ResponseEntity.ok(!profileService.existsByDancerName(dancerName));
+    }
+
+
     @GetMapping
-    public ResponseEntity get(@CurrentUser AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<ProfileDto> get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
                 profileService.getProfileByUserId(authenticatedUser.getId())
         );

@@ -5,6 +5,9 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.core.dto.DanceProfileDto;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.model.*;
+import net.dancier.dancer.location.ZipCode;
+import net.dancier.dancer.location.ZipCodeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,6 +27,20 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    ZipCodeRepository zipCodeRepository;
+
+    @BeforeEach
+    void init() {
+        ZipCode zipCode = new ZipCode();
+        zipCode.setCity("Dortmund");
+        zipCode.setZipCode("44339");
+        zipCode.setCountry("GER");
+        zipCode.setLatitude(1d);
+        zipCode.setLongitude(2d);
+        zipCodeRepository.save(zipCode);
+    }
 
     @Test
     @WithUserDetails("user@dancier.net")
@@ -47,10 +64,13 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         danceProfileDto.setLevel(Level.BASIC);
         danceProfileDto.setLeading(Leading.FOLLOW);
 
+
         profileDto.setGender(Gender.DIVERS);
         profileDto.setBirthDate(new Date());
         profileDto.setAbleTo(Set.of(danceProfileDto));
         profileDto.setWantsTo(Set.of(danceProfileDto));
+        profileDto.setZipCode("44339");
+        profileDto.setCountry("GER");
 
         ResultActions changeDaProfile = mockMvc
                 .perform(post("/profile")
@@ -66,7 +86,10 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(jsonPath("$.gender").isNotEmpty())
                 .andExpect(jsonPath("$.birthDate").isNotEmpty())
                 .andExpect(jsonPath("$.wantsTo").isNotEmpty())
-                .andExpect(jsonPath("$.ableTo").isNotEmpty());
+                .andExpect(jsonPath("$.ableTo").isNotEmpty())
+                .andExpect(jsonPath("$.city").value("Dortmund"))
+                .andExpect(jsonPath("$.country").value("GER"));
+
     }
 
 }

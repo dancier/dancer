@@ -378,4 +378,47 @@
             RENAME TO outgoing_mail;
         </sql>
     </changeSet>
+    <changeSet id="2022-04-11-add-location-information-to-dancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN zip_code VARCHAR(64);
+            ALTER TABLE dancer
+            ADD COLUMN country VARCHAR(64);
+            ALTER TABLE dancer
+            ADD COLUMN city VARCHAR(64);
+        </sql>
+    </changeSet>
+    <changeSet id="2022-04-11-add-latitude-longitude-to-dancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN latitude DOUBLE PRECISION;
+            ALTER TABLE dancer
+            ADD COLUMN longitude DOUBLE PRECISION;
+        </sql>
+    </changeSet>
+    <changeSet id="2022-04-11-add-zip-code" author="Marc">
+        <sql>
+            CREATE TABLE location_zip_code (
+            id UUID NOT NULL,
+            zip_code VARCHAR(64),
+            country VARCHAR(64),
+            longitude DOUBLE PRECISION,
+            latitude DOUBLE PRECISION,
+            city VARCHAR(64),
+            PRIMARY KEY(id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2022-04-22" author="Marc">
+        <sql>
+            ALTER TABLE location_zip_code
+            ALTER COLUMN city TYPE VARCHAR(128);
+        </sql>
+    </changeSet>
+    <changeSet id="2022-04-15" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN dancer_name VARCHAR(64);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

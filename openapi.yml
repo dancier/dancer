@@ -110,6 +110,28 @@ paths:
           description: In case the provided credentials were not correct.
         '403':
           description: in case we have not validated the email yet.
+  /authentication/checkEmailAvailability/{email}:
+    get:
+      tags:
+        - IAM
+      parameters:
+        - in: path
+          name: email
+          schema:
+            type: string
+          required: true
+          description: email to check if account already exits
+      responses:
+        '200':
+          description: true or false depending on the existing of an account    
+  /authentication/logout:
+    get:
+      tags:
+        - IAM
+      summary: log out the user
+      responses:
+        '200' : 
+          description: This logs out the user. It resets the cookie. Any valid tokens are not affected.
   /authentication/password/reset:
     post:
       tags:
@@ -194,6 +216,22 @@ paths:
                 type: array
                 items:
                   type: string
+  /profile/checkDancerNameAvailibility/{dancerName}:
+    get:
+      summary: check if a name is still free
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: true of false
+  /recommendations:
+    get:
+      summary: retrieves all precomputes recommendations
+      tags:
+        - Recommendations
+      responses:
+        '200':
+          description: retrieves an potentially empty array
 
 components:
   examples:

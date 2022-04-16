@@ -12,13 +12,15 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "dancer")
-public class Dancer {
+public class Dancer implements Recommendable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     private UUID userId;
+
+    private String dancerName;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "able_to",
@@ -41,5 +43,16 @@ public class Dancer {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private String zipCode;
+
+    @Enumerated(EnumType.STRING)
+    private Country country;
+
+    private String city;
+
+    private Double latitude;
+
+    private Double longitude;
 
 }

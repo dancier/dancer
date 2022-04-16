@@ -63,7 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
             .and()
                 .authorizeRequests()
-                    .antMatchers("/authentication/**", "/user/checkUsernameAvailability", "/user/checkEmailAvailability")
+                    .antMatchers("/authentication/**",
+                            "/profile/checkDancerNameAvailability/*")
                         .permitAll()
                     .anyRequest()
                         .authenticated();

@@ -17,7 +17,7 @@ public class ProfileDto {
 
     private Gender gender;
 
-    private String userName;
+    private String dancerName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date birthDate;
@@ -28,4 +28,9 @@ public class ProfileDto {
 
     private String email;
 
+    private String zipCode;
+
+    private String city;
+
+    private String country;
 }

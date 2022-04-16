@@ -16,6 +16,11 @@ public class ModelMapper {
         profileDto.setId(dancer.getId());
         profileDto.setBirthDate(dancer.getBirthDate());
         profileDto.setSize(dancer.getSize());
+        profileDto.setZipCode(dancer.getZipCode());
+        if (dancer.getCountry()!=null) {
+            profileDto.setCountry(dancer.getCountry().name());
+        }
+        profileDto.setCity(dancer.getCity());
         profileDto.setAbleTo(dancer
                 .getAbleTo()
                 .stream()
