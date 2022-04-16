@@ -221,6 +221,14 @@ paths:
       summary: check if a name is still free
       tags:
         - Profile
+      parameters:
+        - in: path
+          name: dancerName
+          schema:
+            type: string
+          required: true
+          description: is this name free?
+
       responses:
         '200':
           description: true of false
@@ -237,6 +245,20 @@ paths:
       summary: resolve code to location
       tags:
         - Location
+      parameters:
+        - in: path
+          name: country
+          schema:
+            type: string
+          required: true
+          description: country
+        - in: path
+          name: code
+          schema:
+            type: string
+          required: true
+          description: code
+
       responses:
         '200':
           description: get geo coordinates and city from zip code
@@ -253,6 +275,13 @@ paths:
       summary: get image
       tags:
         - Images
+      parameters:
+        - in: path
+          name: hash
+          schema:
+            type: string
+          required: true
+          description: the sha256 hash of the original image
       responses:
         '200':
           description: get it in orginal
@@ -261,6 +290,19 @@ paths:
       summary: get scaled version
       tags:
         - Images
+      parameters:
+        - in: path
+          name: hash
+          schema:
+            type: string
+          required: true
+          description: the sha256 hash of the original image
+        - in: path
+          name: width
+          schema:
+            type: string
+          required: true
+          description: the desired width
       responses:
         '200':
           description: get scaled version 
