@@ -232,7 +232,39 @@ paths:
       responses:
         '200':
           description: retrieves an potentially empty array
-
+  /location/zipCode/{country}/{code}:
+    get:
+      summary: resolve code to location
+      tags:
+        - Location
+      responses:
+        '200':
+          description: get geo coordinates and city from zip code
+  /images:
+    post:
+      summary: uploads a png image
+      tags:
+        - Images
+      responses:
+        '200':
+          description: image was uploaded correctly
+  /images/{hash}.png:
+    get:
+      summary: get image
+      tags:
+        - Images
+      responses:
+        '200':
+          description: get it in orginal
+  /images/{hash}/{width}.png:
+    get:
+      summary: get scaled version
+      tags:
+        - Images
+      responses:
+        '200':
+          description: get scaled version 
+          
 components:
   examples:
     register_user:

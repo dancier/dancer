@@ -38,7 +38,7 @@ public class ImageService {
         }
     }
 
-    public Optional<String> store(MultipartFile multipartFile) {
+    public DancierImage store(MultipartFile multipartFile) {
         String sha256String = null;
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -48,11 +48,10 @@ public class ImageService {
             Path targetLocation = this.imageLocation.resolve(sha256String);
             Files.createDirectory(targetLocation);
             Files.write(targetLocation.resolve(ORIGINAL_FILE_NAME), allBytes);
-
         } catch (Exception noSuchAlgorithmException) {
             new AppliationException("Unable to save ...");
         }
-        return Optional.ofNullable(sha256String);
+        return new DancierImage(sha256String);
     }
     public byte[] load(String hash) throws IOException {
         Path path = imageLocation.resolve(hash).resolve(ORIGINAL_FILE_NAME);

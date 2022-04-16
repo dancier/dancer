@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 
 @RestController
@@ -21,10 +20,9 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("")
-    public ResponseEntity upload(@RequestParam("file")MultipartFile multipartFile) {
+    public ResponseEntity<DancierImage> upload(@RequestParam("file")MultipartFile multipartFile) {
         log.info("Upload received..." + multipartFile);
-        imageService.store(multipartFile);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(imageService.store(multipartFile));
     }
 
     @GetMapping(value = "{hash}.png", produces = MediaType.IMAGE_PNG_VALUE)
