@@ -33,8 +33,8 @@ app:
   mail:
     host: mail.your-server.de
     port: 465
-    user: dev@dancier.net
-    pass: Hb04Nc0FWgKI7Bx8
+    user: user
+    pass: pass
     allForOneAddress: dev@dancier.net
   file:
     dir: ./images-dir
