@@ -1,8 +1,11 @@
 package net.dancier.dancer.images;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,4 +38,11 @@ public class ImageController {
         log.info("Getting Scaled Version..." + width);
         return imageService.load(hash, width);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public String handle(NotFoundException ae) {
+        return ae.getLocalizedMessage();
+    }
+
 }
