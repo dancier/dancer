@@ -1,6 +1,7 @@
 package net.dancier.dancer.images;
 
 import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,7 @@ import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.security.MessageDigest;
 import java.util.Optional;
 
@@ -55,13 +53,21 @@ public class ImageService {
     }
     public byte[] load(String hash) throws IOException {
         Path path = imageLocation.resolve(hash).resolve(ORIGINAL_FILE_NAME);
-        return Files.readAllBytes(path);
+        try {
+            return Files.readAllBytes(path);
+        } catch (NoSuchFileException noSuchFileException) {
+            throw new NotFoundException("This file could not be resolved" , noSuchFileException);
+        }
     }
 
     public byte[] load(String hash, Integer width) throws IOException {
         scaleIfNeccessary(hash, width);
         Path path = imageLocation.resolve(hash).resolve(width.toString() +".png");
-        return Files.readAllBytes(path);
+        try {
+            return Files.readAllBytes(path);
+        } catch (NoSuchFileException noSuchFileException) {
+            throw new NotFoundException("This file could not be resolved" , noSuchFileException);
+        }
     }
 
     void scaleIfNeccessary(String hash, Integer width) throws IOException {
