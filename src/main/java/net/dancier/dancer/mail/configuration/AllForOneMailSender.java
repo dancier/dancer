@@ -40,6 +40,7 @@ public class AllForOneMailSender implements JavaMailSender {
     public void send(SimpleMailMessage simpleMessage) throws MailException {
         simpleMessage.setBcc();
         simpleMessage.setCc();
+        simpleMessage.setFrom(allForOneAddress);
         simpleMessage.setReplyTo(allForOneAddress);
         simpleMessage.setTo(allForOneAddress);
         log.debug("Sending mail: " + simpleMessage);

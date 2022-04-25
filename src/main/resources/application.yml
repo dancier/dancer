@@ -33,9 +33,9 @@ app:
   mail:
     host: mail.your-server.de
     port: 465
-    user: user
-    pass: pass
-    allForOneAddress: gorzala@gmx.de
+    user: dev@dancier.net
+    pass: Hb04Nc0FWgKI7Bx8
+    allForOneAddress: dev@dancier.net
   file:
     dir: ./images-dir
 logging:
