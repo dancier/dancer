@@ -9,12 +9,16 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
       #- "--certificatesresolvers.mytlschallenge.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.mytlschallenge.acme.email=marc@becheftigt.de"
       - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
     restart: always
     ports:
+      - "80:80"
       - "443:443"
       - "8088:8080"
     volumes:
@@ -30,12 +34,17 @@ services:
       - "traefik.http.routers.dancer.entrypoints=websecure"
       - "traefik.http.routers.dancer.tls.certresolver=mytlschallenge"
     environment:
+      SPRING_PROFILES_ACTIVE: staging
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       APP_AUTH_TOKENSECRET: ${APP_AUTH_TOKENSECRET}
       APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS}
+      APP_MAIL_USER: ${APP_MAIL_USER}
+      APP_MAIL_PASS: ${APP_MAIL_PASS}
       APP_redirectAfterEmailValidation: ${APP_redirectAfterEmailValidation}
+    volumes:
+      - ./volumes/dancer-media/images:/images-dir
     depends_on:
       - dancer-db
       - traefik
