@@ -33,4 +33,6 @@ public class ProfileDto {
     private String city;
 
     private String country;
+
+    private String profileImageHash;
 }

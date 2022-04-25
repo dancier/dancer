@@ -1,14 +1,17 @@
 package net.dancier.dancer.core.config;
 
+import liquibase.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private static Logger log = LoggerFactory.getLogger(WebMvcConfig.class);
 
     private final long MAX_AGE_SECS = 3600;
 
@@ -17,6 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        log.info("Configuring CORS for: " + allowedOrigins);
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")

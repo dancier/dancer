@@ -12,6 +12,7 @@ import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -53,6 +54,10 @@ public class ProfileService {
         dancer.setBirthDate(profileDto.getBirthDate());
         dancer.setSize(profileDto.getSize());
         dancer.setZipCode(profileDto.getZipCode());
+        dancer.setProfileImageHash(profileDto.getProfileImageHash());
+        if (dancer.getDancerName()==null) {
+            dancer.setDancerName(profileDto.getDancerName());
+        }
         ZipCode zipCode = zipCodeRepository.findByCountryAndZipCode(profileDto.getCountry(), profileDto.getZipCode());
         if (zipCode!=null) {
             dancer.setCity(zipCode.getCity());

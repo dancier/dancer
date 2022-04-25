@@ -421,4 +421,10 @@
             ADD COLUMN dancer_name VARCHAR(64);
         </sql>
     </changeSet>
+    <changeSet id="2022-04-16" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN profile_image_hash VARCHAR(70);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

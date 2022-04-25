@@ -17,6 +17,8 @@ public class ModelMapper {
         profileDto.setBirthDate(dancer.getBirthDate());
         profileDto.setSize(dancer.getSize());
         profileDto.setZipCode(dancer.getZipCode());
+        profileDto.setDancerName(dancer.getDancerName());
+        profileDto.setProfileImageHash(dancer.getProfileImageHash());
         if (dancer.getCountry()!=null) {
             profileDto.setCountry(dancer.getCountry().name());
         }

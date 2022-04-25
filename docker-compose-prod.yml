@@ -29,7 +29,6 @@ services:
       - "traefik.http.routers.dancer.rule=Host(`dancer.dancier.net`)"
       - "traefik.http.routers.dancer.entrypoints=websecure"
       - "traefik.http.routers.dancer.tls.certresolver=mytlschallenge"
-
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
@@ -39,6 +38,7 @@ services:
       APP_redirectAfterEmailValidation: ${APP_redirectAfterEmailValidation}
     depends_on:
       - dancer-db
+      - traefik
 
   dancer-db:
     image: postgres
@@ -63,5 +63,22 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
     depends_on:
       - dancer-db
+      - traefik
     volumes:
       - ./volumes/pg-admin-data:/var/lib/pgadmin
+
+  show-dancer:
+    image: dancier/show-dancer:latest
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.show-dancer.rule=Host(`dancier.net`)"
+      - "traefik.http.routers.show-dancer.entrypoints=websecure"
+      - "traefik.http.routers.show-dancer.tls.certresolver=mytlschallenge"
+    depends_on:
+      - traefik
+
+  tool:
+    image: ubuntu
+    restart: always
+    stdin_open: true
