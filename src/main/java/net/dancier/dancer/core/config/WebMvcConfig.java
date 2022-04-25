@@ -2,6 +2,7 @@ package net.dancier.dancer.core.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -17,14 +18,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final long MAX_AGE_SECS = 3600;
 
-    @Value("${app.cors.allowedOrigins}")
-    private String[] allowedOrigins;
+    @Autowired
+    CorsConfiguration corsConfiguration;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        log.info("Configuring CORS for: " + String.join(",", allowedOrigins));
+        log.info("Configuring CORS for: " + String.join(",", corsConfiguration.getAllowedOrigins()));
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigins)
+                .allowedOrigins(corsConfiguration.getAllowedOrigins())
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
