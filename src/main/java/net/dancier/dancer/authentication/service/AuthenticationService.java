@@ -55,7 +55,7 @@ public class AuthenticationService {
 
     private final MailCreationService mailCreationService;
 
-    private final String baseNameBackend;
+    private final String frontendBaseName;
 
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
@@ -167,7 +167,7 @@ public class AuthenticationService {
                         MailCreationService.NO_REPLY_FROM,
                         "Dancier - bestätige Deine E-Mail-Adresse!",
                         MailCreationService.NEW_USER_VALIDATE_EMAIL,
-                        Map.of( "validationLink", baseNameBackend + "/authentication/email/validate/" + validationCode)
+                        Map.of( "validationLink", frontendBaseName + "/authentication/verify-email/" + validationCode)
                 ));
     }
 
