@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -74,32 +73,21 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse(false, "You have to validate the email."));
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = authenticationService.generateToken(authentication);
-        Cookie cookie = createCookieExceptMaxAge(jwt);
-        cookie.setMaxAge(30 * 24 * 60 * 60);
+        Cookie cookie = authenticationService.generateCookie(jwt);
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @GetMapping("/logout")
     public ResponseEntity<?> logoutUser(HttpServletResponse httpServletResponse) {
-        Cookie cookie = createCookieExceptMaxAge(null);
+        Cookie cookie = authenticationService.generateCookie(null);
         cookie.setMaxAge(0);
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
 
 
-    private Cookie createCookieExceptMaxAge(String jwt) {
-        Cookie cookie = new Cookie("jwt-token", jwt);
-        cookie.setMaxAge(30 * 24 * 60 * 60);
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        return cookie;
-    }
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
@@ -109,9 +97,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/email/validate/{validationCode}")
-    public ResponseEntity emailValidation(@PathVariable String validationCode) {
-        authenticationService.checkEmailValidationCode(validationCode);
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectAfterEmailValidation)).build();
+    public ResponseEntity emailValidation(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
+        User validatedUser = authenticationService.checkEmailValidationCode(validationCode);
+        Cookie cookie = authenticationService
+                .generateCookie(authenticationService.generateToken(validatedUser.getId().toString()));
+        httpServletResponse.addCookie(cookie);
+        return ResponseEntity.ok(new ApiResponse(true, "Validated and logged in"));
     }
 
     @PostMapping("/password/reset")

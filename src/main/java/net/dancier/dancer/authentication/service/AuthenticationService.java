@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -62,6 +63,20 @@ public class AuthenticationService {
     }
     public String generateToken(Authentication authentication) {
         return this.tokenProvider.generateToken(authentication);
+    }
+
+    public String generateToken(String userId) {
+        return this.tokenProvider.generateToken(userId);
+    }
+
+    public Cookie generateCookie(String token) {
+        Cookie cookie = new Cookie("jwt-token", token);
+        // one month
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        return cookie;
     }
 
     public User getUser(UUID userId) {
@@ -115,19 +130,19 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void checkEmailValidationCode(String code) {
+    public User checkEmailValidationCode(String code) {
         EmailValidationCode emailValidationCode = emailValidationCodeRepository
                 .findByCode(code).orElseThrow(() ->new AppliationException("Unable to validate"));
         if (emailValidationCode.getExpiresAt().isBefore(Instant.now())) {
-            throw new AppliationException("Unable to Validate");
+            throw new AppliationException("Unable to Validate, code already expired");
         };
-        if (!emailValidationCode.getCode().contentEquals(code)) {
-            throw new AppliationException("unable to validate");
-        }
-        User user = userRepository.findById(emailValidationCode.getUserId()).orElseThrow(() -> new AppliationException(""));
+        User user = userRepository.findById(emailValidationCode
+                .getUserId())
+                .orElseThrow(() -> new AppliationException("No user associated with this code."));
         user.setEmailValidated(true);
         emailValidationCodeRepository.delete(emailValidationCode);
         userRepository.save(user);
+        return user;
     }
 
     public String createPasswordResetCode(String email) {

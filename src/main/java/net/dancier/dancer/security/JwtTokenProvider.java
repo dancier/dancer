@@ -25,10 +25,7 @@ public class JwtTokenProvider {
     @Value("${app.auth.tokenExpirationMsec}")
     private int jwtExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
-
-        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-
+    public String generateToken(String userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
@@ -39,11 +36,15 @@ public class JwtTokenProvider {
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         return Jwts.builder()
-                .setSubject(authenticatedUser.getId().toString())
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(signingKey)
                 .compact();
+    }
+    public String generateToken(Authentication authentication) {
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        return generateToken(authenticatedUser.getId().toString());
     }
 
     public UUID getUserIdFromJWT(String token) {

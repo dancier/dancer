@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +43,8 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(status().isForbidden());
 
         validateEmailAddress(emailValidationCode)
-                .andExpect(status().isFound());
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.cookie().exists("jwt-token"));
 
         loginUser(dummyUser)
                 .andExpect(status().isOk());
@@ -71,7 +73,8 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(status().isForbidden());
 
         validateEmailAddress(reRequestedEmailValidationCode)
-                .andExpect(status().isFound());
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.cookie().exists("jwt-token"));
 
         loginUser(dummyUser)
                 .andExpect(status().isOk());

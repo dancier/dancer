@@ -50,17 +50,22 @@ paths:
         - IAM
       parameters:
         - in: path
-          name: validationCode
+          name: email validation Code
           schema:
             type: string
           required: true
-          description: Numeric ID of the user to get
+          description: ID of the user to got via mail
       summary: validates the email address of a user
       description: Validates the email address, that the user provided when he started 
-        the registration process. He should have got a link sent via email. This mail
-        includes a link that points to this endpoint. 
+        the registration process.
+        When he clicks on the link, that browser will be redirected, to the frontend,
+        that will extract the validation code and in turn will make
+        a request to this endpoint.
+        When the validation was successfull, the user will be 
+        directly logged in, by the response setting a proper cookie.
+        In all other case the reason for failing will be returned.
       responses:
-        '301':
+        '200':
           description: if the validation was successfully. The customer will be
            redirected to a configurable url. This url should inform the User, that his 
            mail is no validated and he can login.
