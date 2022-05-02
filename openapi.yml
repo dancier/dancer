@@ -66,10 +66,8 @@ paths:
         In all other case the reason for failing will be returned.
       responses:
         '200':
-          description: if the validation was successfully. The customer will be
-           redirected to a configurable url. This url should inform 
-           the User, that his mail-address is no validated he is already
-           logge in.
+          description: In case the validation was successfully. 
+            The response, also contains a login cookie.
         '400':
           description: in case of any problems like the code not known in the system, 
             outdated or any other problem like this.
