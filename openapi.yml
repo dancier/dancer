@@ -44,13 +44,13 @@ paths:
                 "success": false
                 "messages":
                   - Email address already exist
-  /authentication/email/validate/{validationCode}:
+  /authentication/email/validate/{emailValidationCode}:
     get:
       tags:
         - IAM
       parameters:
         - in: path
-          name: email validation Code
+          name: emailValidationCode
           schema:
             type: string
           required: true
