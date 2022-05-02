@@ -37,30 +37,29 @@ public class AuthenticationController {
 
     private static Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
-    @Value("${app.redirectAfterEmailValidation}")
-    String redirectAfterEmailValidation;
-
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
-        User result;
         try {
-            result = authenticationService.registerUser(registerRequest);
+            authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     new ApiResponse(false, "Email address already exist"));
         }
         URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+                .fromCurrentContextPath()
+                .path("/profile")
+                .build()
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(new ApiResponse(true, "User registered successfully"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDto loginRequestDto,
                                        HttpServletResponse httpServletResponse) {
-
         Authentication authentication = authenticationService.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDto.getEmail(),
@@ -86,7 +85,6 @@ public class AuthenticationController {
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
-
 
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {

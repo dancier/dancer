@@ -14,12 +14,12 @@ import javax.validation.constraints.Size;
 public class RegisterRequestDto {
 
     @NotBlank
-    @Size(max = 40)
+    @Size(max = 100)
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 6, max = 20)
+    @Size(min = 4, max = 40)
     private String password;
 
 }

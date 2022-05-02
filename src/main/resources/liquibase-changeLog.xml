@@ -427,4 +427,10 @@
             ADD COLUMN profile_image_hash VARCHAR(70);
         </sql>
     </changeSet>
+    <changeSet id="2022-05-02 change size of mail" author="">
+        <sql>
+            ALTER TABLE users
+            ALTER COLUMN email TYPE VARCHAR(100);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

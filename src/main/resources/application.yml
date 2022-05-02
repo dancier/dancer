@@ -28,7 +28,6 @@ app:
     tokenExpirationMsec: 864000000
   cors:
     allowedOrigins: http://localhost:4200 # Comma separated list of allowed origins
-  redirectAfterEmailValidation: http://google.de
   # differentiate between success and failure
   mail:
     host: mail.your-server.de
