@@ -76,7 +76,6 @@ public class AuthenticationService {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain("dancer.dancier.net");
         return cookie;
     }
 
