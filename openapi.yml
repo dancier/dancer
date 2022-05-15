@@ -3,7 +3,7 @@ info:
   title: Dancier
   version: '1.0'
 servers:
-  - url: 'https://backend.dancier.net'
+  - url: 'https://dancier.net'
   - url: 'http://localhost:8080'
 paths:
   /authentication/register:
