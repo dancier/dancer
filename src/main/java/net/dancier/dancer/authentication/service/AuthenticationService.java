@@ -73,9 +73,10 @@ public class AuthenticationService {
         Cookie cookie = new Cookie("jwt-token", token);
         // one month
         cookie.setMaxAge(30 * 24 * 60 * 60);
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        cookie.setDomain(".dancier.net");
         return cookie;
     }
 
