@@ -73,7 +73,7 @@ public class AuthenticationService {
         Cookie cookie = new Cookie("jwt-token", token);
         // one month
         cookie.setMaxAge(30 * 24 * 60 * 60);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         return cookie;
