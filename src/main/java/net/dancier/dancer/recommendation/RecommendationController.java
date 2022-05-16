@@ -5,6 +5,7 @@ import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
+import net.dancier.dancer.school.SchoolService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import java.util.List;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
-
     private final DancerService dancerService;
 
     @GetMapping

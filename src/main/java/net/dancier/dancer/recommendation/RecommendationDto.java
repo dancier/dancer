@@ -1,17 +1,26 @@
 package net.dancier.dancer.recommendation;
 
-public class RecommendationDto<T extends Object> {
+import net.dancier.dancer.core.model.Dancer;
+import net.dancier.dancer.school.School;
+
+public class RecommendationDto {
     public enum Type {
         DANCER,
+        SCHOOL,
         EVENT,
         LINK
     }
 
     public Type type;
-    public T payload;
+    public Object payload;
 
-    public RecommendationDto(T recommendable) {
-        this.type = Type.DANCER;
-        this.payload = recommendable;
+    public RecommendationDto(Object recommendable) {
+        if (recommendable instanceof Dancer){
+            this.type = Type.DANCER;
+            this.payload = recommendable;
+        } else if (recommendable instanceof School) {
+            this.type = Type.SCHOOL;
+            this.payload = ModelMapper.schoolToSchoolDto((School)recommendable);
+        }
     }
 }
