@@ -6,6 +6,7 @@ import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
 import net.dancier.dancer.location.DistanceService;
 import net.dancier.dancer.location.ZipCode;
+import net.dancier.dancer.school.SchoolService;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,11 +20,14 @@ public class RecommendationService {
 
     private final DancerService dancerService;
 
+    private final SchoolService schoolService;
+
     private final DistanceService distanceService;
 
     public List<Recommendable> getRecommendationsForDancerId(UUID dancerId) {
         List<Recommendable> recommendables = new ArrayList<>();
         recommendables.addAll(dancerService.getAllDancer());
+        recommendables.addAll(schoolService.getSchoolsForDancer(null));
         return recommendables;
     }
 

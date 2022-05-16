@@ -244,6 +244,12 @@ paths:
       responses:
         '200':
           description: retrieves an potentially empty array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/recommendable"
   /location/zipCode/{country}/{code}:
     get:
       summary: resolve code to location
@@ -338,6 +344,47 @@ components:
         - FEMALE
         - DIVERS
         - NA
+    recommendable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - DANCER
+            - SCHOOL
+        payload:
+          type: object
+          oneOf:
+            - $ref: "#/components/schemas/recommended_dancer"
+            - $ref: "#/components/schemas/recommended_school"
+    recommended_dancer:
+      type: object
+      properties:
+        name:
+          type: string
+    recommended_school:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        supportedDances:
+          description: what can you learn/practise in this school
+          type: array
+          items:
+            type: string
+        country:
+          type: string
+          enum:
+            - GER
+        city:
+          type: string
+        zipCode:
+          type: string
+        profileImageHash:
+          type: string
+        
     dance_profile:
       type: object
       properties:

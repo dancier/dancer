@@ -1,6 +1,11 @@
 package net.dancier.dancer.recommendation;
 
+import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.core.model.Recommendable;
+import net.dancier.dancer.school.School;
+import net.dancier.dancer.school.SchoolDto;
+
+import java.util.stream.Collectors;
 
 public class ModelMapper {
 
@@ -8,4 +13,17 @@ public class ModelMapper {
         return new RecommendationDto(recommendable);
     }
 
+    public static SchoolDto schoolToSchoolDto(School school) {
+        SchoolDto schoolDto = new SchoolDto();
+        schoolDto.setName(school.getName());
+        schoolDto.setUrl(school.getUrl());
+        schoolDto.setSupportedDances(school.getSupportedDances().stream().map(Dance::getName).collect(Collectors.toSet()));
+        schoolDto.setCountry(school.getCountry());
+        schoolDto.setCity(school.getCity());
+        if (school.getZipCode()!=null) {
+            schoolDto.setZipCode(school.getZipCode().getZipCode());
+        }
+        schoolDto.setProfileImageHash(school.getProfileImageHash());
+        return schoolDto;
+    }
 }
