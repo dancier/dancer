@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface DancerRepository extends JpaRepository<Dancer, UUID> {
 
-    Optional<Dancer> findByUserId(UUID uuid);
+    Optional<Dancer> findByUserId(UUID userid);
 
     Boolean existsByDancerName(String dancerName);
 

@@ -44,7 +44,7 @@ public class ProfileController {
 
 
     @PostMapping
-    public ResponseEntity post(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
+    public ResponseEntity patch(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
         profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
         return ResponseEntity.ok().build();
     }

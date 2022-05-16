@@ -1,21 +1,26 @@
 package net.dancier.dancer.school;
 
+import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.model.Country;
 import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.core.model.Dancer;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class SchoolService {
 
+    private final SchoolRepository schoolRepository;
     public List<School> getSchoolsForDancer(Dancer dancer) {
         return getStubbedSchools();
     }
 
+    public void createSchool(UUID userid, School school) {
+        Optional<School> optionalSchool = schoolRepository.findByUserId(userid);
+
+    }
     private List<School> getStubbedSchools() {
         List<School> schools = new ArrayList<>();
         schools.add(getStubbedSchool());

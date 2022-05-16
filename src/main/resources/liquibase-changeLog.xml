@@ -433,4 +433,27 @@
             ALTER COLUMN email TYPE VARCHAR(100);
         </sql>
     </changeSet>
+    <changeSet id="2022-05-16-add-school" author="Marc">
+        <sql>
+            CREATE TABLE school (
+                id UUID NOT NULL,
+                user_id UUID NOT NULL,
+                name VARCHAR(128),
+                url VARCHAR(512),
+                country VARCHAR(64),
+                zip_code VARCHAR(64),
+                city VARCHAR(120),
+                longitude DOUBLE PRECISION,
+                latitude DOUBLE PRECISION,
+                profile_image_hash VARCHAR(70),
+                PRIMARY KEY(id)
+            );
+        </sql>
+        <sql>
+            CREATE TABLE school_dances (
+                school_id UUID NOT NULL,
+                dance_id UUID NOT NULL
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

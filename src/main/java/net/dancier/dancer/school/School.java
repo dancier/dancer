@@ -4,14 +4,17 @@ import lombok.Data;
 import net.dancier.dancer.core.model.Country;
 import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.core.model.Recommendable;
-import net.dancier.dancer.location.ZipCode;
 
+import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
+@Entity
 public class School implements Recommendable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     private UUID userId;
@@ -20,11 +23,17 @@ public class School implements Recommendable {
 
     private String url;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "school_dances",
+            joinColumns = @JoinColumn(name = "school_id"),
+            inverseJoinColumns = @JoinColumn(name ="dance_id")
+    )
     private Set<Dance> supportedDances = Set.of();
 
+    @Enumerated(EnumType.STRING)
     private Country country;
 
-    private ZipCode zipCode;
+    private String zipCode;
 
     private String city;
 

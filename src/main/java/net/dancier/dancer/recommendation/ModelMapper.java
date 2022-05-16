@@ -20,9 +20,7 @@ public class ModelMapper {
         schoolDto.setSupportedDances(school.getSupportedDances().stream().map(Dance::getName).collect(Collectors.toSet()));
         schoolDto.setCountry(school.getCountry());
         schoolDto.setCity(school.getCity());
-        if (school.getZipCode()!=null) {
-            schoolDto.setZipCode(school.getZipCode().getZipCode());
-        }
+        schoolDto.setZipCode(school.getZipCode());
         schoolDto.setProfileImageHash(school.getProfileImageHash());
         return schoolDto;
     }
