@@ -182,7 +182,7 @@ public class AuthenticationService {
                         MailCreationService.NO_REPLY_FROM,
                         "Dancier - bestätige Deine E-Mail-Adresse!",
                         MailCreationService.NEW_USER_VALIDATE_EMAIL,
-                        Map.of( "validationLink", frontendBaseName + "/authentication/verify-email/" + validationCode)
+                        Map.of( "validationLink", frontendBaseName + "/registration/verify-account/" + validationCode)
                 ));
     }
 
