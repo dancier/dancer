@@ -44,7 +44,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest,
-                                      @RequestParam(required = false) String captchaToken) {
+                                      @RequestHeader(required = false, name= "X-Captcha-Token") String captchaToken) {
         try {
             captchaService.verifyToken(captchaToken);
             authenticationService.registerUser(registerRequest);

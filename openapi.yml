@@ -12,8 +12,8 @@ paths:
       tags:
         - IAM
       parameters:
-        - in: query
-          name: captchaToken
+        - in: header
+          name: X-Captcha-Token
           schema:
             type: string
       requestBody:
