@@ -5,6 +5,7 @@ import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
+import net.dancier.dancer.authentication.service.CaptchaService;
 import net.dancier.dancer.core.controller.payload.ApiResponse;
 import net.dancier.dancer.core.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
@@ -39,13 +40,21 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    private final CaptchaService captchaService;
+
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest,
+                                      @RequestParam(required = false) String captchaToken) {
         try {
+            captchaService.verifyToken(captchaToken);
             authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     new ApiResponse(false, "Email address already exist"));
+        } catch (CaptchaException captchaException) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "Not authorized as a human.")
+            );
         }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()

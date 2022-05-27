@@ -90,6 +90,7 @@ public class AuthenticationService {
     @Transactional
     public User registerUser(RegisterRequestDto signUpRequest) {
         log.info("Attempting to register user: " + signUpRequest.getEmail());
+
         if(userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             log.info("User or email already exists.");
             throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getEmail() + " already exists.");

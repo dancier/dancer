@@ -1,7 +1,6 @@
 package net.dancier.dancer.core;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.controller.payload.UserIdentityAvailability;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dance;
@@ -10,7 +9,6 @@ import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,7 +39,6 @@ public class ProfileController {
                 .map(Dance::getName)
                 .collect(Collectors.toList()));
     }
-
 
     @PostMapping
     public ResponseEntity patch(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
