@@ -38,7 +38,7 @@ app:
     dir: ./images-dir
   captcha:
     siteKey: 6LetqBAgAAAAAJXA5K_U88bsxKtyp_vld6J0x-Nv
-    apiKey: AIzaSyBjvPcHxY8d1-zPnaVoYCE3-bFU4tmKL7M
+    apiKey: secret
 logging:
   level:
     root: INFO
