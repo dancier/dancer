@@ -53,7 +53,7 @@ public class AuthenticationController {
                     new ApiResponse(false, "Email address already exist"));
         } catch (CaptchaException captchaException) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse(false, "Not authorized as a human.")
+                    new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
             );
         }
         URI location = ServletUriComponentsBuilder

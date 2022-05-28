@@ -8,6 +8,7 @@ import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -104,9 +105,12 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     private ResultActions registerUser(User user) throws Exception {
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(user);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Captcha-Token", "ok");
         return mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
+                        .headers(headers)
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))
         );
     }

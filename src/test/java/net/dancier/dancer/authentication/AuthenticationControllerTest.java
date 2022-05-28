@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -44,11 +45,13 @@ class AuthenticationControllerTest extends AbstractPostgreSQLEnabledTest {
     void whenRegisterWithValidInput_thenReturns201() throws Exception {
         User dummyUser = AuthenticationTestFactory.dummyUser();
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(dummyUser);
-
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Captcha-Token", "ok");
         when(authenticationService.registerUser(any())).thenReturn(dummyUser);
         mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
+                        .headers(httpHeaders)
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))
         ).andExpect(
                 status().isCreated()

@@ -1,7 +1,7 @@
 package net.dancier.dancer.authentication.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import net.dancier.dancer.authentication.CaptchaException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,15 @@ import org.springframework.stereotype.Service;
 public class CaptchaService {
     private final CaptchaClient captchaClient;
     public void verifyToken(String token) {
-        ResponseEntity<CaptchaClient.Assessment> responseEntity = captchaClient.validate(token);
-        System.out.print(responseEntity);
+        if (token==null) {
+            throw new CaptchaException("No Captcha Token provided.");
+        }
+        ResponseEntity<CaptchaClientProd.Assessment> responseEntity = captchaClient.validate(token);
+        if (responseEntity.getStatusCode().is4xxClientError()) {
+            throw new CaptchaException("Technical Problem with Captcha processing.");
+        }
+        if (!responseEntity.getBody().tokenProperties.valid) {
+            throw new CaptchaException("Token ist not valid. Maybe expired?");
+        }
     }
 }

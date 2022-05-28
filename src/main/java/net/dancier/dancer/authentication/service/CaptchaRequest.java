@@ -1,13 +1,12 @@
 package net.dancier.dancer.authentication.service;
 
-public class CaptchaRequest {
+import lombok.Data;
 
-    public CaptchaRequest() {}
-    Event event;
+public class CaptchaRequest {
+    public Event event;
     static class Event {
-        public Event() {}
-        String token;
-        String siteKey;
+        public String token;
+        public String siteKey;
     }
 }
 
