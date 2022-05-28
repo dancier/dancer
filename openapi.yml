@@ -39,6 +39,16 @@ paths:
                 "success": true
                 "messages":
                   - User registrated successfully
+        '401':
+          description: In case the captche code was not present or the validation failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api_response'
+              example:
+                "success": false
+                "messages":
+                  - "Not authorized as a human: Token ist not valid. Maybe expired?"
         '409':
           description: In case the provided email-adress already exists
           content:
