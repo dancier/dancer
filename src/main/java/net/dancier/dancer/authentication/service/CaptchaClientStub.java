@@ -11,7 +11,10 @@ public class CaptchaClientStub implements CaptchaClient{
     public ResponseEntity validate(String token) {
         CaptchaClientProd.Assessment assessment = new CaptchaClientProd.Assessment();
         CaptchaClientProd.Assessment.TokenProperties tokenProperties = new CaptchaClientProd.Assessment.TokenProperties();
-        tokenProperties.valid = true;
+        switch (token) {
+            case "invalid": tokenProperties.valid = false; break;
+            default: tokenProperties.valid = true;
+        }
         assessment.tokenProperties = tokenProperties;
         return ResponseEntity.ok(assessment);
     }

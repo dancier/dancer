@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class CaptchaService {
     private final CaptchaClient captchaClient;
     public void verifyToken(String token) {
-        if (token==null) {
+        if (token==null || token.isBlank()) {
             throw new CaptchaException("No Captcha Token provided.");
         }
         ResponseEntity<CaptchaClientProd.Assessment> responseEntity = captchaClient.validate(token);
