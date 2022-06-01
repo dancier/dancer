@@ -12,7 +12,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class JwtTokenProvider {
@@ -25,7 +24,7 @@ public class JwtTokenProvider {
     @Value("${app.auth.tokenExpirationMsec}")
     private int jwtExpirationInMs;
 
-    public String generateToken(String userId) {
+    public String generateJwtToken(String userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
@@ -42,18 +41,18 @@ public class JwtTokenProvider {
                 .signWith(signingKey)
                 .compact();
     }
-    public String generateToken(Authentication authentication) {
+    public String generateJwtToken(Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-        return generateToken(authenticatedUser.getId().toString());
+        return generateJwtToken(authenticatedUser.getId().toString());
     }
 
-    public UUID getUserIdFromJWT(String token) {
+    public String getSubjectFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return UUID.fromString(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {

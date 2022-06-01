@@ -6,6 +6,52 @@ servers:
   - url: 'https://dancier.net'
   - url: 'http://localhost:8080'
 paths:
+  /authentication/accountInfo:
+    post:
+      summary: infos about possible accounts, the
+        requesting user must have the ROLE_HUMAN assigned
+      tags:
+        - IAM
+      security:
+        - jwt-token: []
+      requestBody:
+        description: request to get a code send via email, so reset the password
+        required: true
+        content:
+          text/plain:
+            example:
+              foo@bar.de
+            schema:
+              type: string
+              description: the mail
+
+      responses: 
+        '200':
+          description: true of false, depending if an account exists
+          content:
+            text/plain:
+              example:
+                true
+        '401':
+          description: in case the provided users does not have the ROLE_HUMAN.
+      
+  /authentication/whoami:
+    get:
+      summary: information about the user
+      tags:
+        - IAM
+      responses:
+        '200':
+          description: "basic information of the user"
+          content:
+            application/json:
+              example:
+                "emailVerified": true
+                "roles":
+                  - "ROLE_USER"
+                  - "ROLE_HUMAN"
+                "emailAddress": foo@bar.de
+              
   /authentication/register:
     post:
       summary: starts the user registrations process
@@ -129,6 +175,17 @@ paths:
           description: In case the provided credentials were not correct.
         '403':
           description: in case we have not validated the email yet.
+  /authentication/loginAsHuman:
+    post:
+      tags:
+        - IAM
+      responses:
+        '200':
+          description: when the verficaton as a human succeded.
+            A jwt-token with ROLE_HUMAN has been set.
+        '401':
+          description: in case the validation failed.
+
   /authentication/checkEmailAvailability/{email}:
     get:
       tags:
@@ -333,6 +390,11 @@ paths:
           description: get scaled version 
           
 components:
+  securitySchemes:
+    jwt-token:
+      type: apiKey
+      in: cookie
+      name: jwt-token
   examples:
     register_user:
       value:
@@ -344,7 +406,7 @@ components:
         "password": "secret"
     create_email_validation_code:
       value:
-        foobar
+        foo@bar.de
     create_password_reset_code:
       value:
         foobar

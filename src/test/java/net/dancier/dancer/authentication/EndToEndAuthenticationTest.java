@@ -106,7 +106,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
     private ResultActions registerUser(User user) throws Exception {
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(user);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Captcha-Token", "ok");
+        headers.add("X-Captcha-Token", "invalids");
         return mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")

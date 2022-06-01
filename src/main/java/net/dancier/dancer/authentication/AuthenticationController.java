@@ -3,6 +3,7 @@ package net.dancier.dancer.authentication;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.dto.WhoAmIDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.authentication.service.CaptchaService;
@@ -13,11 +14,14 @@ import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +35,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.dancier.dancer.authentication.Constants.ROLE_HUMAN;
+
 @RestController
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
@@ -42,6 +48,26 @@ public class AuthenticationController {
 
     private final CaptchaService captchaService;
 
+    @Secured(ROLE_HUMAN)
+    @PostMapping(value = "/accountInfo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> accountInfo(@RequestBody String email) {
+        return ResponseEntity.ok(authenticationService.existsByEmail(email));
+    }
+
+    @GetMapping("/whoami")
+    public ResponseEntity<?> whoami() {
+        WhoAmIDto.WhoAmIDtoBuilder builder = new WhoAmIDto.WhoAmIDtoBuilder();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        authentication.getAuthorities().stream().forEach( a -> builder.addRole(a.getAuthority()));
+        Object principalObject = authentication.getPrincipal();
+        if (principalObject!=null && principalObject instanceof AuthenticatedUser) {
+            AuthenticatedUser authenticatedUser = (AuthenticatedUser) principalObject;
+            builder.isEmailVerified(authenticatedUser.isEmailValidated());
+            builder.withEmailAddress(authenticatedUser.getUsername());
+        }
+        return ResponseEntity.ok(builder.build());
+    }
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest,
                                       @RequestHeader(required = false, name= "X-Captcha-Token") String captchaToken) {
@@ -81,10 +107,29 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse(false, "You have to validate the email."));
         }
-        String jwt = authenticationService.generateToken(authentication);
+        String jwt = authenticationService.generateJwtToken(authentication);
         Cookie cookie = authenticationService.generateCookie(jwt);
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    }
+
+    @PostMapping("/loginAsHuman")
+    public ResponseEntity<?> loginAsHuman(@RequestHeader(required = false, name = "X-Captcha-Token") String token,
+                                          HttpServletResponse httpServletResponse) {
+        Cookie cookie = null;
+        try {
+           captchaService.verifyToken(token);
+           cookie = authenticationService
+                   .generateCookie(
+                           authenticationService.generateJwtToken("HUMAN")
+                   );
+           httpServletResponse.addCookie(cookie);
+        } catch (CaptchaException captchaException) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
+            );
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/logout")
@@ -107,7 +152,7 @@ public class AuthenticationController {
     public ResponseEntity emailValidation(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
         User validatedUser = authenticationService.checkEmailValidationCode(validationCode);
         Cookie cookie = authenticationService
-                .generateCookie(authenticationService.generateToken(validatedUser.getId().toString()));
+                .generateCookie(authenticationService.generateJwtToken(validatedUser.getId().toString()));
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok(new ApiResponse(true, "Validated and logged in"));
     }
@@ -147,4 +192,5 @@ public class AuthenticationController {
     public String handle(AppliationException ae) {
         return ae.getLocalizedMessage();
     }
+
 }

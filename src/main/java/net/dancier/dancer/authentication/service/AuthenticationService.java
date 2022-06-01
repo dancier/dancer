@@ -61,12 +61,12 @@ public class AuthenticationService {
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
     }
-    public String generateToken(Authentication authentication) {
-        return this.tokenProvider.generateToken(authentication);
+    public String generateJwtToken(Authentication authentication) {
+        return this.tokenProvider.generateJwtToken(authentication);
     }
 
-    public String generateToken(String userId) {
-        return this.tokenProvider.generateToken(userId);
+    public String generateJwtToken(String subject) {
+        return this.tokenProvider.generateJwtToken(subject);
     }
 
     public Cookie generateCookie(String token) {
