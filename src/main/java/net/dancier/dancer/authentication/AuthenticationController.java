@@ -69,18 +69,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(builder.build());
     }
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest,
-                                      @RequestHeader(required = false, name= "X-Captcha-Token") String captchaToken) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         try {
-            captchaService.verifyToken(captchaToken);
             authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
+
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     new ApiResponse(false, "Email address already exist"));
-        } catch (CaptchaException captchaException) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
-            );
         }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
@@ -89,7 +84,7 @@ public class AuthenticationController {
                 .toUri();
         return ResponseEntity
                 .created(location)
-                .body(new ApiResponse(true, "User registered successfully"));
+                .build();
     }
 
     @PostMapping("/login")

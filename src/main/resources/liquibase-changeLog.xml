@@ -456,4 +456,15 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="2022-06-01" author="Marc">
+        <sql>
+            CREATE TABLE auth_verified_action_codes (
+            id uuid PRIMARY KEY,
+            action varchar(256) NOT NULL,
+            user_id uuid NOT NULL,
+            code varchar(256) NOT NULL,
+            expires_at TIMESTAMP WITHOUT TIME ZONE
+            )
+        </sql>
+    </changeSet>
 </databaseChangeLog>

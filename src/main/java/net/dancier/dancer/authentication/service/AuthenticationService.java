@@ -5,10 +5,7 @@ import net.bytebuddy.utility.RandomString;
 import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.*;
-import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
-import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
-import net.dancier.dancer.authentication.repository.RoleRepository;
-import net.dancier.dancer.authentication.repository.UserRepository;
+import net.dancier.dancer.authentication.repository.*;
 import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
@@ -56,6 +53,7 @@ public class AuthenticationService {
 
     private final MailCreationService mailCreationService;
 
+    private final VerifiedActionCodeRepository verifiedActionCodeRepository;
     private final String frontendBaseName;
 
     public Authentication authenticate(Authentication authentication) {
@@ -121,7 +119,7 @@ public class AuthenticationService {
         emailValidationCode.setUserId(user.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
         emailValidationCodeRepository.save(emailValidationCode);
-        enqueueValidationCodeMail(user, emailValidationCode.getCode());
+        enqueueUserMail(user, emailValidationCode.getCode());
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
     }
 
@@ -144,6 +142,13 @@ public class AuthenticationService {
         emailValidationCodeRepository.delete(emailValidationCode);
         userRepository.save(user);
         return user;
+    }
+
+    public String createEmailLoginCode(UUID userId) {
+        VerifiedActionCode verifiedActionCode = createNewVerifiedActionCode(VerifiedActionCode.Action.LOGIN, userId);
+        verifiedActionCodeRepository.save(verifiedActionCode);
+
+        return null;
     }
 
     public String createPasswordResetCode(String email) {
@@ -176,7 +181,7 @@ public class AuthenticationService {
         return this.userRepository.existsByEmail(email);
     }
 
-    private void enqueueValidationCodeMail(User user, String validationCode) {
+    private void enqueueUserMail(User user, String validationCode) {
         mailEnqueueService.enqueueMail(
                 mailCreationService.createDancierMessageFromTemplate(
                         user.getEmail(),
@@ -187,4 +192,12 @@ public class AuthenticationService {
                 ));
     }
 
+    private VerifiedActionCode createNewVerifiedActionCode(VerifiedActionCode.Action action, UUID userId) {
+        VerifiedActionCode verifiedActionCode = new VerifiedActionCode();
+        verifiedActionCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
+        verifiedActionCode.setUserId(userId);
+        verifiedActionCode.setCode(UUID.randomUUID().toString());
+        verifiedActionCode.setAction(action);
+        return verifiedActionCode;
+    }
 }
