@@ -6,12 +6,15 @@ import net.dancier.dancer.TestDatabaseHelper;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
+import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import javax.servlet.http.Cookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,6 +28,9 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     private TestDatabaseHelper testDatabaseHelper;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     void registrationHappyPath() throws Exception {
@@ -105,13 +111,16 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     private ResultActions registerUser(User user) throws Exception {
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(user);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Captcha-Token", "invalids");
         return mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
-                        .headers(headers)
+                        .cookie(getHumanCookie())
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))
         );
     }
+
+    private Cookie getHumanCookie() {
+        return new Cookie("jwt-token", jwtTokenProvider.generateJwtToken("HUMAN"));
+    }
+
 }

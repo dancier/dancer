@@ -467,4 +467,13 @@
             )
         </sql>
     </changeSet>
+    <changeSet id="2022-06-02-human-role" author="Marc">
+        <sql>
+            INSERT INTO roles(id, name)
+            SELECT gen_random_uuid(), 'ROLE_HUMAN'
+            WHERE NOT EXISTS (
+            SELECT * FROM roles WHERE name = 'ROLE_HUMAN'
+            )
+        </sql>
+    </changeSet>
 </databaseChangeLog>

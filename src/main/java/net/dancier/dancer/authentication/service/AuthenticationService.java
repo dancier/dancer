@@ -24,10 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -84,7 +81,6 @@ public class AuthenticationService {
             throw new NotFoundException("No user found with this userId: " + userId, entityNotFoundException);
         }
     }
-
     @Transactional
     public User registerUser(RegisterRequestDto signUpRequest) {
         log.info("Attempting to register user: " + signUpRequest.getEmail());
@@ -100,9 +96,15 @@ public class AuthenticationService {
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppliationException("User Role could not be set."));
-        user.setRoles(Collections.singleton(userRole));
+        Role humanRole = roleRepository.findByName(RoleName.ROLE_HUMAN)
+                .orElseThrow(() -> new AppliationException("Human Role could not be set."));
+        List<Role> roles = new ArrayList<>();
+        roles.add(userRole);
+        roles.add(humanRole);
+        user.setRoles(roles);
 
         User savedUser = userRepository.save(user);
+        userRepository.flush();
         createEmailValidationCode(savedUser);
         return savedUser;
     }
@@ -141,6 +143,7 @@ public class AuthenticationService {
         user.setEmailValidated(true);
         emailValidationCodeRepository.delete(emailValidationCode);
         userRepository.save(user);
+        userRepository.flush();
         return user;
     }
 

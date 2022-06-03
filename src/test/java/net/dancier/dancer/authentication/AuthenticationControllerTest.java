@@ -5,6 +5,7 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
+import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.http.Cookie;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -24,6 +27,9 @@ class AuthenticationControllerTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     private MockMvc mockMvc;
 
@@ -45,17 +51,18 @@ class AuthenticationControllerTest extends AbstractPostgreSQLEnabledTest {
     void whenRegisterWithValidInput_thenReturns201() throws Exception {
         User dummyUser = AuthenticationTestFactory.dummyUser();
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(dummyUser);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Captcha-Token", "ok");
         when(authenticationService.registerUser(any())).thenReturn(dummyUser);
         mockMvc.perform(
                 post("/authentication/register")
                         .contentType("application/json")
-                        .headers(httpHeaders)
+                        .cookie(getHumanCookie())
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))
         ).andExpect(
                 status().isCreated()
         );
     }
 
+    private Cookie getHumanCookie() {
+        return new Cookie("jwt-token", jwtTokenProvider.generateJwtToken("HUMAN"));
+    }
 }
