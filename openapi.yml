@@ -396,6 +396,7 @@ components:
       value:
         "email": "foo@bar.de"
         "password": "secrect"
+        "acceptTermsAndConditions": "true"
     login_user:
       value:
         "email": "foo@bar.de"

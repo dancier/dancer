@@ -10,6 +10,7 @@ public class AuthenticationTestFactory {
         RegisterRequestDto registerRequestDto = new RegisterRequestDto();
         registerRequestDto.setEmail(user.getEmail());
         registerRequestDto.setPassword(user.getPassword());
+        registerRequestDto.setAcceptTermsAndConditions(Boolean.TRUE);
         return registerRequestDto;
     }
 
