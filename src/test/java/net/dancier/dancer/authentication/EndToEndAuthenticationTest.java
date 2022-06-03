@@ -90,6 +90,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
     private ResultActions reRequestEmailValidationCode(User user) throws Exception {
         return mockMvc.perform(
                 post("/authentication/email/validation")
+                        .cookie(getHumanCookie())
                         .contentType(MediaType.TEXT_PLAIN).content(user.getEmail())
         );
     }

@@ -136,6 +136,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
+    @Secured("ROLE_HUMAN")
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
