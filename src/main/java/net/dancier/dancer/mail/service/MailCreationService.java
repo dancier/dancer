@@ -20,6 +20,8 @@ public class MailCreationService {
 
     public final static String NEW_USER_VALIDATE_EMAIL = "text/new-user-validate-email";
 
+    public final static String USER_ALREADY_EXISTS_EMAIL = "text/new-user-already-exists-email";
+
     public final static String NO_REPLY_FROM = "no-reply@dancier.net";
 
     private final TemplateEngine emailTemplateEngine;

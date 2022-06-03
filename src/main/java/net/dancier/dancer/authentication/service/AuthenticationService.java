@@ -82,31 +82,41 @@ public class AuthenticationService {
         }
     }
     @Transactional
-    public User registerUser(RegisterRequestDto signUpRequest) {
+    public void registerUser(RegisterRequestDto signUpRequest) {
         log.info("Attempting to register user: " + signUpRequest.getEmail());
 
         if(userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             log.info("User or email already exists.");
-            throw new UserOrEmailAlreadyExistsException("User: " + signUpRequest.getEmail() + " already exists.");
+            handleRegistrationAttemptOfAlreadyExistingAccount(userRepository.findByEmail(signUpRequest.getEmail()).get());
+        } else {
+            User user = new User(
+                    signUpRequest.getEmail(),
+                    signUpRequest.getPassword());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new AppliationException("User Role could not be set."));
+            Role humanRole = roleRepository.findByName(RoleName.ROLE_HUMAN)
+                    .orElseThrow(() -> new AppliationException("Human Role could not be set."));
+            List<Role> roles = new ArrayList<>();
+            roles.add(userRole);
+            roles.add(humanRole);
+            user.setRoles(roles);
+
+            User savedUser = userRepository.save(user);
+            userRepository.flush();
+            createEmailValidationCode(savedUser);
         }
-        User user = new User(
-                signUpRequest.getEmail(),
-                signUpRequest.getPassword());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
 
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppliationException("User Role could not be set."));
-        Role humanRole = roleRepository.findByName(RoleName.ROLE_HUMAN)
-                .orElseThrow(() -> new AppliationException("Human Role could not be set."));
-        List<Role> roles = new ArrayList<>();
-        roles.add(userRole);
-        roles.add(humanRole);
-        user.setRoles(roles);
-
-        User savedUser = userRepository.save(user);
-        userRepository.flush();
-        createEmailValidationCode(savedUser);
-        return savedUser;
+    private void handleRegistrationAttemptOfAlreadyExistingAccount(User user) {
+        String passwordResetCode = createPasswordResetCode(user.getEmail());
+        enqueueTypedUserMail(user,"Gibt es schon", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
+                Map.of("passwordResetLink",
+                        frontendBaseName + "/authentication/reset-password/" + passwordResetCode,
+                        "email", user.getEmail(),
+                        "loginLink", frontendBaseName + "/login")
+                );
     }
 
     @Transactional
@@ -147,13 +157,6 @@ public class AuthenticationService {
         return user;
     }
 
-    public String createEmailLoginCode(UUID userId) {
-        VerifiedActionCode verifiedActionCode = createNewVerifiedActionCode(VerifiedActionCode.Action.LOGIN, userId);
-        verifiedActionCodeRepository.save(verifiedActionCode);
-
-        return null;
-    }
-
     public String createPasswordResetCode(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppliationException(""));
         PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
@@ -184,6 +187,20 @@ public class AuthenticationService {
         return this.userRepository.existsByEmail(email);
     }
 
+    private void enqueueTypedUserMail(User user,
+                                      String subject,
+                                      String template,
+                                      Map<String, Object> data) {
+        mailEnqueueService.enqueueMail(
+                mailCreationService.createDancierMessageFromTemplate(
+                        user.getEmail(),
+                        MailCreationService.NO_REPLY_FROM,
+                        subject,
+                        template,
+                        data
+                )
+        );
+    }
     private void enqueueUserMail(User user, String validationCode) {
         mailEnqueueService.enqueueMail(
                 mailCreationService.createDancierMessageFromTemplate(

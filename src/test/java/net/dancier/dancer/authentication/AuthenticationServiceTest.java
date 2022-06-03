@@ -27,8 +27,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
@@ -87,22 +86,21 @@ class AuthenticationServiceTest {
         when(roleRepositoryMock.findByName(any())).thenReturn(Optional.of(dummyRole()));
         when(userRepositoryMock.save(any())).thenReturn(dummyUser(true));
 
-        User user = underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
-
-        assertThat(user).isNotNull();
+        underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
 
         verify(validationCodeRepositoryMock).save(any());
         verify(userRepositoryMock).save(any());
     }
 
     @Test
-    void registerThrowsExceptionWhenUserAlreadyExists() {
+    void mailIsEnqueudWhenUserAlreadyExists() {
         when(userRepositoryMock.findByEmail(
                 dummyUser().getEmail()))
                 .thenReturn(Optional.of(dummyUser()));
 
-        assertThrows(UserOrEmailAlreadyExistsException.class,
-                () -> underTest.registerUser(dummyRegisterRequestDto(dummyUser())));
+        underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
+
+        verify(mailEnqueueService, times(1)).enqueueMail(any());
     }
 
     @Test

@@ -47,7 +47,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     private final CaptchaService captchaService;
-    
+
     @GetMapping("/whoami")
     public ResponseEntity<?> whoami() {
         WhoAmIDto.WhoAmIDtoBuilder builder = new WhoAmIDto.WhoAmIDtoBuilder();

@@ -1,0 +1,16 @@
+Hallo,
+
+scheinbar hast Du gerade versucht mit der [( ${email} )] Mitglied auf dancier.net zu werden
+(oder warst das gar nicht Du?), dabei bist Du schon Mitglied!
+
+Du kannst Dich einfach mit folgendem Link anmelden (wenn Du Dein Passwort noch kennst):
+
+[( ${loginLink} )]
+
+Wenn Du Dein Passwort nicht mehr kennst, dann kannst Du es mit diesem Link selber zurücksetzen:
+
+[( ${passwordResetLink} )]
+
+Lieber Gruß
+Marc von dancier.
+
