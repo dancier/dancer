@@ -42,3 +42,4 @@ dependency-reduced-pom.xml
 .env
 
 dancer-data
+volumes/
