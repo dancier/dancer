@@ -47,13 +47,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     private final CaptchaService captchaService;
-
-    @Secured(ROLE_HUMAN)
-    @PostMapping(value = "/accountInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> accountInfo(@RequestBody String email) {
-        return ResponseEntity.ok(authenticationService.existsByEmail(email));
-    }
-
+    
     @GetMapping("/whoami")
     public ResponseEntity<?> whoami() {
         WhoAmIDto.WhoAmIDtoBuilder builder = new WhoAmIDto.WhoAmIDtoBuilder();
@@ -68,7 +62,7 @@ public class AuthenticationController {
         }
         return ResponseEntity.ok(builder.build());
     }
-    @Secured("ROLE_HUMAN")
+    @Secured(ROLE_HUMAN)
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         try {
@@ -136,7 +130,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @Secured("ROLE_HUMAN")
+    @Secured(ROLE_HUMAN)
     @PostMapping("/email/validation")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
@@ -154,6 +148,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new ApiResponse(true, "Validated and logged in"));
     }
 
+    @Secured(ROLE_HUMAN)
     @PostMapping("/password/reset")
     public ResponseEntity createPasswortResetCode(@RequestBody String userOrEmail) {
         authenticationService.createPasswordResetCode(userOrEmail);
@@ -164,11 +159,6 @@ public class AuthenticationController {
     public ResponseEntity validatePassword(@PathVariable String validationCode) {
         String newPassword = authenticationService.checkPasswortCodeRequestAndCreateNew(validationCode);
         return ResponseEntity.ok(new NewPasswortDto(newPassword));
-    }
-
-    @GetMapping("/checkEmailAvailability/{email}")
-    public ResponseEntity<?> checkEmailAvailability(@PathVariable String email) {
-        return ResponseEntity.ok(!authenticationService.existsByEmail(email));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
