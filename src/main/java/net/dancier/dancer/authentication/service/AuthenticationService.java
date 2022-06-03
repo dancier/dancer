@@ -111,16 +111,31 @@ public class AuthenticationService {
 
     private void handleRegistrationAttemptOfAlreadyExistingAccount(User user) {
         String passwordResetCode = createPasswordResetCode(user.getEmail());
-        enqueueTypedUserMail(user,"Gibt es schon", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
-                Map.of("passwordResetLink",
-                        frontendBaseName + "/authentication/reset-password/" + passwordResetCode,
+        String loginLink =
+                user.isEmailValidated()
+                        ?
+                            loginLink():
+                            emailValidationLink(createEmailValidationCode(user));
+
+        enqueueTypedUserMail(user,"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
+                Map.of("passwordResetLink", passwordResetLink(passwordResetCode),
                         "email", user.getEmail(),
-                        "loginLink", frontendBaseName + "/login")
+                        "loginLink", loginLink)
                 );
     }
 
+    private String passwordResetLink(String passwordResetCode) {
+        return frontendBaseName + "/authentication/reset-password/" + passwordResetCode;
+    }
+
+    private String emailValidationLink(String validationCode) {
+        return frontendBaseName + "/registration/verify-account/" + validationCode;
+    }
+    private String loginLink() {
+        return frontendBaseName + "/login";
+    }
     @Transactional
-    public void createEmailValidationCode(User user) {
+    public String createEmailValidationCode(User user) {
         Objects.requireNonNull(user.getId());
         EmailValidationCode emailValidationCode = emailValidationCodeRepository
                 .findByUserId(user.getId())
@@ -133,6 +148,7 @@ public class AuthenticationService {
         emailValidationCodeRepository.save(emailValidationCode);
         enqueueUserMail(user, emailValidationCode.getCode());
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + user);
+        return emailValidationCode.getCode();
     }
 
     public void createEmailValidationCode(String email) {
@@ -204,12 +220,13 @@ public class AuthenticationService {
     private void enqueueUserMail(User user, String validationCode) {
         mailEnqueueService.enqueueMail(
                 mailCreationService.createDancierMessageFromTemplate(
-                        user.getEmail(),
-                        MailCreationService.NO_REPLY_FROM,
-                        "Dancier - bestätige Deine E-Mail-Adresse!",
-                        MailCreationService.NEW_USER_VALIDATE_EMAIL,
-                        Map.of( "validationLink", frontendBaseName + "/registration/verify-account/" + validationCode)
-                ));
+                    user.getEmail(),
+                    MailCreationService.NO_REPLY_FROM,
+                    "Dancier - bestätige Deine E-Mail-Adresse!",
+                    MailCreationService.NEW_USER_VALIDATE_EMAIL,
+                    Map.of( "validationLink", emailValidationLink(validationCode)
+                ))
+        );
     }
 
     private VerifiedActionCode createNewVerifiedActionCode(VerifiedActionCode.Action action, UUID userId) {

@@ -1,11 +1,9 @@
-Hallo [( ${name} )],
+Hallo,
 
-Du musst noch gerade Deine Email für die Anlage des Accounts bestätigen. Klicke hierzu bitte auf folgenden Link:
+schön, dass Du Mitglied bei uns werden möchtest. Bestätige als nächstes Deine Email durch Klick auf folgenden Link:
 
 [( ${validationLink} )]
 
-Du hast gar nicht versucht einen Account bei dancier anzulegen? Dann hat das jemand anderes für Dich versucht. Bitte informieren uns hierüber.
-
 Lieber Gruß
-Marc von dancier.
+Dein Dancier.net
 

@@ -93,10 +93,10 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void mailIsEnqueudWhenUserAlreadyExists() {
+    void mailIsEnqueudWhenAccountAlreadyExists() {
         when(userRepositoryMock.findByEmail(
                 dummyUser().getEmail()))
-                .thenReturn(Optional.of(dummyUser()));
+                .thenReturn(Optional.of(dummyUser(true)));
 
         underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
 
@@ -174,6 +174,7 @@ class AuthenticationServiceTest {
         User user = new User("info@foo.de", "secret");
         if (savedUser) {
             user.setId(userId);
+            user.setEmailValidated(true);
         }
         return user;
     }
