@@ -54,14 +54,10 @@ paths:
               
   /authentication/register:
     post:
-      summary: starts the user registrations process
+      summary: starts the user registrations process, 
+        the client need to have ROLE_HUMAN assigned 
       tags:
         - IAM
-      parameters:
-        - in: header
-          name: X-Captcha-Token
-          schema:
-            type: string
       requestBody:
         description: email address and the password for the user
         required: true
