@@ -511,7 +511,7 @@ components:
           type: integer
         gender:
           $ref: "#/components/schemas/gender"
-        username:
+        dancerName:
           type: string
         birthDate:
           type: string
@@ -525,6 +525,16 @@ components:
           items:
             $ref: '#/components/schemas/dance_profile'
         email:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+          enum:
+            - GER
+        profileImageHash:
           type: string
     register_user:
       type: object
