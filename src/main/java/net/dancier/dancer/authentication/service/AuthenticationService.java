@@ -1,9 +1,6 @@
 package net.dancier.dancer.authentication.service;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
-import net.dancier.dancer.authentication.UserOrEmailAlreadyExistsException;
-import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.*;
@@ -185,13 +182,13 @@ public class AuthenticationService {
         return passwordResetCode.getCode();
     }
 
-    public void checkPasswortCodeRequestAndCreateNew(String code, NewPasswortDto newPasswortDto) {
+    public void checkPasswortCodeRequestAndCreateNew(String code, String newPassword) {
         PasswordResetCode passwordResetCode = this.passwordResetCodeRepository
                 .findByCode(code)
                 .orElseThrow(
                         () -> new BusinessException("No such code"));
         User user = userRepository.getById(passwordResetCode.getUserId());
-        user.setPassword(passwordEncoder.encode(newPasswortDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         passwordResetCodeRepository.delete(passwordResetCode);
         log.info(passwordResetCode.toString());

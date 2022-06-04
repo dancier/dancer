@@ -1,12 +1,11 @@
 package net.dancier.dancer.authentication;
 
-import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.*;
+import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
 import net.dancier.dancer.authentication.repository.RoleRepository;
 import net.dancier.dancer.authentication.repository.UserRepository;
-import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
@@ -156,14 +155,14 @@ class AuthenticationServiceTest {
 
     @Test
     void checkPasswortCodeRequestAndCreateNewPassword() {
-        String newPasswortCode = "foo";
-        NewPasswortDto newPasswortDto = new NewPasswortDto("bar");
+        String newPasswordCode = "foo";
+        String newPassword = "bar";
 
-        when(passwordResetCodeRepositoryMock.findByCode(newPasswortCode))
-                .thenReturn(Optional.of(dummyPasswortResetCode(newPasswortCode)));
+        when(passwordResetCodeRepositoryMock.findByCode(newPasswordCode))
+                .thenReturn(Optional.of(dummyPasswortResetCode(newPasswordCode)));
         when(userRepositoryMock.getById(userId)).thenReturn(dummyUser(true));
 
-        underTest.checkPasswortCodeRequestAndCreateNew(newPasswortCode, newPasswortDto);
+        underTest.checkPasswortCodeRequestAndCreateNew(newPasswordCode, newPassword);
 
         verify(userRepositoryMock, times(1)).save(any());
     }
