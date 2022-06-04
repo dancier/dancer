@@ -152,7 +152,7 @@ public class AuthenticationController {
     @PostMapping("/password/reset")
     public ResponseEntity createPasswortResetCode(@RequestBody String userOrEmail) {
         authenticationService.createPasswordResetCode(userOrEmail);
-        return ResponseEntity.ok(new ApiResponse(true, "super"));
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/password/reset/{validationCode}")
