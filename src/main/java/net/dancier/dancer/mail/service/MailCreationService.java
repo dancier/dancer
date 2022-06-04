@@ -22,6 +22,8 @@ public class MailCreationService {
 
     public final static String USER_ALREADY_EXISTS_EMAIL = "text/new-user-already-exists-email";
 
+    public final static String PASSWORD_CHANGE_REQUEST_EMAIL = "text/password-change-request-email";
+
     public final static String NO_REPLY_FROM = "no-reply@dancier.net";
 
     private final TemplateEngine emailTemplateEngine;

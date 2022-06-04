@@ -160,7 +160,7 @@ paths:
       responses:
         '200' : 
           description: This logs out the user. It resets the cookie. Any valid tokens are not affected.
-  /authentication/password/reset:
+  /authentication/password/change:
     post:
       tags:
         - IAM
@@ -180,7 +180,7 @@ paths:
         '200':
           description: mail was send
 
-  /authentication/password/reset/{validationCode}:
+  /authentication/password/change/{validationCode}:
     get:
       summary: reset the password
       description: the link with the validationCode has been send to the 

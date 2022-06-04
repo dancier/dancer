@@ -115,7 +115,7 @@ public class AuthenticationService {
                             loginLink():
                             emailValidationLink(createEmailValidationCode(user));
 
-        enqueueTypedUserMail(user,"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
+        enqueueTypedUserMail(user.getEmail(),"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
                 Map.of("passwordResetLink", passwordResetLink(passwordResetCode),
                         "email", user.getEmail(),
                         "loginLink", loginLink)
@@ -197,17 +197,20 @@ public class AuthenticationService {
         log.info(passwordResetCode.toString());
     }
 
-    public boolean existsByEmail(String email) {
-        return this.userRepository.existsByEmail(email);
-    }
+    public void sendChangePasswordMail(String email, String code) {
+        enqueueTypedUserMail(email,
+                "Du möchtest dein Passwort auf dancier.net ändern...",
+                MailCreationService.PASSWORD_CHANGE_REQUEST_EMAIL,
+                Map.of("changePasswordLink", passwordResetLink(code))
+        );
 
-    private void enqueueTypedUserMail(User user,
+    }    private void enqueueTypedUserMail(String email,
                                       String subject,
                                       String template,
                                       Map<String, Object> data) {
         mailEnqueueService.enqueueMail(
                 mailCreationService.createDancierMessageFromTemplate(
-                        user.getEmail(),
+                        email,
                         MailCreationService.NO_REPLY_FROM,
                         subject,
                         template,

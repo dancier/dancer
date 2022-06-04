@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_HUMAN;
 
@@ -146,13 +147,16 @@ public class AuthenticationController {
     }
 
     @Secured(ROLE_HUMAN)
-    @PostMapping("/password/reset")
-    public ResponseEntity createPasswortResetCode(@RequestBody String userOrEmail) {
-        authenticationService.createPasswordResetCode(userOrEmail);
+    @PostMapping("/password/change")
+    public ResponseEntity createPasswortResetCode(@RequestBody String email) {
+        Optional<String> optionalCode =  authenticationService.createPasswordResetCode(email.trim());
+        if (optionalCode.isPresent()) {
+            authenticationService.sendChangePasswordMail(email.trim(), optionalCode.get());
+        }
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/password/reset/{validationCode}")
+    @PostMapping("/password/change/{validationCode}")
     public ResponseEntity changePassword(@PathVariable String validationCode,
                                          @RequestBody Map<String, String> newPasswortRequest) {
         String newPasswort = newPasswortRequest.get("password");
