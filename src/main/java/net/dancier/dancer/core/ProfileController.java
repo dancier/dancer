@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
-import static net.dancier.dancer.authentication.Constants.ROLE_HUMAN;
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
 @RestController
@@ -48,7 +47,7 @@ public class ProfileController {
 
     @Secured(ROLE_USER)
     @PostMapping
-    public ResponseEntity patch(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
+    public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
         profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
         return ResponseEntity.ok().build();
     }

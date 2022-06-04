@@ -33,6 +33,7 @@ public class ModelMapper {
                 .map(ModelMapper::danceProfile2danceProfileDto).collect(Collectors.toSet())
         );
         profileDto.setEmail(user.getEmail());
+        profileDto.setAboutMe(dancer.getAboutMe());
         return profileDto;
     }
 

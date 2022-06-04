@@ -440,13 +440,23 @@ components:
       properties:
         size:
           type: integer
+        aboutMe:
+          type: string
         gender:
           $ref: "#/components/schemas/gender"
-        username:
+        dancerName:
           type: string
         birthDate:
           type: string
           format: date
+        zipCode:
+          type: string
+        country:
+          type: string
+          enum:
+            - GER
+        profileImageHash:
+          type: string
         ableTo:
           type: array
           items:
@@ -459,6 +469,8 @@ components:
       type: object
       properties:
         id:
+          type: string
+        aboutMe:
           type: string
         size:
           type: integer

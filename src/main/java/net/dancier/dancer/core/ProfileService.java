@@ -55,6 +55,7 @@ public class ProfileService {
         dancer.setSize(profileDto.getSize());
         dancer.setZipCode(profileDto.getZipCode());
         dancer.setProfileImageHash(profileDto.getProfileImageHash());
+        dancer.setAboutMe(profileDto.getAboutMe());
         if (dancer.getDancerName()==null) {
             dancer.setDancerName(profileDto.getDancerName());
         }

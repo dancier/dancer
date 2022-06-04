@@ -57,4 +57,5 @@ public class Dancer implements Recommendable{
 
     private String profileImageHash;
 
+    private String aboutMe;
 }

@@ -476,4 +476,10 @@
             )
         </sql>
     </changeSet>
+    <changeSet id="2022-06-04-add-aboutme-to-dancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN about_me VARCHAR(300);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
