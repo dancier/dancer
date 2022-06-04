@@ -123,7 +123,7 @@ public class AuthenticationService {
     }
 
     private String passwordResetLink(String passwordResetCode) {
-        return frontendBaseName + "/authentication/reset-password/" + passwordResetCode;
+        return frontendBaseName + "/authentication/change-password/" + passwordResetCode;
     }
 
     private String emailValidationLink(String validationCode) {
