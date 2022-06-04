@@ -143,14 +143,11 @@ class AuthenticationServiceTest {
 
     @Test
     void createPasswordValidationCode() {
-        User userToHaveAPasswordValidationCode = dummyUser(true);
+        User existingUser = dummyUser(true);
 
-        when(userRepositoryMock.findByEmail(any()))
-                .thenReturn(Optional.of(userToHaveAPasswordValidationCode));
+        String optionalCode = underTest.createPasswordResetCode(existingUser);
 
-        String passwordValidationCode = underTest.createPasswordResetCode(userToHaveAPasswordValidationCode.getEmail());
-
-        assertThat(passwordValidationCode).isNotNull();
+        assertThat(optionalCode).isNotNull();
     }
 
     @Test

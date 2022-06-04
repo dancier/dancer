@@ -108,7 +108,7 @@ public class AuthenticationService {
     }
 
     private void handleRegistrationAttemptOfAlreadyExistingAccount(User user) {
-        String passwordResetCode = createPasswordResetCode(user.getEmail());
+        String passwordResetCode = createPasswordResetCode(user);
         String loginLink =
                 user.isEmailValidated()
                         ?
@@ -171,8 +171,11 @@ public class AuthenticationService {
         return user;
     }
 
-    public String createPasswordResetCode(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppliationException(""));
+    public Optional<String> createPasswordResetCode(String email) {
+        return userRepository.findByEmail(email).map(u -> createPasswordResetCode(u));
+    }
+
+    public String createPasswordResetCode(User user) {
         PasswordResetCode passwordResetCode = passwordResetCodeRepository.findById(user.getId()).orElseGet(() -> new PasswordResetCode());
         passwordResetCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
         passwordResetCode.setUserId(user.getId());

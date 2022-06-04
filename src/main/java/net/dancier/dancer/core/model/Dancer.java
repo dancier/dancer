@@ -56,5 +56,5 @@ public class Dancer implements Recommendable{
     private Double longitude;
 
     private String profileImageHash;
-    
+
 }
