@@ -1,5 +1,6 @@
 package net.dancier.dancer.authentication;
 
+import net.dancier.dancer.authentication.dto.NewPasswortDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
@@ -156,14 +157,15 @@ class AuthenticationServiceTest {
     @Test
     void checkPasswortCodeRequestAndCreateNewPassword() {
         String newPasswortCode = "foo";
+        NewPasswortDto newPasswortDto = new NewPasswortDto("bar");
 
         when(passwordResetCodeRepositoryMock.findByCode(newPasswortCode))
                 .thenReturn(Optional.of(dummyPasswortResetCode(newPasswortCode)));
         when(userRepositoryMock.getById(userId)).thenReturn(dummyUser(true));
 
-        String newPassword = underTest.checkPasswortCodeRequestAndCreateNew(newPasswortCode);
+        underTest.checkPasswortCodeRequestAndCreateNew(newPasswortCode, newPasswortDto);
 
-        assertThat(newPassword).isNotNull();
+        verify(userRepositoryMock, times(1)).save(any());
     }
 
     private User dummyUser() {

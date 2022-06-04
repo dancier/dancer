@@ -154,10 +154,11 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/password/reset/{validationCode}")
-    public ResponseEntity validatePassword(@PathVariable String validationCode) {
-        String newPassword = authenticationService.checkPasswortCodeRequestAndCreateNew(validationCode);
-        return ResponseEntity.ok(new NewPasswortDto(newPassword));
+    @PostMapping("/password/reset/{validationCode}")
+    public ResponseEntity validatePassword(@PathVariable String validationCode,
+                                           @RequestBody NewPasswortDto newPasswortDto) {
+        authenticationService.checkPasswortCodeRequestAndCreateNew(validationCode, newPasswortDto);
+        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
