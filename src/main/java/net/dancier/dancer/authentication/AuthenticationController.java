@@ -57,7 +57,6 @@ public class AuthenticationController {
         Object principalObject = authentication.getPrincipal();
         if (principalObject!=null && principalObject instanceof AuthenticatedUser) {
             AuthenticatedUser authenticatedUser = (AuthenticatedUser) principalObject;
-            builder.isEmailVerified(authenticatedUser.isEmailValidated());
             builder.withEmailAddress(authenticatedUser.getUsername());
         }
         return ResponseEntity.ok(builder.build());
