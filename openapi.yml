@@ -229,20 +229,6 @@ paths:
       responses:
         '200':
           description: indicates that the request was successfull
-  /dances/:
-    get:
-      summary: retrieves a List of all dance names
-      tags:
-        - Dance
-      responses:
-        '200':
-          description: retrives an array of strings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
   /profile/checkDancerNameAvailibility/{dancerName}:
     get:
       summary: check if a name is still free
@@ -259,6 +245,21 @@ paths:
       responses:
         '200':
           description: true of false
+  /dances/:
+    get:
+      summary: retrieves a List of all dance names
+      tags:
+        - Dance
+      responses:
+        '200':
+          description: retrives an array of strings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
   /recommendations:
     get:
       summary: retrieves all precomputes recommendations
