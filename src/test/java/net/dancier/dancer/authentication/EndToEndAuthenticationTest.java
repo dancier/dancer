@@ -124,7 +124,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     private ResultActions validateEmailAddress(String emailValidationCode) throws Exception{
         return mockMvc.perform(
-                put("/authentication/email-validation/" + emailValidationCode)
+                put("/authentication/email-validations/" + emailValidationCode)
         );
     }
 

@@ -133,7 +133,7 @@ paths:
       responses:
         '200':
           description: will also be send, when no user is found to not reveal the existince of users
-  /authentication/email-validation/{emailValidationCode}:
+  /authentication/email-validations/{emailValidationCode}:
     put:
       tags:
         - IAM
@@ -179,7 +179,7 @@ paths:
       responses:
         '200':
           description: mail was send
-  /authentication/password-change/{validationCode}:
+  /authentication/password-changes/{validationCode}:
     put:
       summary: set the user password to the one provided
       description: the link with the validationCode has been send to the 

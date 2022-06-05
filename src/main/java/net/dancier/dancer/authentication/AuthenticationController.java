@@ -136,7 +136,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/email-validation/{validationCode}")
+    @PutMapping("/email-validations/{validationCode}")
     public ResponseEntity validateEmail(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
         User validatedUser = authenticationService.checkEmailValidationCode(validationCode);
         Cookie cookie = authenticationService
@@ -155,7 +155,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/password-change/{validationCode}")
+    @PutMapping("/password-changes/{validationCode}")
     public ResponseEntity changePassword(@PathVariable String validationCode,
                                          @RequestBody Map<String, String> newPasswortRequest) {
         String newPasswort = newPasswortRequest.get("password");
