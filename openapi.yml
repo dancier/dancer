@@ -132,7 +132,7 @@ paths:
               $ref: '#/components/schemas/create_email_validation_code'
       responses:
         '200':
-          description: when the code could be generated
+          description: will also be send, when no user is found to not reveal the existince of users
   /authentication/email-validation/{emailValidationCode}:
     put:
       tags:

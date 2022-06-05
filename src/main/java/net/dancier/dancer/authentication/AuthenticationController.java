@@ -133,8 +133,7 @@ public class AuthenticationController {
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
         authenticationService.createEmailValidationCode(emailAddress.trim());
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true, "ValidationCode send."));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/email-validation/{validationCode}")

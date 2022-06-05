@@ -150,8 +150,9 @@ public class AuthenticationService {
     }
 
     public void createEmailValidationCode(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(()->new AppliationException(""));
-        createEmailValidationCode(user);
+        userRepository
+                .findByEmail(email)
+                .ifPresent (u->createEmailValidationCode(u));
     }
 
     @Transactional
