@@ -129,7 +129,7 @@ public class AuthenticationController {
     }
 
     @Secured(ROLE_HUMAN)
-    @PostMapping("/email/validation")
+    @PostMapping("/email-validations")
     public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
         log.info("sending mail for " + emailAddress);
         authenticationService.createEmailValidationCode(emailAddress.trim());
@@ -137,8 +137,8 @@ public class AuthenticationController {
                 .body(new ApiResponse(true, "ValidationCode send."));
     }
 
-    @GetMapping("/email/validate/{validationCode}")
-    public ResponseEntity emailValidation(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
+    @PutMapping("/email-validation/{validationCode}")
+    public ResponseEntity validateEmail(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
         User validatedUser = authenticationService.checkEmailValidationCode(validationCode);
         Cookie cookie = authenticationService
                 .generateCookie(authenticationService.generateJwtToken(validatedUser.getId().toString()));

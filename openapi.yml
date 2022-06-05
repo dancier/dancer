@@ -71,8 +71,26 @@ paths:
                 "success": false
                 "messages":
                   - Email address already exist
-  /authentication/email/validate/{emailValidationCode}:
-    get:
+  /authentication/email-validations:
+    post:
+      tags:
+        - IAM
+      summary: creates email validation code and send it per mail
+      requestBody:
+        description: request to get a code send via email, so reset the password
+        required: true
+        content:
+          text/plain:
+            examples:
+              create_email_validation_code:
+                $ref: '#/components/examples/create_email_validation_code'
+            schema:
+              $ref: '#/components/schemas/create_email_validation_code'
+      responses:
+        '200':
+          description: when the code could be generated
+  /authentication/email-validation/{emailValidationCode}:
+    put:
       tags:
         - IAM
       parameters:
@@ -98,25 +116,6 @@ paths:
         '400':
           description: in case of any problems like the code not known in the system, 
             outdated or any other problem like this.
-
-  /authentication/email/validation:
-    post:
-      tags:
-        - IAM
-      summary: creates email validation code and send it per mail
-      requestBody:
-        description: request to get a code send via email, so reset the password
-        required: true
-        content:
-          text/plain:
-            examples:
-              create_email_validation_code:
-                $ref: '#/components/examples/create_email_validation_code'
-            schema:
-              $ref: '#/components/schemas/create_email_validation_code'
-      responses:
-        '200':
-          description: when the code could be generated
   /authentication/login:
     post:
       tags:

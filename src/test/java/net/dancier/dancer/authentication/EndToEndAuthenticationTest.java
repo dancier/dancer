@@ -9,11 +9,9 @@ import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,8 +21,8 @@ import javax.servlet.http.Cookie;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
@@ -94,16 +92,16 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
         registerUser(dummyUser)
                 .andExpect(status().isCreated());
 
-        String initalEmailValidationCode = testDatabaseHelper
+        String initialEmailValidationCode = testDatabaseHelper
                 .getEmailValidationCodeForEmail(dummyUser.getEmail());
-        assertThat(initalEmailValidationCode).isNotNull();
+        assertThat(initialEmailValidationCode).isNotNull();
 
         reRequestEmailValidationCode(dummyUser)
                 .andExpect(status().isOk());
 
         String reRequestedEmailValidationCode = testDatabaseHelper.getEmailValidationCodeForEmail(dummyUser.getEmail());
 
-        assertThat(initalEmailValidationCode).isNotEqualToIgnoringCase(reRequestedEmailValidationCode);
+        assertThat(initialEmailValidationCode).isNotEqualToIgnoringCase(reRequestedEmailValidationCode);
 
         loginUser(dummyUser)
                 .andExpect(status().isForbidden());
@@ -118,7 +116,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     private ResultActions reRequestEmailValidationCode(User user) throws Exception {
         return mockMvc.perform(
-                post("/authentication/email/validation")
+                post("/authentication/email-validations")
                         .cookie(getHumanCookie())
                         .contentType(MediaType.TEXT_PLAIN).content(user.getEmail())
         );
@@ -126,7 +124,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     private ResultActions validateEmailAddress(String emailValidationCode) throws Exception{
         return mockMvc.perform(
-                get("/authentication/email/validate/" + emailValidationCode)
+                put("/authentication/email-validation/" + emailValidationCode)
         );
     }
 
