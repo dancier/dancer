@@ -215,7 +215,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/get_profile"
-    post:
+    put:
       summary: change profile information of the user
       tags:
         - Profile

@@ -46,7 +46,7 @@ public class ProfileController {
     }
 
     @Secured(ROLE_USER)
-    @PostMapping
+    @PutMapping
     public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
         profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
         return ResponseEntity.ok().build();

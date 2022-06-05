@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,7 +73,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         profileDto.setCountry("GER");
 
         ResultActions changeDaProfile = mockMvc
-                .perform(post("/profile")
+                .perform(put("/profile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsBytes(profileDto))
                 );
