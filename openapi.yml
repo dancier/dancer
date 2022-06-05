@@ -180,8 +180,8 @@ paths:
         '200':
           description: mail was send
   /authentication/password-change/{validationCode}:
-    get:
-      summary: reset the password
+    put:
+      summary: set the user password to the one provided
       description: the link with the validationCode has been send to the 
         user. So we can be sure, das the link is used by the user and
         change the password.
