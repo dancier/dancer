@@ -61,7 +61,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(builder.build());
     }
     @Secured(ROLE_HUMAN)
-    @PostMapping("/register")
+    @PostMapping("/registrations")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         try {
             authenticationService.registerUser(registerRequest);

@@ -22,7 +22,7 @@ paths:
                   - "ROLE_HUMAN"
                 "emailAddress": foo@bar.de
               
-  /authentication/register:
+  /authentication/registrations:
     post:
       summary: starts the user registrations process, 
         the client need to have ROLE_HUMAN assigned 

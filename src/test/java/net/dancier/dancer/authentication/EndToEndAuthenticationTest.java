@@ -140,7 +140,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
     private ResultActions registerUser(User user) throws Exception {
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(user);
         return mockMvc.perform(
-                post("/authentication/register")
+                post("/authentication/registrations")
                         .contentType("application/json")
                         .cookie(getHumanCookie())
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))

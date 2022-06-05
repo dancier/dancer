@@ -52,7 +52,7 @@ class AuthenticationControllerTest extends AbstractPostgreSQLEnabledTest {
         User dummyUser = AuthenticationTestFactory.dummyUser();
         RegisterRequestDto registerRequestDto = AuthenticationTestFactory.registerRequestDto(dummyUser);
         mockMvc.perform(
-                post("/authentication/register")
+                post("/authentication/registrations")
                         .contentType("application/json")
                         .cookie(getHumanCookie())
                         .content(objectMapper.writeValueAsBytes(registerRequestDto))
