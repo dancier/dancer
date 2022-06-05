@@ -3,14 +3,11 @@ package net.dancier.dancer.core;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -33,16 +30,6 @@ public class ProfileController {
         return ResponseEntity.ok(
                 profileService.getProfileByUserId(authenticatedUser.getId())
         );
-    }
-
-    @Secured(ROLE_USER)
-    @GetMapping("/allDances")
-    public ResponseEntity getAllDances() {
-        return ResponseEntity.ok(profileService
-                .getAllDances()
-                .stream()
-                .map(Dance::getName)
-                .collect(Collectors.toList()));
     }
 
     @Secured(ROLE_USER)

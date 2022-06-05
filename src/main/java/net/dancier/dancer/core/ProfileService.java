@@ -26,7 +26,7 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-    private final DanceRepository danceRepository;
+    private final DanceService danceService;
 
     private final DancerRepository dancerRepository;
 
@@ -110,10 +110,6 @@ public class ProfileService {
                 .findFirst();
     }
 
-    public Set<Dance> getAllDances() {
-        return new HashSet<>(this.danceRepository.findAll());
-    }
-
     public boolean existsByDancerName(String dancerName) {
         return this.dancerRepository.existsByDancerName(dancerName);
     }
@@ -125,14 +121,14 @@ public class ProfileService {
                 .stream()
                 .map(dp -> dp.getDance())
                 .collect(Collectors.toSet());
-        Set<Dance> alreadyPersistedDances = getAllDances();
+        Set<Dance> alreadyPersistedDances = danceService.getAllDances();
         Set<String> newDanceNames = new HashSet<>(allRequestedDanceNames);
             newDanceNames.removeAll(
                 alreadyPersistedDances
                         .stream()
                         .map(d-> d.getName()).collect(Collectors.toSet()));
         Set<Dance> newDances = newDanceNames.stream().map(name -> new Dance(null, name)).collect(Collectors.toSet());
-        danceRepository.saveAll(newDances);
+        danceService.saveAll(newDances);
         Set<Dance> allDances = new HashSet<>(alreadyPersistedDances);
         allDances.addAll(newDances);
         return allDances;

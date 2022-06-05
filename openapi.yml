@@ -229,11 +229,11 @@ paths:
       responses:
         '200':
           description: indicates that the request was successfull
-  /profile/allDances:
+  /dances/:
     get:
       summary: retrieves a List of all dance names
       tags:
-        - Profile
+        - Dance
       responses:
         '200':
           description: retrives an array of strings
