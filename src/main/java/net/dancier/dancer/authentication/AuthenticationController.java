@@ -147,7 +147,7 @@ public class AuthenticationController {
     }
 
     @Secured(ROLE_HUMAN)
-    @PostMapping("/password/change")
+    @PostMapping("/password-changes")
     public ResponseEntity createPasswortResetCode(@RequestBody String email) {
         Optional<String> optionalCode =  authenticationService.createPasswordResetCode(email.trim());
         if (optionalCode.isPresent()) {
@@ -156,7 +156,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/password/change/{validationCode}")
+    @PutMapping("/password-change/{validationCode}")
     public ResponseEntity changePassword(@PathVariable String validationCode,
                                          @RequestBody Map<String, String> newPasswortRequest) {
         String newPasswort = newPasswortRequest.get("password");

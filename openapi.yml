@@ -71,6 +71,50 @@ paths:
                 "success": false
                 "messages":
                   - Email address already exist
+  /authentication/login:
+    post:
+      tags:
+        - IAM
+      summary: The customer will be logged in.
+      description:  It ist necessary that the customer has already
+       successfully validated his email-address.
+      requestBody:
+        description: attempt to login the user
+        required: true
+        content:
+          application/json:
+            examples:
+              login_user:
+                $ref: '#/components/examples/login_user'
+            schema:
+              $ref: '#/components/schemas/login_user'
+      responses:
+        '200':
+          description: In case the login was successfull.
+        '401':
+          description: In case the provided credentials were not correct.
+        '403':
+          description: in case we have not validated the email yet.
+  /authentication/loginAsHuman:
+    post:
+      tags:
+        - IAM
+      responses:
+        '200':
+          description: when the verficaton as a human succeded.
+            A jwt-token with ROLE_HUMAN has been set.
+        '401':
+          description: in case the validation failed.
+
+  /authentication/logout:
+    get:
+      tags:
+        - IAM
+      summary: log out the user
+      responses:
+        '200' : 
+          description: This logs out the user. It resets the cookie. Any valid tokens are not affected.
+
   /authentication/email-validations:
     post:
       tags:
@@ -116,50 +160,7 @@ paths:
         '400':
           description: in case of any problems like the code not known in the system, 
             outdated or any other problem like this.
-  /authentication/login:
-    post:
-      tags:
-        - IAM
-      summary: The customer will be logged in.
-      description:  It ist necessary that the customer has already
-       successfully validated his email-address.
-      requestBody:
-        description: attempt to login the user
-        required: true
-        content:
-          application/json:
-            examples:
-              login_user:
-                $ref: '#/components/examples/login_user'
-            schema:
-              $ref: '#/components/schemas/login_user'
-      responses:
-        '200':
-          description: In case the login was successfull.
-        '401':
-          description: In case the provided credentials were not correct.
-        '403':
-          description: in case we have not validated the email yet.
-  /authentication/loginAsHuman:
-    post:
-      tags:
-        - IAM
-      responses:
-        '200':
-          description: when the verficaton as a human succeded.
-            A jwt-token with ROLE_HUMAN has been set.
-        '401':
-          description: in case the validation failed.
-
-  /authentication/logout:
-    get:
-      tags:
-        - IAM
-      summary: log out the user
-      responses:
-        '200' : 
-          description: This logs out the user. It resets the cookie. Any valid tokens are not affected.
-  /authentication/password/change:
+  /authentication/password-changes:
     post:
       tags:
         - IAM
@@ -178,8 +179,7 @@ paths:
       responses:
         '200':
           description: mail was send
-
-  /authentication/password/change/{validationCode}:
+  /authentication/password-change/{validationCode}:
     get:
       summary: reset the password
       description: the link with the validationCode has been send to the 
