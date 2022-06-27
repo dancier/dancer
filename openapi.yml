@@ -340,23 +340,26 @@ paths:
       responses:
         '200':
           description: get scaled version 
-/eventlog:
-  post:
-    summary: send an event to the backend
-    tags:
-      - Eventlog
-    requestBody:
-      description: send if something interessting happend
-      required: true
-      content:
-        application/json:
-          example:
-            "topic": "registration_succeded"
-            "metadata": 
-              sourceTime: "2022-05"
-            "payload":
-              appInstanceId: "ljjlajdflkjasldfjalskjflasdjf"
-              emailAddress: "marc@gorzala.de"              
+  /eventlog:
+    post:
+      summary: send an event to the backend
+      tags:
+        - Eventlog
+      requestBody:
+        description: send if something interessting happend
+        required: true
+        content:
+          application/json:
+            example:
+              "topic": "registration_succeded"
+              "metadata": 
+                sourceTime: "2022-05"
+              "payload":
+                appInstanceId: "ljjlajdflkjasldfjalskjflasdjf"
+                emailAddress: "marc@gorzala.de"
+      responses:
+        '201':
+          description: cool
 components:
   securitySchemes:
     jwt-token:
