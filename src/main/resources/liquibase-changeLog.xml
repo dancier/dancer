@@ -482,4 +482,16 @@
             ADD COLUMN about_me VARCHAR(300);
         </sql>
     </changeSet>
+    <changeSet id="2022-06-26-add-eventlog" author="Marc">
+        <sql>
+            CREATE TABLE eventlog (
+            id UUID NOT NULL,
+            topic varchar(256),
+            meta_data jsonb,
+            mail jsonb,
+            created TIMESTAMP WITHOUT TIME ZONE,
+            PRIMARY KEY(id)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>
