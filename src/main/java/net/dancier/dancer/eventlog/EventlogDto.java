@@ -4,18 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import net.dancier.dancer.authentication.model.Role;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class EventlogEntry {
-
-    private UUID id;
-
-    private UUID userId;
-
-    private Set<String> roles;
+public class EventlogDto {
 
     private String topic;
 
@@ -23,5 +16,7 @@ public class EventlogEntry {
 
     private JsonNode payload;
 
-    private Instant created;
+    private Set<String> roles;
+
+    private UUID userId;
 }

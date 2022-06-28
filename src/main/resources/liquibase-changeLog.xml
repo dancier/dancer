@@ -494,4 +494,33 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="2022-06-27-renamed-column-mail-add-columns-for-users" author="Marc">
+        <sql>
+            ALTER TABLE eventlog
+            RENAME COLUMN mail
+            TO payload;
+            ALTER TABLE eventlog
+            ADD COLUMN user_id UUID,
+            ADD COLUMN role VARCHAR(100);
+        </sql>
+    </changeSet>
+    <changeSet id="2022-06-28-change-roles" author="Marc">
+        <sql>
+            ALTER TABLE eventlog
+            RENAME COLUMN role
+            TO roles;
+        </sql>
+    </changeSet>
+    <changeSet id="2022-06-28-drop-column" author="Marc">
+        <sql>
+            ALTER TABLE eventlog
+            DROP COLUMN roles;
+        </sql>
+    </changeSet>
+    <changeSet id="2022-06-28-add-roles" author="Marc">
+        <sql>
+            ALTER TABLE eventlog
+            ADD COLUMN roles text[];
+        </sql>
+    </changeSet>
 </databaseChangeLog>
