@@ -350,16 +350,16 @@ paths:
         required: true
         content:
           application/json:
-            example:
-              "topic": "registration_succeded"
-              "metadata": 
-                sourceTime: "2022-05"
-              "payload":
-                appInstanceId: "ljjlajdflkjasldfjalskjflasdjf"
-                emailAddress: "marc@gorzala.de"
+            examples:
+              register_user:
+                $ref: '#/components/examples/registation_succeded_event'
+            schema:
+              $ref: '#/components/schemas/eventlog'
+
+
       responses:
         '201':
-          description: cool
+          description: the event was stored
 components:
   securitySchemes:
     jwt-token:
@@ -367,6 +367,14 @@ components:
       in: cookie
       name: jwt-token
   examples:
+    registation_succeded_event:
+      value:
+        "topic": "registration_succeded_event"
+        "metaData":
+           "sourceTime": "2022-12-31 12:50:99"
+           "appInstanceId": "23ljljalfjlasjdfl"
+        "payload":
+          "emailAddress": "marc@gorzal.de"
     register_user:
       value:
         "email": "foo@bar.de"
@@ -386,6 +394,8 @@ components:
       value:
         "bla": string
   schemas:
+    eventlog:
+      type: object
     gender:
       type: string
       enum:
