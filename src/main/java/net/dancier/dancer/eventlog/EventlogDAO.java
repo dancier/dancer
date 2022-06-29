@@ -38,14 +38,16 @@ public class EventlogDAO {
                 meta_data,
                 payload,
                 created,
-                roles
+                roles,
+                user_id
               ) values (
                 :id, 
                 :topic, 
                 :metaData::JSON,
                 :payload::JSON,
                 :created,
-                :roles)
+                :roles,
+                :userid)
         """;
         final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("id", eventlogEntry.getId())
@@ -53,7 +55,8 @@ public class EventlogDAO {
                 .addValue("metaData", eventlogEntry.getMetaData().toString())
                 .addValue("payload", eventlogEntry.getPayload().toString())
                 .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-                .addValue("roles", jdbcTemplate.getDataSource().getConnection().createArrayOf("text",eventlogEntry.getRoles().toArray()));
+                .addValue("roles", jdbcTemplate.getDataSource().getConnection().createArrayOf("text",eventlogEntry.getRoles().toArray()))
+                .addValue("userid", eventlogEntry.getUserId());
 
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }

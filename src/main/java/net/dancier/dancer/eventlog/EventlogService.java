@@ -25,6 +25,7 @@ public class EventlogService {
         } else {
             eventlogEntry.setRoles(Set.of());
         }
+        eventlogEntry.setUserId(eventlogDto.getUserId());
         this.eventlogDAO.publish(eventlogEntry);
     }
 }
