@@ -22,11 +22,7 @@ public class EventlogDAO {
 
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public static String TEST = """
-            {"foo": "bar"}
-            """;
-
+    
     public void publish(EventlogEntry eventlogEntry) throws SQLException {
         log.info("publishing: " + eventlogEntry);
         //String sql = "insert into eventlog(id, mail) VALUES (gen_random_uuid(), '{\"f\":\"bar\"}'::JSON);";

@@ -43,7 +43,6 @@ services:
       APP_MAIL_USER: ${APP_MAIL_USER}
       APP_MAIL_PASS: ${APP_MAIL_PASS}
       APP_CAPTCHA_APIKEY: ${APP_CAPTCHA_APIKEY}
-      APP_redirectAfterEmailValidation: ${APP_redirectAfterEmailValidation}
     volumes:
       - ./volumes/dancer-media/images:/images-dir
     depends_on:
