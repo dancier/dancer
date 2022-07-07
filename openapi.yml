@@ -374,7 +374,7 @@ components:
            "sourceTime": "2022-12-31 12:50:99"
            "appInstanceId": "23ljljalfjlasjdfl"
         "payload":
-          "emailAddress": "marc@gorzal.de"
+          "emailAddress": "marc@gorzala.de"
     register_user:
       value:
         "email": "foo@bar.de"
