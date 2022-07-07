@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   traefik:
+    container_name: traefik
     image: "traefik:v2.6"
     command:
       - "--log.level=DEBUG"
@@ -16,7 +17,7 @@ services:
       #- "--certificatesresolvers.mytlschallenge.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.mytlschallenge.acme.email=marc@becheftigt.de"
       - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -24,10 +25,20 @@ services:
     volumes:
       - "./volumes/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  fluentd:
+    container_name: fluentd
+    build: ./fluentd
+    restart: unless-stopped
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
 
   dancer:
+    container_name: dancer
     image: dancier/dancer:1.0
-    restart: always
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dancer.rule=Host(`dancer.dancier.net`)"
@@ -45,23 +56,33 @@ services:
       APP_CAPTCHA_APIKEY: ${APP_CAPTCHA_APIKEY}
     volumes:
       - ./volumes/dancer-media/images:/images-dir
+    links:
+      - fluentd
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: dancer
     depends_on:
       - dancer-db
       - traefik
+      - fluentd
 
   dancer-db:
+    container_name: dancer-db
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${DANCER_DB_USER}
       POSTGRES_PASSWORD: ${DANCER_DB_PASSWORD}
       POSTGRES_DB: ${DANCER_DB_DB}
     volumes:
       - ./volumes/dancer-data:/var/lib/postgresql/data
-
+  
   pg-admin:
+    container_name: pg-admin
     image: dpage/pgadmin4:latest
-    restart: always
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.dancier.net`)"
@@ -77,8 +98,9 @@ services:
       - ./volumes/pg-admin-data:/var/lib/pgadmin
 
   show-dancer:
+    container_name: show-dancer
     image: dancier/show-dancer:latest
-    restart: always
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.show-dancer.rule=Host(`dancier.net`)"
@@ -88,6 +110,7 @@ services:
       - traefik
 
   tool:
+    container_name: tool
     image: ubuntu
-    restart: always
+    restart: unless-stopped
     stdin_open: true
