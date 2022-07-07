@@ -24,6 +24,8 @@ public class MailCreationService {
 
     public final static String PASSWORD_CHANGE_REQUEST_EMAIL = "text/password-change-request-email";
 
+    public final static String CONTACT_FORMULAR = "text/contact-formular";
+
     public final static String NO_REPLY_FROM = "no-reply@dancier.net";
 
     private final TemplateEngine emailTemplateEngine;

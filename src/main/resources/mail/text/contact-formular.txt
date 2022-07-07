@@ -1,0 +1,13 @@
+Dear beloved grandmaster of dance,
+
+[( ${sender} )]
+
+wanted to tell you somthing:
+-----
+[( ${message} )]
+-----
+
+I am just the messanger, don't blame me for the content!
+
+a computer
+

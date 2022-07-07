@@ -360,6 +360,27 @@ paths:
       responses:
         '201':
           description: the event was stored
+/contacts:
+    post:
+      summary: send a message to the grandmaster of dance
+      tags:
+        - Contacts
+      requestBody:
+        description: the mail will end up in dev@dancier.net
+        required: true
+        content:
+          application/json:
+            examples:
+              register_user:
+                $ref: '#/components/examples/contact_mail'
+            schema:
+              $ref: '#/components/schemas/contact_mail'
+
+
+      responses:
+        '201':
+          description: when the mail is on it's way
+
 components:
   securitySchemes:
     jwt-token:
@@ -367,6 +388,10 @@ components:
       in: cookie
       name: jwt-token
   examples:
+    contact_mail:
+      value:
+        "sender": "customer@gmail.com"
+        "message": "Dear Grandmaster of dance"
     registation_succeded_event:
       value:
         "topic": "registration_succeded_event"
@@ -394,6 +419,9 @@ components:
       value:
         "bla": string
   schemas:
+    contact_mail:
+      type: object
+      
     eventlog:
       type: object
     gender:
