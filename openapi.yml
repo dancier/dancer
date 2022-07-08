@@ -360,7 +360,7 @@ paths:
       responses:
         '201':
           description: the event was stored
-/contacts:
+  /contacts:
     post:
       summary: send a message to the grandmaster of dance
       tags:
@@ -375,8 +375,6 @@ paths:
                 $ref: '#/components/examples/contact_mail'
             schema:
               $ref: '#/components/schemas/contact_mail'
-
-
       responses:
         '201':
           description: when the mail is on it's way
