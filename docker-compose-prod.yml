@@ -99,7 +99,7 @@ services:
 
   show-dancer:
     container_name: show-dancer
-    image: dancier/show-dancer:latest
+    image: dancier/show-dancer:beta-sign-up
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
