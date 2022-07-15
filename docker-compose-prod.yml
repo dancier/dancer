@@ -45,7 +45,7 @@ services:
       - "traefik.http.routers.dancer.entrypoints=websecure"
       - "traefik.http.routers.dancer.tls.certresolver=mytlschallenge"
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      SPRING_PROFILES_ACTIVE: staging,json-logging
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
