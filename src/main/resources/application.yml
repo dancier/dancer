@@ -1,6 +1,6 @@
 spring:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
   datasource:
@@ -44,3 +44,6 @@ logging:
     root: INFO
     net:
       dancier: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
