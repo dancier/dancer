@@ -16,7 +16,15 @@ public class ContactService {
     private final MailEnqueueService mailEnqueueService;
 
     void send(ContactDto contactDto) {
-        DancierMailMessage dancierMailMessage = mailCreationService.createDancierMessageFromTemplate(
+        DancierMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
+                contactDto.getSender(),
+                "dev@dancier.net",
+                "Vielen Dank - Team Dancier",
+                MailCreationService.CONTACT_FORMULAR_FEEDBACK,
+                Map.of());
+
+        mailEnqueueService.enqueueMail(mailToSender);
+        DancierMailMessage mailToTeamDancier = mailCreationService.createDancierMessageFromTemplate(
                 "dev@dancier.net",
                 contactDto.getSender(),
                 "Mail über das Kontakt formular",
@@ -25,7 +33,7 @@ public class ContactService {
                 "sender", contactDto.getSender(),
                 "message", contactDto.getMessage())
                 );
-        mailEnqueueService.enqueueMail(dancierMailMessage);
+        mailEnqueueService.enqueueMail(mailToTeamDancier);
     }
 
 }

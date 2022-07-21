@@ -26,6 +26,8 @@ public class MailCreationService {
 
     public final static String CONTACT_FORMULAR = "text/contact-formular";
 
+    public final static String CONTACT_FORMULAR_FEEDBACK = "text/contact-formular-feedback";
+
     public final static String NO_REPLY_FROM = "no-reply@dancier.net";
 
     private final TemplateEngine emailTemplateEngine;
