@@ -47,3 +47,7 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
