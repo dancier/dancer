@@ -58,6 +58,7 @@ public class EventlogDAO {
                 .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
                 .addValue("userid", eventlogEntry.getUserId());
         // Hack
+        DataSourceUtils.releaseConnection(connection, jdbcTemplate.getDataSource());
     }
 
     public int getCountOfEventlogEntries() {
