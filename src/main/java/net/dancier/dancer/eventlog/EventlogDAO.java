@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -46,14 +47,15 @@ public class EventlogDAO {
                 :roles,
                 :userid)
         """;
-//        Connection connection = jdbcTemplate.getDataSource().getConnection();
+        Connection connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
+        //        Connection connection = jdbcTemplate.getDataSource().getConnection();
         final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("id", eventlogEntry.getId())
                 .addValue("topic", eventlogEntry.getTopic())
                 .addValue("metaData", eventlogEntry.getMetaData().toString())
                 .addValue("payload", eventlogEntry.getPayload().toString())
                 .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-             //   .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
+                .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
                 .addValue("userid", eventlogEntry.getUserId());
         // Hack
     }
