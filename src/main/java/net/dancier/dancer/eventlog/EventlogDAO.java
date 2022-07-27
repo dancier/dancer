@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -45,16 +46,16 @@ public class EventlogDAO {
                 :roles,
                 :userid)
         """;
+//        Connection connection = jdbcTemplate.getDataSource().getConnection();
         final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("id", eventlogEntry.getId())
                 .addValue("topic", eventlogEntry.getTopic())
                 .addValue("metaData", eventlogEntry.getMetaData().toString())
                 .addValue("payload", eventlogEntry.getPayload().toString())
                 .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-                .addValue("roles", jdbcTemplate.getDataSource().getConnection().createArrayOf("text",eventlogEntry.getRoles().toArray()))
+             //   .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
                 .addValue("userid", eventlogEntry.getUserId());
-
-        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+        // Hack
     }
 
     public int getCountOfEventlogEntries() {
