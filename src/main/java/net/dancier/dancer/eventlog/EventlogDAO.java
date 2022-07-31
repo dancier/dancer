@@ -59,7 +59,8 @@ public class EventlogDAO {
                     .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
                     .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
                     .addValue("userid", eventlogEntry.getUserId());
-            // Hack
+            // Hacku
+            namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         } finally {
             if (connection!=null)
                 DataSourceUtils.releaseConnection(connection, jdbcTemplate.getDataSource());
