@@ -47,18 +47,23 @@ public class EventlogDAO {
                 :roles,
                 :userid)
         """;
-        Connection connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
-        //        Connection connection = jdbcTemplate.getDataSource().getConnection();
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("id", eventlogEntry.getId())
-                .addValue("topic", eventlogEntry.getTopic())
-                .addValue("metaData", eventlogEntry.getMetaData().toString())
-                .addValue("payload", eventlogEntry.getPayload().toString())
-                .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-                .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
-                .addValue("userid", eventlogEntry.getUserId());
-        // Hack
-        DataSourceUtils.releaseConnection(connection, jdbcTemplate.getDataSource());
+        Connection connection = null;
+        try {
+            connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
+            //        Connection connection = jdbcTemplate.getDataSource().getConnection();
+            final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                    .addValue("id", eventlogEntry.getId())
+                    .addValue("topic", eventlogEntry.getTopic())
+                    .addValue("metaData", eventlogEntry.getMetaData().toString())
+                    .addValue("payload", eventlogEntry.getPayload().toString())
+                    .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
+                    .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
+                    .addValue("userid", eventlogEntry.getUserId());
+            // Hack
+        } finally {
+            if (connection!=null)
+                DataSourceUtils.releaseConnection(connection, jdbcTemplate.getDataSource());
+        }
     }
 
     public int getCountOfEventlogEntries() {
