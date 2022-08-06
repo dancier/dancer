@@ -24,7 +24,7 @@ public class AppInstanceIdFilter extends OncePerRequestFilter {
             setAppInstanceId(request);
             filterChain.doFilter(request, response);
         } finally {
-            MDC.remove("CorrelationId");
+            MDC.remove(APP_INSTANCE_ID_CONTEXT_FIELD);
         }
     }
     private void setAppInstanceId(HttpServletRequest httpServletRequest) {
