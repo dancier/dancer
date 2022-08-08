@@ -12,7 +12,6 @@ runcmd:
   - pip3 install docker-compose
   - ln -s /mnt/master-vol /run-env
   - echo "source /run-env/prod_settings.sh" >> /root/.bashrc
-  - cp /run-env/60-floating-ip.yaml /etc/netplan/
 
 power_state:
   mode: reboot
