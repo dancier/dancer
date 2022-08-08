@@ -6,6 +6,7 @@ services:
     image: "traefik:v2.6"
     command:
       - "--log.level=DEBUG"
+      - "--log.format=json"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -25,6 +26,14 @@ services:
     volumes:
       - "./volumes/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    links:
+      - fluentd
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: traefik
+  
   fluentd:
     container_name: fluentd
     build: ./fluentd
@@ -78,7 +87,7 @@ services:
       POSTGRES_DB: ${DANCER_DB_DB}
     volumes:
       - ./volumes/dancer-data:/var/lib/postgresql/data
-  
+
   pg-admin:
     container_name: pg-admin
     image: dpage/pgadmin4:latest
@@ -91,6 +100,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@dancier.net
       PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
+      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
     depends_on:
       - dancer-db
       - traefik
@@ -106,8 +116,16 @@ services:
       - "traefik.http.routers.show-dancer.rule=Host(`dancier.net`)"
       - "traefik.http.routers.show-dancer.entrypoints=websecure"
       - "traefik.http.routers.show-dancer.tls.certresolver=mytlschallenge"
+    links:
+      - fluentd
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: show-dancer
     depends_on:
       - traefik
+      - fluentd
 
   tool:
     container_name: tool
