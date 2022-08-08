@@ -11,7 +11,7 @@ runcmd:
   - sh get-docker.sh
   - pip3 install docker-compose
   - ln -s /mnt/master-vol /run-env
-  - echo "source /run-env/prod_settings.sh" >> /root/.bashrc
+  - echo "source /run-env/settings.sh" >> /root/.bashrc
 
 power_state:
   mode: reboot
