@@ -14,10 +14,17 @@ public class BaseNameConfiguration {
     }
 
     @Bean(name = "backendBaseName")
-    @Profile({"staging", "prod"})
+    @Profile({"staging"})
     String baseNameBackendStaging() {
+        return "https://test.dancer.dancier.net";
+    }
+
+    @Bean(name = "backendBaseName")
+    @Profile({"prod"})
+    String baseNameBackendProduction() {
         return "https://dancer.dancier.net";
     }
+
 
     @Bean(name ="frontendBaseName")
     @Profile("dev")
@@ -26,8 +33,14 @@ public class BaseNameConfiguration {
     }
 
     @Bean(name = "frontendBaseName")
-    @Profile({"staging", "prod"})
+    @Profile({"staging"})
     String baseNameFrontendStaging() {
+        return "https://test.dancier.net";
+    }
+
+    @Bean(name = "frontendBaseName")
+    @Profile({"prod"})
+    String baseNameFrontendProduction() {
         return "https://dancier.net";
     }
 
