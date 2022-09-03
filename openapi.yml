@@ -241,11 +241,19 @@ paths:
             type: string
           required: true
           description: is this name free?
-
       responses:
         '200':
           description: true of false
-  /dances/:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  available:
+                    type: boolean
+  /dances:
     get:
       summary: retrieves a List of all dance names
       tags:
