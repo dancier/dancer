@@ -79,6 +79,7 @@ public class AuthenticationService {
             throw new NotFoundException("No user found with this userId: " + userId, entityNotFoundException);
         }
     }
+
     @Transactional
     public void registerUser(RegisterRequestDto signUpRequest) {
         log.info("Attempting to register user: " + signUpRequest.getEmail());
