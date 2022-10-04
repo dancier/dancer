@@ -35,6 +35,7 @@ public class CaptchaClientProd implements CaptchaClient {
     @Override
     public ResponseEntity<Assessment> validate(String token) {
         log.info("Validating captcha token: " + token);
+        log.info("Magic Token: " + magicToken);
         if (magicToken.equals(token)) {
             return ResponseEntity.ok(createValidAssement());
         }
