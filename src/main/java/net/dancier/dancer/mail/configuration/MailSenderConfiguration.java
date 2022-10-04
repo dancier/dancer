@@ -53,7 +53,7 @@ public class MailSenderConfiguration {
     }
 
     @Bean("javaMailSender")
-    @Profile("dev")
+    @Profile({"dev", "it"})
     public JavaMailSender getDumpingOnlySender() {
         return new DumpingMailSender();
     }

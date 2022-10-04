@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 public class BaseNameConfiguration {
 
     @Bean(name = "backendBaseName")
-    @Profile("dev")
+    @Profile({"dev", "it"})
     String baseNameBackendDev() {
       return "http://localhost:8080";
     }
@@ -27,7 +27,7 @@ public class BaseNameConfiguration {
 
 
     @Bean(name ="frontendBaseName")
-    @Profile("dev")
+    @Profile({"dev", "it"})
     String baseNameFrontendDev() {
         return "http://localhost:4200";
     }
