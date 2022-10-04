@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
 
-@Profile("prod")
 @Component
 @RequiredArgsConstructor
 public class AdminUserInitializer {
@@ -38,7 +37,6 @@ public class AdminUserInitializer {
 
     private final RoleRepository roleRepository;
 
-    @Transactional
     @PostConstruct
     public void init() {
         Optional<User> optionalUser = userRepository.findByEmail(email);
