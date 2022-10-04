@@ -2,6 +2,7 @@ package net.dancier.dancer.authentication;
 
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.dto.SetEmailValidationDto;
 import net.dancier.dancer.authentication.dto.WhoAmIDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.service.AuthenticationService;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.dancier.dancer.authentication.Constants.ROLE_HUMAN;
+import static net.dancier.dancer.authentication.Constants.*;
 
 @RestController
 @RequestMapping("/authentication")
@@ -60,7 +61,7 @@ public class AuthenticationController {
         }
         return ResponseEntity.ok(builder.build());
     }
-    @Secured(ROLE_HUMAN)
+    @Secured({ROLE_HUMAN, ROLE_ADMIN})
     @PostMapping("/registrations")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         try {
@@ -143,6 +144,13 @@ public class AuthenticationController {
                 .generateCookie(authenticationService.generateJwtToken(validatedUser.getId().toString()));
         httpServletResponse.addCookie(cookie);
         return ResponseEntity.ok(new ApiResponse(true, "Validated and logged in"));
+    }
+
+    @Secured(ROLE_ADMIN)
+    @PutMapping("/email-validations")
+    public ResponseEntity setEmailValidation(@NotNull @Valid SetEmailValidationDto setEmailValidationDto) {
+        authenticationService.valideEmailByEmail(setEmailValidationDto.getEmailAddress());
+        return ResponseEntity.ok().build();
     }
 
     @Secured(ROLE_HUMAN)

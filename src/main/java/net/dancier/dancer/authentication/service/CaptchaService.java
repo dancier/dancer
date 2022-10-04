@@ -15,7 +15,7 @@ public class CaptchaService {
         }
         ResponseEntity<CaptchaClientProd.Assessment> responseEntity = captchaClient.validate(token);
         if (responseEntity.getStatusCode().is4xxClientError()) {
-            throw new CaptchaException("Technical Problem with Captcha processing.");
+            throw new CaptchaException("Technical Problems with Captcha processing.");
         }
         if (!responseEntity.getBody().tokenProperties.valid) {
             throw new CaptchaException("Token ist not valid. Maybe expired?");

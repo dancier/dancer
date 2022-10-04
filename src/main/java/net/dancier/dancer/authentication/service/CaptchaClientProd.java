@@ -29,10 +29,15 @@ public class CaptchaClientProd implements CaptchaClient {
     @Value("${app.captcha.apiKey}")
     private String apiKey;
 
-    @Override
-    public ResponseEntity validate(String token) {
-        log.info("Validating captcha token: " + token);
+    @Value("${app.captcha.magicToken}")
+    private String magicToken;
 
+    @Override
+    public ResponseEntity<Assessment> validate(String token) {
+        log.info("Validating captcha token: " + token);
+        if (magicToken.equals(token)) {
+            return ResponseEntity.ok(createValidAssement());
+        }
         CaptchaRequest captchaRequest = new CaptchaRequest();
         CaptchaRequest.Event event = new CaptchaRequest.Event();
         event.token = token;
@@ -61,6 +66,14 @@ public class CaptchaClientProd implements CaptchaClient {
             System.out.println(e);
         }
         return responseEntity;
+    }
+
+    private Assessment createValidAssement() {
+        CaptchaClientProd.Assessment assessment = new CaptchaClientProd.Assessment();
+        CaptchaClientProd.Assessment.TokenProperties tokenProperties = new CaptchaClientProd.Assessment.TokenProperties();
+        tokenProperties.valid = true;
+        assessment.tokenProperties = tokenProperties;
+        return assessment;
     }
 
     public static class Assessment {

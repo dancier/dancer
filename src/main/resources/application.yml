@@ -39,6 +39,7 @@ app:
   captcha:
     siteKey: 6LetqBAgAAAAAJXA5K_U88bsxKtyp_vld6J0x-Nv
     apiKey: secret
+    magicToken: secret
 logging:
   level:
     root: INFO

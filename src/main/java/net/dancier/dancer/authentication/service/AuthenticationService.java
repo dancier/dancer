@@ -172,6 +172,12 @@ public class AuthenticationService {
         return user;
     }
 
+    public void valideEmailByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email not exist"));
+        user.setEmailValidated(true);
+        userRepository.save(user);
+    }
+
     public Optional<String> createPasswordResetCode(String email) {
         return userRepository.findByEmail(email).map(u -> createPasswordResetCode(u));
     }
