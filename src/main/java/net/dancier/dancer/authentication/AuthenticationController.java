@@ -105,6 +105,7 @@ public class AuthenticationController {
     @PostMapping("/loginAsHuman")
     public ResponseEntity<?> loginAsHuman(@RequestHeader(required = false, name = "X-Captcha-Token") String token,
                                           HttpServletResponse httpServletResponse) {
+        log.info("Log in as human");
         Cookie cookie = null;
         try {
            captchaService.verifyToken(token);
