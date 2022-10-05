@@ -61,7 +61,7 @@ public class AuthenticationController {
         }
         return ResponseEntity.ok(builder.build());
     }
-    @Secured({ROLE_HUMAN, ROLE_ADMIN})
+    @Secured({ROLE_HUMAN})
     @PostMapping("/registrations")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
         try {
@@ -149,7 +149,7 @@ public class AuthenticationController {
 
     @Secured(ROLE_ADMIN)
     @PutMapping("/email-validations")
-    public ResponseEntity setEmailValidation(@NotNull @Valid SetEmailValidationDto setEmailValidationDto) {
+    public ResponseEntity setEmailValidation(@NotNull @Valid @RequestBody SetEmailValidationDto setEmailValidationDto) {
         authenticationService.valideEmailByEmail(setEmailValidationDto.getEmailAddress());
         return ResponseEntity.ok().build();
     }
