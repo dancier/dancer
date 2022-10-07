@@ -52,6 +52,8 @@ logging:
       hibernate:
         SQL: DEBUG
       springframework:
+        jdbc:
+          core: TRACE
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG

@@ -523,4 +523,12 @@
             ADD COLUMN roles text[];
         </sql>
     </changeSet>
+    <changeSet id="2022-10-05-add-published-to-eventlog" author="Marc">
+        <sql>
+            ALTER TABLE eventlog
+            ADD COLUMN status VARCHAR(50) DEFAULT 'QUEUED',
+            ADD COLUMN error_message VARCHAR(256);
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>

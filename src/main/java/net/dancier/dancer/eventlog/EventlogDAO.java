@@ -13,6 +13,9 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class EventlogDAO {
@@ -25,8 +28,74 @@ public class EventlogDAO {
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public void publish(EventlogEntry eventlogEntry) throws SQLException {
-        log.info("publishing: " + eventlogEntry);
+    public void update(EventlogEntry eventlogEntry) throws SQLException {
+        String sql = """
+                    UPDATE eventlog
+                       SET topic = :topic,
+                           meta_data = :metaData::JSON,
+                           payload = :payload::JSON,
+                           created = :created,
+                           user_id = :userId,
+                           roles = :roles,
+                           status = :status,
+                           error_message = :error_message
+                     WHERE id = :id
+                """;
+        Connection connection = null;
+        try {
+            connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
+            final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                    .addValue("id", eventlogEntry.getId())
+                    .addValue("topic", eventlogEntry.getTopic())
+                    .addValue("metaData", eventlogEntry.getMetaData().toString())
+                    .addValue("payload", eventlogEntry.getPayload().toString())
+                    .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
+                    .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
+                    .addValue("userId", eventlogEntry.getUserId())
+                    .addValue("status", eventlogEntry.getStatus().toString())
+                    .addValue("error_message", eventlogEntry.getErrorMessage());
+            namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+        } finally {
+            if (connection!=null) {
+                DataSourceUtils.releaseConnection(connection, jdbcTemplate.getDataSource());
+            }
+        }
+    }
+    public List<EventlogEntry> lockAndGet(Integer size) {
+        String sql = """
+                UPDATE eventlog\s
+                   SET status = 'IN_PROGRESS'\s
+                 WHERE "id" in (
+                		select id\s
+                  		  from eventlog\s
+                 	     where status = 'QUEUED'
+                    FOR UPDATE LIMIT :limit
+                     )
+                	 RETURNING\s
+                	 	id,
+                		topic,
+                		meta_data,
+                		payload,
+                		created,
+                		user_id,
+                		roles,
+                		status,
+                		error_message
+                	;
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", size);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue("limit", size);
+        EventlogEntryRowMapper eventlogEntryRowMapper = new EventlogEntryRowMapper();
+
+        List<EventlogEntry> eventlogEntries = namedParameterJdbcTemplate.query(sql, sqlParameterSource, eventlogEntryRowMapper);
+        return eventlogEntries;
+    }
+
+    public void schedule(EventlogEntry eventlogEntry) throws SQLException {
+        log.info("scheduling: " + eventlogEntry);
         //String sql = "insert into eventlog(id, mail) VALUES (gen_random_uuid(), '{\"f\":\"bar\"}'::JSON);";
         String sql = """
             INSERT 
@@ -50,7 +119,6 @@ public class EventlogDAO {
         Connection connection = null;
         try {
             connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
-            //        Connection connection = jdbcTemplate.getDataSource().getConnection();
             final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                     .addValue("id", eventlogEntry.getId())
                     .addValue("topic", eventlogEntry.getTopic())
@@ -59,7 +127,6 @@ public class EventlogDAO {
                     .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
                     .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
                     .addValue("userid", eventlogEntry.getUserId());
-            // Hacku
             namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         } finally {
             if (connection!=null)

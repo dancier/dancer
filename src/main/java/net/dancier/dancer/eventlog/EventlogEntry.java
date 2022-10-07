@@ -24,4 +24,8 @@ public class EventlogEntry {
     private JsonNode payload;
 
     private Instant created;
+
+    private String errorMessage;
+
+    private EventlogEntryStatus status;
 }
