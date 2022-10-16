@@ -21,11 +21,11 @@ paths:
                   - "ROLE_USER"
                   - "ROLE_HUMAN"
                 "emailAddress": foo@bar.de
-              
+
   /authentication/registrations:
     post:
       summary: starts the user registrations process, 
-        the client need to have ROLE_HUMAN assigned 
+        the client need to have ROLE_HUMAN assigned
       tags:
         - IAM
       requestBody:
@@ -112,7 +112,7 @@ paths:
         - IAM
       summary: log out the user
       responses:
-        '200' : 
+        '200' :
           description: This logs out the user. It resets the cookie. Any valid tokens are not affected.
 
   /authentication/email-validations:
@@ -304,6 +304,12 @@ paths:
       responses:
         '200':
           description: get geo coordinates and city from zip code
+          content:
+              application/json:
+                schema:
+                    $ref: "#/components/schemas/location_response"
+        '404':
+          description: no location/city found for this zip code
   /images:
     post:
       summary: uploads a png image
@@ -347,7 +353,7 @@ paths:
           description: the desired width
       responses:
         '200':
-          description: get scaled version 
+          description: get scaled version
   /eventlog:
     post:
       summary: send an event to the backend
@@ -427,7 +433,7 @@ components:
   schemas:
     contact_mail:
       type: object
-      
+
     eventlog:
       type: object
     gender:
@@ -477,7 +483,7 @@ components:
           type: string
         profileImageHash:
           type: string
-        
+
     dance_profile:
       type: object
       properties:
@@ -611,4 +617,19 @@ components:
         "accessToken":
           type: string
         "tokenType":
+          type: string
+    location_response:
+      type: object
+      properties:
+        "id":
+          type: string
+        "zipCode":
+          type: string
+        "country":
+          type: string
+        "longitude":
+          type: number
+        "latitude":
+          type: number
+        "city":
           type: string
