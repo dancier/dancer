@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Dancier
-  version: '1.0'
+  version: '1.1'
 servers:
   - url: 'https://dancier.net'
   - url: 'http://localhost:8080'
@@ -386,6 +386,45 @@ paths:
       responses:
         '201':
           description: when the mail is on it's way
+  /chats:
+    get:
+      summary: returns a list of all chats of a user. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
+      tags:
+        - Chats
+      responses:
+        '200':
+          description: "list of chats for a user"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chat_list_response'
+              example:
+                - chat_id: 543
+                  dancers:
+                    - id: 111
+                      dancerName: dancero
+                      city: Dortmund
+                      profileImageHash: E25B925E-C032-43E8-8603-B7A8062BD58D
+                    - id: 123
+                      dancerName: itsme
+                      city: Dortmunf
+                      profileImageHash: 74071977-B8FA-4031-9D78-516BF4F15D16
+                  last_activity: "2022-10-10T18:29:48.843Z"
+                  type: "group"
+                  messages: []
+                  last_message:
+                    text: Lorem ipsum
+                    author: 123
+                    id: 1234
+                    read_by_users: [123]
+                    notified_users: [123]
+                    creation_timestamp: "2022-10-10T18:29:48.843Z"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
 
 components:
   securitySchemes:
@@ -612,3 +651,106 @@ components:
           type: string
         "tokenType":
           type: string
+    chat_list_response:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: '#/components/schemas/detailed_chat'
+    detailed_chat:
+      allOf:
+        - $ref: '#/components/schemas/base_chat'
+        - $ref: '#/components/schemas/message_list_response'
+        - type: object
+          properties:
+            last_message:
+              $ref: '#/components/schemas/message'
+    chat_profile:
+      type: object
+      properties:
+        id:
+          type: string
+        dancerName:
+          type: string
+        city:
+          type: string
+        profileImageHash:
+          type: string
+    base_chat:
+      properties:
+        chat_id:
+          type: string
+          example: 543
+        dancers:
+          type: array
+          description: Dancers participating in the chat
+          items:
+            $ref: '#/components/schemas/chat_profile'
+        last_activity:
+          type: string
+          format: date-time
+          description: Datetime of the last activity from this chat
+        type:
+          $ref: '#/components/schemas/chat_type'
+    message_list_response:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/message'
+    message:
+      allOf:
+        - $ref: '#/components/schemas/base_message'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: id of the message
+              example: 1234
+            read_by_users:
+              type: array
+              description: |
+                User ids of users that already have read the message
+              items:
+                type: string
+                example: 123
+            notified_users:
+              type: array
+              description: |
+                If set to true the recipient was notified by email that this messgae was written for him.
+              items:
+                type: string
+                example: 123
+            creation_timestamp:
+              type: string
+              format: date-time
+              description: |
+                Timestamp of message creation, used for sorting messages
+    base_message:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The content of the message
+          example: Lorem ipsum
+        author:
+          type: string
+          description: The id of the author of the message
+          example: 123
+    chat_type:
+      type: string
+      enum:
+        - group
+        - direct
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
