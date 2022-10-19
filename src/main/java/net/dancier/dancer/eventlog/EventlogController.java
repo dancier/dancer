@@ -1,5 +1,6 @@
 package net.dancier.dancer.eventlog;
 
+import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,31 +20,33 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/eventlog")
+@RequiredArgsConstructor
 public class EventlogController {
 
     private static Logger log = LoggerFactory.getLogger(EventlogController.class);
 
     @Autowired
-    EventlogDAO eventlogDAO;
-
-    @Autowired
-    EventlogService eventlogService;
+    private final EventlogService eventlogService;
 
     @PostMapping
-    public ResponseEntity publish(@RequestBody EventlogDto eventlogDto) throws SQLException {
+    public ResponseEntity publish(@RequestBody EventlogDto eventlogDto) {
         log.info("Got: " + eventlogDto);
          Set<String> roles = Set.of();
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
         if (authentication!=null) {
-            roles = authentication.getAuthorities().stream().map(ga -> (ga.getAuthority())).collect(Collectors.toSet());
+            roles = authentication
+                    .getAuthorities()
+                    .stream()
+                    .map(ga
+                            -> (ga.getAuthority()))
+                    .collect(Collectors.toSet());
             Object principal = authentication.getPrincipal();
             if (principal!=null && principal instanceof AuthenticatedUser) {
                 AuthenticatedUser authenticatedUser = (AuthenticatedUser) principal;
-                eventlogDto.setUserId(authenticatedUser.getId());
+                eventlogDto.setUserId(authenticatedUser.getUserId());
             }
         }
-        //authentication.getAuthorities().stream().forEach(e -> roles.add(e.toString()));
         eventlogDto.setRoles(roles);
         eventlogService.createNew(eventlogDto);
         return ResponseEntity.ok().build();

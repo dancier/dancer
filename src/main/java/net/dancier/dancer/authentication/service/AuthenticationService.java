@@ -2,6 +2,7 @@ package net.dancier.dancer.authentication.service;
 
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.*;
 import net.dancier.dancer.core.exception.AppliationException;
@@ -12,6 +13,7 @@ import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,6 +52,7 @@ public class AuthenticationService {
 
     private final VerifiedActionCodeRepository verifiedActionCodeRepository;
     private final String frontendBaseName;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
@@ -104,7 +107,12 @@ public class AuthenticationService {
 
             User savedUser = userRepository.save(user);
             userRepository.flush();
-            createEmailValidationCode(savedUser);
+            applicationEventPublisher.publishEvent(
+                    NewUserCreatedEvent.builder()
+                            .id(savedUser.getId())
+                            .email(savedUser.getEmail())
+                            .isEmailValidated(savedUser.isEmailValidated()).build()
+            );
         }
     }
 
@@ -238,12 +246,4 @@ public class AuthenticationService {
         );
     }
 
-    private VerifiedActionCode createNewVerifiedActionCode(VerifiedActionCode.Action action, UUID userId) {
-        VerifiedActionCode verifiedActionCode = new VerifiedActionCode();
-        verifiedActionCode.setExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS));
-        verifiedActionCode.setUserId(userId);
-        verifiedActionCode.setCode(UUID.randomUUID().toString());
-        verifiedActionCode.setAction(action);
-        return verifiedActionCode;
-    }
 }

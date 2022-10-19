@@ -1,5 +1,7 @@
 package net.dancier.dancer.core;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
@@ -8,12 +10,15 @@ import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.core.util.ModelMapper;
+import net.dancier.dancer.eventlog.EventlogDto;
+import net.dancier.dancer.eventlog.EventlogService;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -32,7 +37,11 @@ public class ProfileService {
 
     private final ZipCodeRepository zipCodeRepository;
 
-    public ProfileDto getProfileByUserId(UUID userId) {
+    private final EventlogService eventlogService;
+
+    private final ObjectMapper objectMapper;
+
+    public ProfileDto getProfileByUserId(UUID userId)  {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found for id: " + userId));
         Dancer dancer = dancerRepository.findByUserId(userId).orElseGet( () -> new Dancer());
@@ -67,6 +76,10 @@ public class ProfileService {
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
         }
         handleDancerProfiles(dancer, profileDto);
+        EventlogDto eventlogDto = new EventlogDto();
+        eventlogDto.setTopic("profile-updated");
+        eventlogDto.setPayload(objectMapper.convertValue(profileDto, JsonNode.class));
+        eventlogService.createNew(eventlogDto);
         dancerRepository.save(dancer);
     };
 

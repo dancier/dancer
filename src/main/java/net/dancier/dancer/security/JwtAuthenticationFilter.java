@@ -1,14 +1,18 @@
 package net.dancier.dancer.security;
 
+import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.core.DancerRepository;
+import net.dancier.dancer.core.model.Dancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,38 +24,41 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+@Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
-    @Autowired
-    private CustomUserDetailsServiceImpl customUserDetailsService;
+    private final CustomUserDetailsServiceImpl customUserDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private final DancerRepository dancerRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(request);
-
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                String subject = tokenProvider.getSubjectFromJWT(jwt);
-                switch (subject) {
-                    case "HUMAN" : onlyCaptchaVerified(); break;
-                    default: systemUser(request, subject);
-                }
-            } /**else {
-            }**/
+            getJwtFromRequest(request)
+                    .ifPresent(token-> {
+                        String subject = tokenProvider.getSubjectFromJWT(token);
+                        Authentication authentication;
+                        switch (subject) {
+                            case "HUMAN" : authentication = onlyCaptchaVerified(); break;
+                            default: authentication = systemUser(request, subject);
+                        }
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+            });
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            log.warn("Could not set user authentication in security context", ex);
         }
         filterChain.doFilter(request, response);
     }
 
-    private void onlyCaptchaVerified() {
+    private Authentication onlyCaptchaVerified() {
         Authentication authentication = new Authentication() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -81,7 +88,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             @Override
             public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
             }
 
             @Override
@@ -89,34 +95,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return null;
             }
         };
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        return authentication;
     }
 
-    private void systemUser(HttpServletRequest httpServletRequest, String subject) {
+    private Authentication systemUser(HttpServletRequest httpServletRequest, String subject) {
         AuthenticatedUser authenticatedUser = customUserDetailsService.loadUserById(UUID.fromString(subject));
         if (authenticatedUser.isEmailValidated()) {
+            authenticatedUser.setOptionalDancerId(dancerRepository.findByUserId(UUID.fromString(subject)).map(Dancer::getId));
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return authentication;
         }
-
+        throw new LockedException("E-Mail-Adresse not validated");
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
+    private Optional<String> getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return Optional.of(bearerToken.substring(7, bearerToken.length()));
         }
         if (request.getCookies()!=null) {
-            String jwt = null;
             for (Cookie cookie: request.getCookies()) {
                 if("jwt-token".equals(cookie.getName())) {
-                    jwt = cookie.getValue();
+                    String jwt = cookie.getValue();
+                    if (StringUtils.hasText(jwt)) {
+                        return Optional.of (jwt);
+                    } else {
+                        return Optional.empty();
+                    }
                 }
             }
-            return jwt;
         }
-        return null;
+        return Optional.empty();
     }}

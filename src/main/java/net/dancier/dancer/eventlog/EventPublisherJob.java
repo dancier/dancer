@@ -12,7 +12,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -24,12 +23,12 @@ public class EventPublisherJob {
 
     private final EventlogS3Service eventlogS3Service;
 
-    @Scheduled(fixedRate = 2500)
+    @Scheduled(fixedRate = 2000)
     public void process() throws SQLException {
-        log.debug("Storing eventlog-entries in S3");
+        log.trace("Storing eventlog-entries in S3");
         List<EventlogEntry> eventlogEntries = eventlogDAO.lockAndGet(50);
         for(EventlogEntry eventlogEntry: eventlogEntries) {
-            log.info("Processing: " + eventlogEntry);
+            log.debug("Processing: " + eventlogEntry);
             try {
                 storeInS3(eventlogEntry);
                 eventlogEntry.setStatus(EventlogEntryStatus.OK);
@@ -41,7 +40,7 @@ public class EventPublisherJob {
         }
     }
 
-    public void storeInS3(EventlogEntry eventlogEntry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void storeInS3(EventlogEntry eventlogEntry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, InvalidResponseException, XmlParserException {
         eventlogS3Service.storeEventLogEntry(eventlogEntry);
     }
 }

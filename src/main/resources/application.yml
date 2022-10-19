@@ -50,10 +50,10 @@ logging:
       dancier: DEBUG
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
       springframework:
         jdbc:
-          core: TRACE
+          core: INFO
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
