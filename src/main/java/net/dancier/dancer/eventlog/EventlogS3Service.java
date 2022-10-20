@@ -48,7 +48,7 @@ public class EventlogS3Service {
         return PutObjectArgs.builder()
                 .bucket("test")
                 .contentType("application/json")
-                .object(eventlogEntry.getTopic() + "-foo")
+                .object(eventlogEntry.getTopic() + "#" + eventlogEntry.getId())
                 .stream(bais, bais.available(), -1).build();
     }
 }
