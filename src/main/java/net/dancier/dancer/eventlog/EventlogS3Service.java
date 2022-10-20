@@ -7,6 +7,7 @@ import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,24 +23,24 @@ public class EventlogS3Service {
 
     private static final Logger log = LoggerFactory.getLogger(EventlogS3Service.class);
 
+    @Value("${app.s3.host}")
     String host;
-
-    String bucket;
-
-    String tempFoler = "/tmp";
 
     private final ObjectMapper objectMapper;
     MinioClient minioClient;
 
     @PostConstruct
     public void init() {
-        minioClient = MinioClient.builder().
-                endpoint("https://test-s3.dancier.net").build();
+        minioClient = MinioClient
+                .builder()
+                .endpoint(host)
+                .build();
     }
 
     public void storeEventLogEntry(EventlogEntry entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         log.info(String.format("Placing %s in S3.", entry));
         eventlogEntryToFile(entry, "/tmp/minio-" + entry.getId());
+        minioClient.
         minioClient.uploadObject(
                 UploadObjectArgs.builder()
                         .bucket("test")
