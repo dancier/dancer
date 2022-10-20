@@ -1,8 +1,9 @@
 package net.dancier.dancer.eventlog;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.MinioClient;
-import io.minio.UploadObjectArgs;
+import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -11,9 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -38,22 +40,15 @@ public class EventlogS3Service {
     }
 
     public void storeEventLogEntry(EventlogEntry entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        log.info(String.format("Placing %s in S3.", entry));
-        eventlogEntryToFile(entry, "/tmp/minio-" + entry.getId());
-        minioClient.
-        minioClient.uploadObject(
-                UploadObjectArgs.builder()
-                        .bucket("test")
-                        .contentType("application/json")
-                        .object(entry.getTopic() + "-" + entry.getId())
-                        .filename("/tmp/minio-" + entry.getId())
-                        .build());
+        minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
     }
 
-    private void eventlogEntryToFile(EventlogEntry eventlogEntry, String fileName) throws IOException {
-        FileWriter fileWriter = new FileWriter(fileName);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.printf(objectMapper.writeValueAsString(eventlogEntry));
-        printWriter.close();
+    private PutObjectArgs putObjectArgsFromEventlogEntry(EventlogEntry eventlogEntry) throws UnsupportedEncodingException, JsonProcessingException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(objectMapper.writeValueAsString(eventlogEntry).getBytes(StandardCharsets.UTF_8));
+        return PutObjectArgs.builder()
+                .bucket("test")
+                .contentType("application/json")
+                .object(eventlogEntry.getTopic() + "-foo")
+                .stream(bais, bais.available(), -1).build();
     }
 }
