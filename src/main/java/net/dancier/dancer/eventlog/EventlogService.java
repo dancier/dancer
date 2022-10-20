@@ -1,5 +1,6 @@
 package net.dancier.dancer.eventlog;
 
+import net.dancier.dancer.core.exception.AppliationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +14,23 @@ public class EventlogService {
     @Autowired
     EventlogDAO eventlogDAO;
 
-    public void createNew(EventlogDto eventlogDto) throws SQLException {
-        EventlogEntry eventlogEntry = new EventlogEntry();
-        eventlogEntry.setId(UUID.randomUUID());
-        eventlogEntry.setTopic(eventlogDto.getTopic());
-        eventlogEntry.setPayload(eventlogDto.getPayload());
-        eventlogEntry.setMetaData(eventlogDto.getMetaData());
-        eventlogEntry.setCreated(Instant.now());
-        if (eventlogDto.getRoles()!=null) {
-            eventlogEntry.setRoles(eventlogDto.getRoles());
-        } else {
-            eventlogEntry.setRoles(Set.of());
+    public void createNew(EventlogDto eventlogDto) {
+        try {
+            EventlogEntry eventlogEntry = new EventlogEntry();
+            eventlogEntry.setId(UUID.randomUUID());
+            eventlogEntry.setTopic(eventlogDto.getTopic());
+            eventlogEntry.setPayload(eventlogDto.getPayload());
+            eventlogEntry.setMetaData(eventlogDto.getMetaData());
+            eventlogEntry.setCreated(Instant.now());
+            if (eventlogDto.getRoles()!=null) {
+                eventlogEntry.setRoles(eventlogDto.getRoles());
+            } else {
+                eventlogEntry.setRoles(Set.of());
+            }
+            eventlogEntry.setUserId(eventlogDto.getUserId());
+            this.eventlogDAO.schedule(eventlogEntry);
+        } catch (SQLException sqlException) {
+            throw new AppliationException("Unable to create new Eventlog-Entry.", sqlException);
         }
-        eventlogEntry.setUserId(eventlogDto.getUserId());
-        this.eventlogDAO.schedule(eventlogEntry);
     }
 }

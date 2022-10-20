@@ -43,7 +43,7 @@ public class JwtTokenProvider {
     }
     public String generateJwtToken(Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-        return generateJwtToken(authenticatedUser.getId().toString());
+        return generateJwtToken(authenticatedUser.getUserId().toString());
     }
 
     public String getSubjectFromJWT(String token) {

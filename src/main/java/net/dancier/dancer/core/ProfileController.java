@@ -33,14 +33,14 @@ public class ProfileController {
     @GetMapping
     public ResponseEntity<ProfileDto> get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
-                profileService.getProfileByUserId(authenticatedUser.getId())
+                profileService.getProfileByUserId(authenticatedUser.getUserId())
         );
     }
 
     @Secured(ROLE_USER)
     @PutMapping
     public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
-        profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
+        profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileDto);
         return ResponseEntity.ok().build();
     }
 

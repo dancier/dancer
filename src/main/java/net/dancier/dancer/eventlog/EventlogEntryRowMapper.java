@@ -3,19 +3,22 @@ package net.dancier.dancer.eventlog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Component
+@RequiredArgsConstructor
 public class EventlogEntryRowMapper implements RowMapper<EventlogEntry> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Override
     public EventlogEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -27,12 +30,20 @@ public class EventlogEntryRowMapper implements RowMapper<EventlogEntry> {
         eventlogEntry.setPayload(objectMapper.readValue(rs.getString("payload"), JsonNode.class));
         eventlogEntry.setCreated(rs.getTimestamp("created").toInstant());
         eventlogEntry.setUserId(rs.getObject("user_id", UUID.class));
-        eventlogEntry.setRoles(new HashSet(Arrays.asList(rs.getArray("roles"))));
+        eventlogEntry.setRoles(arrayToString(rs.getArray("roles")));
         eventlogEntry.setStatus(EventlogEntryStatus.valueOf(rs.getString("status")));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
         return eventlogEntry;
+    }
+    private Set<String> arrayToString(Array array) throws SQLException {
+        String[] roles = (String[])array.getArray();
+        Set<String> result = new HashSet<>();
+        for(Object s: roles) {
+            result.add(s.toString());
+        }
+        return result;
     }
 }

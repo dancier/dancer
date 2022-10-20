@@ -91,7 +91,7 @@ public class AuthenticationController {
                 )
         );
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-        User user = authenticationService.getUser(authenticatedUser.getId());
+        User user = authenticationService.getUser(authenticatedUser.getUserId());
         if (!user.isEmailValidated()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse(false, "You have to validate the email."));

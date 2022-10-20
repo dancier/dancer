@@ -5,7 +5,6 @@ import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
-import net.dancier.dancer.school.SchoolService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class RecommendationController {
     @Secured(ROLE_USER)
     @GetMapping
     public ResponseEntity getTopRecommendations(@CurrentUser AuthenticatedUser authenticatedUser) {
-        Dancer dancer = dancerService.loadByUserId(authenticatedUser.getId());
+        Dancer dancer = dancerService.loadByUserId(authenticatedUser.getUserId());
         List<Recommendable> recommendables = recommendationService.getRecommendationsForDancerId(dancer.getId());
       return ResponseEntity.ok(recommendables.stream().map(ModelMapper::recommendableToRecommendationDto));
     };

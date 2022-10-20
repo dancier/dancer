@@ -43,6 +43,9 @@ app:
     siteKey: 6LetqBAgAAAAAJXA5K_U88bsxKtyp_vld6J0x-Nv
     apiKey: secret
     magicToken: secret
+  s3:
+    host: test-s3.dancier.net
+
 logging:
   level:
     root: INFO
@@ -50,10 +53,10 @@ logging:
       dancier: DEBUG
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
       springframework:
         jdbc:
-          core: TRACE
+          core: INFO
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
