@@ -7,6 +7,8 @@ import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.DanceProfileDto;
 import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.events.EventCreator;
+import net.dancier.dancer.core.events.ProfileUpdatedEvent;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.core.util.ModelMapper;
@@ -14,6 +16,7 @@ import net.dancier.dancer.eventlog.EventlogDto;
 import net.dancier.dancer.eventlog.EventlogService;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,10 +40,7 @@ public class ProfileService {
 
     private final ZipCodeRepository zipCodeRepository;
 
-    private final EventlogService eventlogService;
-
-    private final ObjectMapper objectMapper;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
     public ProfileDto getProfileByUserId(UUID userId)  {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found for id: " + userId));
@@ -76,11 +76,12 @@ public class ProfileService {
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
         }
         handleDancerProfiles(dancer, profileDto);
-        EventlogDto eventlogDto = new EventlogDto();
-        eventlogDto.setTopic("profile-updated");
-        eventlogDto.setPayload(objectMapper.convertValue(profileDto, JsonNode.class));
-        eventlogService.createNew(eventlogDto);
         dancerRepository.save(dancer);
+        applicationEventPublisher.publishEvent(
+                ProfileUpdatedEvent
+                        .builder()
+                        .dancer(dancer)
+                        .build());
     };
 
     private void handleDancerProfiles(Dancer dancer, ProfileDto profileDto) {
