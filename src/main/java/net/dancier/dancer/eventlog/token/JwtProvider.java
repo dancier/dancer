@@ -32,7 +32,7 @@ public class JwtProvider {
         multiValueMap.add("client_id", clientId);
         multiValueMap.add("client_secret", clientSecret);
         multiValueMap.add("grant_type", "client_credentials");
-
+        log.info("Using: " + multiValueMap);
         WebClient.ResponseSpec responseSpec =  webClient
                 .post()
                 .uri(tokenUri)
@@ -40,7 +40,7 @@ public class JwtProvider {
                 .body(BodyInserters.fromFormData(multiValueMap))
                 .retrieve();
         JsonNode result =  responseSpec.bodyToMono(JsonNode.class).block();
-        log.info(result.toString());
+        log.info("Token-result" + result.toString());
         String jwtToken = result.get("access_token").asText();
         Integer expiresIn = result.get("expires_in").asInt();
         return new Jwt(jwtToken, expiresIn);
