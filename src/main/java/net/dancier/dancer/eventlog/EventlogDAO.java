@@ -98,7 +98,6 @@ public class EventlogDAO {
 
     public void schedule(EventlogEntry eventlogEntry) throws SQLException {
         log.info("scheduling: " + eventlogEntry);
-        //String sql = "insert into eventlog(id, mail) VALUES (gen_random_uuid(), '{\"f\":\"bar\"}'::JSON);";
         String sql = """
             INSERT 
               INTO eventlog (
