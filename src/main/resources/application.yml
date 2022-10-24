@@ -45,6 +45,11 @@ app:
     magicToken: secret
   s3:
     host: test-s3.dancier.net
+    stsEndpoint: https://test-s3.dancier.net
+    oidc:
+      tokenUri: https://test-iam.dancier.net/realms/dancier/protocol/openid-connect/token
+      clientId: s3
+      clientSecret: secret
 
 logging:
   level:

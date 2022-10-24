@@ -15,6 +15,7 @@ import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +39,7 @@ import java.util.Optional;
 import static net.dancier.dancer.authentication.Constants.*;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping(value = "/authentication", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 public class AuthenticationController {
 

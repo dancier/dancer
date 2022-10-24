@@ -7,6 +7,7 @@ import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +20,7 @@ import java.util.List;
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
 @RestController
-@RequestMapping("/recommendations")
+@RequestMapping(value = "/recommendations", produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 public class RecommendationController {
 
