@@ -20,7 +20,11 @@ public class LocationController {
     @Secured(ROLE_USER)
     @GetMapping("zipCode/{country}/{code}")
     public ResponseEntity<ZipCode> resolve(@PathVariable String country, @PathVariable String code) {
-        return ResponseEntity.ok(locationService.resolveZipCode(country, code));
+        ZipCode zipCode = this.locationService.resolveZipCode(country, code);
+        if (zipCode == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(zipCode);
     }
 
 }
