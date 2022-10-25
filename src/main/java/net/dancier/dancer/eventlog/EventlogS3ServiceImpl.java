@@ -12,6 +12,7 @@ import net.dancier.dancer.eventlog.token.JwtProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 @Service
+@ConditionalOnProperty(name = "app.s3.active", havingValue = "true")
 public class EventlogS3ServiceImpl implements EventlogS3Service {
 
     private static final Logger log = LoggerFactory.getLogger(EventlogS3ServiceImpl.class);

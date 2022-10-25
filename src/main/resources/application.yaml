@@ -44,6 +44,7 @@ app:
     apiKey: secret
     magicToken: secret
   s3:
+    active: true
     host: test-s3.dancier.net
     stsEndpoint: https://test-s3.dancier.net
     oidc:
