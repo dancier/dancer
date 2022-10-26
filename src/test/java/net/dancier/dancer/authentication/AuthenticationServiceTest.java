@@ -1,6 +1,7 @@
 package net.dancier.dancer.authentication;
 
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.authentication.repository.PasswordResetCodeRepository;
@@ -13,9 +14,11 @@ import net.dancier.dancer.mail.service.MailEnqueueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityNotFoundException;
@@ -32,9 +35,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
 
-    @InjectMocks
-    private AuthenticationService underTest;
-
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisherMock;
     @Mock
     private RoleRepository roleRepositoryMock;
 
@@ -57,6 +59,9 @@ class AuthenticationServiceTest {
     private PasswordResetCodeRepository passwordResetCodeRepositoryMock;
 
     private final UUID userId = UUID.randomUUID();
+
+    @InjectMocks
+    private AuthenticationService underTest;
 
     @BeforeEach
     void init() {
@@ -88,7 +93,9 @@ class AuthenticationServiceTest {
 
         underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
 
-        verify(validationCodeRepositoryMock).save(any());
+        ArgumentCaptor<NewUserCreatedEvent> newUserCreatedEventArgumentCaptor = ArgumentCaptor.forClass(NewUserCreatedEvent.class);
+        verify(applicationEventPublisherMock).publishEvent(newUserCreatedEventArgumentCaptor.capture());
+        assertThat(newUserCreatedEventArgumentCaptor.getValue().getId()).isNotNull();
         verify(userRepositoryMock).save(any());
     }
 

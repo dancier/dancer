@@ -1,6 +1,6 @@
 package net.dancier.dancer.core;
 
-import org.jboss.logging.MDC;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,9 +13,9 @@ import java.io.IOException;
 @Component
 public class AppInstanceIdFilter extends OncePerRequestFilter {
 
-    private final String APP_INSTANCE_ID_HEADER_NAME = "X-App-Instance-Id";
+    private final static String APP_INSTANCE_ID_HEADER_NAME = "X-App-Instance-Id";
 
-    private final String APP_INSTANCE_ID_CONTEXT_FIELD = "AppInstanceId";
+    public final static String APP_INSTANCE_ID_CONTEXT_FIELD = "AppInstanceId";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

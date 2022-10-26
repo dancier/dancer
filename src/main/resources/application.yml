@@ -43,8 +43,6 @@ app:
     siteKey: 6LetqBAgAAAAAJXA5K_U88bsxKtyp_vld6J0x-Nv
     apiKey: secret
     magicToken: secret
-  chatDancer:
-    host: ${CHAT_DANCER_HOST}
 logging:
   level:
     root: INFO
@@ -52,10 +50,10 @@ logging:
       dancier: DEBUG
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
       springframework:
         jdbc:
-          core: TRACE
+          core: INFO
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG

@@ -28,6 +28,9 @@ public class EventlogDAO {
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    @Autowired
+    EventlogEntryRowMapper eventlogEntryRowMapper;
+
     public void update(EventlogEntry eventlogEntry) throws SQLException {
         String sql = """
                     UPDATE eventlog
@@ -88,7 +91,6 @@ public class EventlogDAO {
         params.put("limit", size);
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("limit", size);
-        EventlogEntryRowMapper eventlogEntryRowMapper = new EventlogEntryRowMapper();
 
         List<EventlogEntry> eventlogEntries = namedParameterJdbcTemplate.query(sql, sqlParameterSource, eventlogEntryRowMapper);
         return eventlogEntries;
@@ -96,7 +98,6 @@ public class EventlogDAO {
 
     public void schedule(EventlogEntry eventlogEntry) throws SQLException {
         log.info("scheduling: " + eventlogEntry);
-        //String sql = "insert into eventlog(id, mail) VALUES (gen_random_uuid(), '{\"f\":\"bar\"}'::JSON);";
         String sql = """
             INSERT 
               INTO eventlog (

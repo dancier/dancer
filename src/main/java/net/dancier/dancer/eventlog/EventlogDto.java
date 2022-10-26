@@ -1,6 +1,7 @@
 package net.dancier.dancer.eventlog;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import lombok.Data;
 import net.dancier.dancer.authentication.model.Role;
 
@@ -12,9 +13,9 @@ public class EventlogDto {
 
     private String topic;
 
-    private JsonNode metaData;
+    private JsonNode metaData = JsonNodeFactory.instance.objectNode();
 
-    private JsonNode payload;
+    private JsonNode payload = JsonNodeFactory.instance.objectNode();
 
     private Set<String> roles;
 

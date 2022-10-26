@@ -6,17 +6,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ToString
 public class AuthenticatedUser implements UserDetails {
 
-    private UUID id;
+    private UUID userId;
 
+    private Optional<UUID> optionalDancerId = Optional.empty();
     private String email;
 
     private String password;
@@ -25,12 +23,12 @@ public class AuthenticatedUser implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public AuthenticatedUser(UUID id,
+    public AuthenticatedUser(UUID userId,
                              String email,
                              boolean isEmailValidated,
                              String password,
                              Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+        this.userId = userId;
         this.email = email;
         this.isEmailValidated = isEmailValidated;
         this.password = password;
@@ -51,8 +49,8 @@ public class AuthenticatedUser implements UserDetails {
                 authorities);
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getUserId() {
+        return userId;
     }
 
     public boolean isEmailValidated() {
@@ -94,16 +92,24 @@ public class AuthenticatedUser implements UserDetails {
         return true;
     }
 
+    public Optional<UUID> getOptionalDancerId() {
+        return optionalDancerId;
+    }
+
+    public void setOptionalDancerId(Optional<UUID> optionalDancerId) {
+        this.optionalDancerId = optionalDancerId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthenticatedUser that = (AuthenticatedUser) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(userId, that.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(userId);
     }
 }

@@ -6,6 +6,7 @@ import net.dancier.dancer.core.dto.UsernameAvailableDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping(value = "/profile", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -33,14 +34,14 @@ public class ProfileController {
     @GetMapping
     public ResponseEntity<ProfileDto> get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
-                profileService.getProfileByUserId(authenticatedUser.getId())
+                profileService.getProfileByUserId(authenticatedUser.getUserId())
         );
     }
 
     @Secured(ROLE_USER)
     @PutMapping
     public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
-        profileService.updateProfileForUserId(authenticatedUser.getId(), profileDto);
+        profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileDto);
         return ResponseEntity.ok().build();
     }
 

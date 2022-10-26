@@ -24,7 +24,7 @@ paths:
 
   /authentication/registrations:
     post:
-      summary: starts the user registrations process,
+      summary: starts the user registrations process, 
         the client need to have ROLE_HUMAN assigned
       tags:
         - IAM
@@ -304,6 +304,12 @@ paths:
       responses:
         '200':
           description: get geo coordinates and city from zip code
+          content:
+              application/json:
+                schema:
+                    $ref: "#/components/schemas/location_response"
+        '404':
+          description: no location/city found for this zip code
   /images:
     post:
       summary: uploads a png image
@@ -590,6 +596,7 @@ components:
   schemas:
     contact_mail:
       type: object
+
     eventlog:
       type: object
     gender:
@@ -639,6 +646,7 @@ components:
           type: string
         profileImageHash:
           type: string
+
     dance_profile:
       type: object
       properties:
@@ -773,6 +781,22 @@ components:
           type: string
         "tokenType":
           type: string
+    location_response:
+      type: object
+      properties:
+        "id":
+          type: string
+        "zipCode":
+          type: string
+        "country":
+          type: string
+        "longitude":
+          type: number
+        "latitude":
+          type: number
+        "city":
+          type: string
+
     chat_creation:
       type: object
       properties:
