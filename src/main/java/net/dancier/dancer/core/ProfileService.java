@@ -1,27 +1,20 @@
 package net.dancier.dancer.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.DanceProfileDto;
 import net.dancier.dancer.core.dto.ProfileDto;
-import net.dancier.dancer.core.events.EventCreator;
 import net.dancier.dancer.core.events.ProfileUpdatedEvent;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.core.util.ModelMapper;
-import net.dancier.dancer.eventlog.EventlogDto;
-import net.dancier.dancer.eventlog.EventlogService;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

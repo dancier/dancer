@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.AppInstanceIdFilter;
-import net.dancier.dancer.eventlog.EventlogDto;
+import net.dancier.dancer.eventlog.dto.EventlogDto;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.MDC;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,4 +1,4 @@
-package net.dancier.dancer.eventlog.token;
+package net.dancier.dancer.eventlog.service;
 
 
 import com.fasterxml.jackson.databind.JsonNode;

@@ -1,5 +1,6 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.repository;
 
+import net.dancier.dancer.eventlog.model.EventlogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

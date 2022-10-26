@@ -1,9 +1,10 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.model.EventlogEntry;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

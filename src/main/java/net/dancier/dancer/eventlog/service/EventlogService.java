@@ -1,6 +1,9 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.service;
 
 import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.eventlog.dto.EventlogDto;
+import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.repository.EventlogDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

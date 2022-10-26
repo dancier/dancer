@@ -1,8 +1,8 @@
 package net.dancier.dancer.eventlog.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.EventlogDto;
-import net.dancier.dancer.eventlog.EventlogService;
+import net.dancier.dancer.eventlog.dto.EventlogDto;
+import net.dancier.dancer.eventlog.service.EventlogService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

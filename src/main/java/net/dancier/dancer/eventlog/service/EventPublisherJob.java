@@ -1,7 +1,10 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.service;
 
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.repository.EventlogDAO;
+import net.dancier.dancer.eventlog.repository.EventlogEntryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
