@@ -69,6 +69,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
 
         } catch (Exception e) {
             log.error("Problem creating needed bucket" + e.getMessage());
+            log.error("One Token: " + jwtProvider.getJwt());
         }
     }
 
