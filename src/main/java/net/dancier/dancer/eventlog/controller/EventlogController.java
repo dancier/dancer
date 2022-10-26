@@ -3,11 +3,11 @@ package net.dancier.dancer.eventlog.controller;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.eventlog.dto.EventlogMapper;
 import net.dancier.dancer.eventlog.dto.NewEventlogDto;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.service.EventlogService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,18 +28,18 @@ public class EventlogController {
     private final EventlogService eventlogService;
     @PostMapping
     public ResponseEntity publish(@RequestBody NewEventlogDto newEventlogDto) {
-        newEventlogDto.setUserId(null);
-        newEventlogDto.setRoles(Set.of());
-        setRolesAndUser(newEventlogDto);
-        eventlogService.appendNew(EventlogMapper.toEventlog(newEventlogDto));
+        Eventlog eventlog = EventlogMapper.toEventlog(newEventlogDto);
+        setRolesAndUser(eventlog);
+        eventlogService.appendNew(eventlog);
+        log.info("Appended " + eventlog + " to the eventlog.");
         return ResponseEntity.ok().build();
     }
 
-    private void setRolesAndUser(NewEventlogDto newEventlogDto) {
+    private void setRolesAndUser(Eventlog eventlog) {
         switch (SecurityContextHolder.getContext().getAuthentication().getPrincipal()) {
             case AuthenticatedUser authenticatedUser -> {
-                newEventlogDto.setUserId(authenticatedUser.getUserId());
-                newEventlogDto.setRoles(
+                eventlog.setUserId(authenticatedUser.getUserId());
+                eventlog.setRoles(
                         authenticatedUser
                                 .getAuthorities()
                                 .stream()
@@ -48,8 +48,8 @@ public class EventlogController {
                 );
             }
             case default -> {
-                newEventlogDto.setUserId(null);
-                newEventlogDto.setRoles(Set.of("ROLE_ANONYMOUS"));
+                eventlog.setUserId(null);
+                eventlog.setRoles(Set.of("ROLE_ANONYMOUS"));
             }
         }
     }

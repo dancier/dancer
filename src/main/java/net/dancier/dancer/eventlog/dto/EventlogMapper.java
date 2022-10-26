@@ -9,8 +9,6 @@ public class EventlogMapper {
         eventlog.setTopic(newEventlogDto.getTopic());
         eventlog.setMetaData(newEventlogDto.getMetaData());
         eventlog.setPayload(newEventlogDto.getPayload());
-        eventlog.setUserId(newEventlogDto.getUserId());
-        eventlog.setRoles(newEventlogDto.getRoles());
         return eventlog;
     }
 }

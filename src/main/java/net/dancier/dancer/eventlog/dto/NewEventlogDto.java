@@ -16,7 +16,4 @@ public class NewEventlogDto {
 
     private JsonNode payload = JsonNodeFactory.instance.objectNode();
 
-    private Set<String> roles;
-
-    private UUID userId;
 }
