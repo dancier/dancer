@@ -1,6 +1,8 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.EventlogDto;
+import net.dancier.dancer.eventlog.EventlogService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class EventlogController {
     @PostMapping
     public ResponseEntity publish(@RequestBody EventlogDto eventlogDto) {
         log.info("Got: " + eventlogDto);
-         Set<String> roles = Set.of();
+        Set<String> roles = Set.of();
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
         if (authentication!=null) {

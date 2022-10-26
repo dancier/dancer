@@ -22,8 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.s3.active", havingValue = "true")
 public class EventlogS3ServiceImpl implements EventlogS3Service {
 
