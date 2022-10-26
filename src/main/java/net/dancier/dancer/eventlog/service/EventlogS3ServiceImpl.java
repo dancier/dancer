@@ -68,6 +68,11 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
 
     @Override
     public void storeEventLog(Eventlog entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        createBucketIfNotExist();
+        minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
+    }
+
+    private void createBucketIfNotExist() {
         if (!bucketCreated.get()) {
             try {
                 if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
@@ -80,14 +85,12 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                 log.error("One Token: " + jwtProvider.getJwt());
             }
         }
-
-        minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
     }
 
     private PutObjectArgs putObjectArgsFromEventlogEntry(Eventlog eventlog) throws JsonProcessingException {
         ByteArrayInputStream bais = new ByteArrayInputStream(objectMapper.writeValueAsString(eventlog).getBytes(StandardCharsets.UTF_8));
         return PutObjectArgs.builder()
-                .bucket("test")
+                .bucket(bucket)
                 .contentType("application/json")
                 .object(objectNameFromEventlog(eventlog))
                 .stream(bais, bais.available(), -1).build();
