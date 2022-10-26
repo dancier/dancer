@@ -26,12 +26,12 @@ public class DancerController {
 
     private final DancerService dancerService;
 
-    @PostMapping("/")
+    @PostMapping("")
     @Secured(ROLE_USER)
     public ResponseEntity<HashMap<UUID, DancerDto>> post(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody DancerIdsDto dancerIdsDto) {
-        log.info("Creating a new chat for user {}.", authenticatedUser.getId());
+        log.info("Fetching list of dancers for user {}.", authenticatedUser.getUserId());
         return ResponseEntity.ok(
                 dancerService.getDancerMap(dancerIdsDto)
         );

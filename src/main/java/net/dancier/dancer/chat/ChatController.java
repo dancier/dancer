@@ -26,57 +26,57 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping("/")
+    @GetMapping("")
     @Secured(ROLE_USER)
     public ResponseEntity<ChatsDto> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
-        log.info("Fetching chats for user {}.", authenticatedUser.getId());
+        log.info("Fetching chats for user {}.", authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getChatsByUserId(authenticatedUser.getId())
+                chatService.getChatsByUserId(authenticatedUser.getUserId())
         );
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @Secured(ROLE_USER)
     public ResponseEntity<ChatDto> postChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody CreateChatDto createChatDto) {
-        log.info("Creating a new chat for user {}.", authenticatedUser.getId());
+        log.info("Creating a new chat for user {}.", authenticatedUser.getUserId());
         return new ResponseEntity(
-                chatService.createChat(authenticatedUser.getId(), createChatDto), HttpStatus.CREATED
+                chatService.createChat(authenticatedUser.getUserId(), createChatDto), HttpStatus.CREATED
         );
     }
 
-    @GetMapping("/{chatId}/")
+    @GetMapping("/{chatId}")
     @Secured(ROLE_USER)
     public ResponseEntity<ChatDto> getChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @PathVariable UUID chatId) {
-        log.info("Fetching single chat {} for user {}.", chatId, authenticatedUser.getId());
+        log.info("Fetching single chat {} for user {}.", chatId, authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getChat(chatId, authenticatedUser.getId())
+                chatService.getChat(chatId, authenticatedUser.getUserId())
         );
     }
 
-    @GetMapping("/{chatId}/messages/")
+    @GetMapping("/{chatId}/messages")
     @Secured(ROLE_USER)
     public ResponseEntity<MessagesDto> getMessages(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @PathVariable UUID chatId,
             @RequestParam Optional<UUID> lastMessageId) {
-        log.info("Fetching messages for chat {} for user {}.", chatId, authenticatedUser.getId());
+        log.info("Fetching messages for chat {} for user {}.", chatId, authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getMessages(chatId, authenticatedUser.getId(), lastMessageId)
+                chatService.getMessages(chatId, authenticatedUser.getUserId(), lastMessageId)
         );
     }
 
-    @PostMapping("/{chatId}/messages/")
+    @PostMapping("/{chatId}/messages")
     @Secured(ROLE_USER)
     public ResponseEntity postMessage(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @PathVariable UUID chatId,
             @RequestBody CreateMessageDto createMessageDto) {
-        log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getId());
-        chatService.createMessage(chatId, authenticatedUser.getId(), createMessageDto);
+        log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getUserId());
+        chatService.createMessage(chatId, authenticatedUser.getUserId(), createMessageDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

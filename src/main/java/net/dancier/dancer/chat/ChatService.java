@@ -53,7 +53,7 @@ public class ChatService {
         return messages;
     }
 
-    public Object createMessage(UUID chatId, UUID userId, CreateMessageDto createMessageDto) {
+    public Void createMessage(UUID chatId, UUID userId, CreateMessageDto createMessageDto) {
         Dancer currentDancer = dancerService.loadByUserId(userId);
         ChatDto chat = chatServiceClient.getChat(chatId);
 

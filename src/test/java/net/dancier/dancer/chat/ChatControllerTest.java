@@ -59,7 +59,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     }
 
     @Nested
-    @DisplayName("GET /chats/")
+    @DisplayName("GET /chats")
     public class GetChats {
 
         @Test
@@ -76,14 +76,14 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChats(dancerId)).thenReturn(chats);
 
-            ResultActions result = mockMvc.perform(get("/chats/")).andExpect(status().isOk());
+            ResultActions result = mockMvc.perform(get("/chats")).andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chats[0].chatId").value(chatId.toString()));
         }
     }
 
     @Nested
-    @DisplayName("POST /chats/")
+    @DisplayName("POST /chats")
     public class PostChats {
 
         @Test
@@ -102,7 +102,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.createChat(chat)).thenReturn(createdChat);
 
-            ResultActions result = mockMvc.perform(post("/chats/")
+            ResultActions result = mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(chat)))
                     .andExpect(status().isCreated());
@@ -120,7 +120,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             chat.setDancerIds(dancerIds);
             chat.setType(ChatType.IN_PERSON);
 
-            mockMvc.perform(post("/chats/")
+            mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(chat)))
                     .andExpect(status().isBadRequest());
@@ -129,7 +129,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     }
 
     @Nested
-    @DisplayName("GET /chats/id/")
+    @DisplayName("GET /chats/id")
     public class GetChat {
 
         @Test
@@ -143,7 +143,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            ResultActions result = mockMvc.perform(get("/chats/" + chatId + "/")).andExpect(status().isOk());
+            ResultActions result = mockMvc.perform(get("/chats/" + chatId)).andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chatId").value(chatId.toString()));
         }
@@ -157,12 +157,12 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(get("/chats/" + chatId + "/")).andExpect(status().isBadRequest());
+            mockMvc.perform(get("/chats/" + chatId)).andExpect(status().isBadRequest());
         }
     }
 
     @Nested
-    @DisplayName("GET /chats/id/messages/")
+    @DisplayName("GET /chats/id/messages")
     public class GetMessages {
 
         @Test
@@ -173,7 +173,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(get("/chats/" + chatId + "/messages/")).andExpect(status().isBadRequest());
+            mockMvc.perform(get("/chats/" + chatId + "/messages")).andExpect(status().isBadRequest());
 
         }
 
@@ -193,7 +193,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
             when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(messages);
 
-            ResultActions result = mockMvc.perform(get("/chats/" + chatId + "/messages/")).andExpect(status().isOk());
+            ResultActions result = mockMvc.perform(get("/chats/" + chatId + "/messages")).andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.messages[0].text").value("Hallo"));
 
@@ -201,7 +201,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     }
 
     @Nested
-    @DisplayName("POST /chats/id/messages/")
+    @DisplayName("POST /chats/id/messages")
     public class PostMessages {
 
         @Test
@@ -215,7 +215,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(post("/chats/" + chatId + "/messages/")
+            mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
             ).andExpect(status().isBadRequest());
@@ -237,7 +237,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(post("/chats/" + chatId + "/messages/")
+            mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
             ).andExpect(status().isCreated());
