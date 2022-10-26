@@ -1,6 +1,6 @@
 package net.dancier.dancer.eventlog.repository;
 
-import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class EventlogDAO {
     @Autowired
     EventlogEntryRowMapper eventlogEntryRowMapper;
 
-    public void update(EventlogEntry eventlogEntry) throws SQLException {
+    public void update(Eventlog eventlog) throws SQLException {
         String sql = """
                     UPDATE eventlog
                        SET topic = :topic,
@@ -49,15 +49,15 @@ public class EventlogDAO {
         try {
             connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
             final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                    .addValue("id", eventlogEntry.getId())
-                    .addValue("topic", eventlogEntry.getTopic())
-                    .addValue("metaData", eventlogEntry.getMetaData().toString())
-                    .addValue("payload", eventlogEntry.getPayload().toString())
-                    .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-                    .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
-                    .addValue("userId", eventlogEntry.getUserId())
-                    .addValue("status", eventlogEntry.getStatus().toString())
-                    .addValue("error_message", eventlogEntry.getErrorMessage());
+                    .addValue("id", eventlog.getId())
+                    .addValue("topic", eventlog.getTopic())
+                    .addValue("metaData", eventlog.getMetaData().toString())
+                    .addValue("payload", eventlog.getPayload().toString())
+                    .addValue("created", Timestamp.from(eventlog.getCreated()))
+                    .addValue("roles", connection.createArrayOf("text", eventlog.getRoles().toArray()))
+                    .addValue("userId", eventlog.getUserId())
+                    .addValue("status", eventlog.getStatus().toString())
+                    .addValue("error_message", eventlog.getErrorMessage());
             namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         } finally {
             if (connection!=null) {
@@ -65,7 +65,7 @@ public class EventlogDAO {
             }
         }
     }
-    public List<EventlogEntry> lockAndGet(Integer size) {
+    public List<Eventlog> lockAndGet(Integer size) {
         String sql = """
                 UPDATE eventlog\s
                    SET status = 'IN_PROGRESS'\s
@@ -93,12 +93,12 @@ public class EventlogDAO {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("limit", size);
 
-        List<EventlogEntry> eventlogEntries = namedParameterJdbcTemplate.query(sql, sqlParameterSource, eventlogEntryRowMapper);
+        List<Eventlog> eventlogEntries = namedParameterJdbcTemplate.query(sql, sqlParameterSource, eventlogEntryRowMapper);
         return eventlogEntries;
     }
 
-    public void schedule(EventlogEntry eventlogEntry) throws SQLException {
-        log.info("scheduling: " + eventlogEntry);
+    public void schedule(Eventlog eventlog) throws SQLException {
+        log.info("scheduling: " + eventlog);
         String sql = """
             INSERT 
               INTO eventlog (
@@ -122,13 +122,13 @@ public class EventlogDAO {
         try {
             connection = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
             final SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                    .addValue("id", eventlogEntry.getId())
-                    .addValue("topic", eventlogEntry.getTopic())
-                    .addValue("metaData", eventlogEntry.getMetaData().toString())
-                    .addValue("payload", eventlogEntry.getPayload().toString())
-                    .addValue("created", Timestamp.from(eventlogEntry.getCreated()))
-                    .addValue("roles", connection.createArrayOf("text",eventlogEntry.getRoles().toArray()))
-                    .addValue("userid", eventlogEntry.getUserId());
+                    .addValue("id", eventlog.getId())
+                    .addValue("topic", eventlog.getTopic())
+                    .addValue("metaData", eventlog.getMetaData().toString())
+                    .addValue("payload", eventlog.getPayload().toString())
+                    .addValue("created", Timestamp.from(eventlog.getCreated()))
+                    .addValue("roles", connection.createArrayOf("text", eventlog.getRoles().toArray()))
+                    .addValue("userid", eventlog.getUserId());
             namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         } finally {
             if (connection!=null)

@@ -3,13 +3,12 @@ package net.dancier.dancer.eventlog.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import lombok.Data;
-import net.dancier.dancer.authentication.model.Role;
 
 import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class EventlogDto {
+public class NewEventlogDto {
 
     private String topic;
 

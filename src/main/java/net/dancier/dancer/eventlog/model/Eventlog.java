@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class EventlogEntry {
+public class Eventlog {
 
     private UUID id;
 

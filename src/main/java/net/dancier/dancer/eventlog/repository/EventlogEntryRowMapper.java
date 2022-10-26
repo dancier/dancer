@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -17,27 +17,27 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class EventlogEntryRowMapper implements RowMapper<EventlogEntry> {
+public class EventlogEntryRowMapper implements RowMapper<Eventlog> {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public EventlogEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
-        EventlogEntry eventlogEntry = new EventlogEntry();
+    public Eventlog mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Eventlog eventlog = new Eventlog();
         try {
-            eventlogEntry.setId(rs.getObject("id", UUID.class));
-        eventlogEntry.setTopic(rs.getString("topic"));
-            eventlogEntry.setMetaData(objectMapper.readValue(rs.getString("meta_data"), JsonNode.class));
-        eventlogEntry.setPayload(objectMapper.readValue(rs.getString("payload"), JsonNode.class));
-        eventlogEntry.setCreated(rs.getTimestamp("created").toInstant());
-        eventlogEntry.setUserId(rs.getObject("user_id", UUID.class));
-        eventlogEntry.setRoles(arrayToString(rs.getArray("roles")));
-        eventlogEntry.setStatus(EventlogEntryStatus.valueOf(rs.getString("status")));
+            eventlog.setId(rs.getObject("id", UUID.class));
+        eventlog.setTopic(rs.getString("topic"));
+            eventlog.setMetaData(objectMapper.readValue(rs.getString("meta_data"), JsonNode.class));
+        eventlog.setPayload(objectMapper.readValue(rs.getString("payload"), JsonNode.class));
+        eventlog.setCreated(rs.getTimestamp("created").toInstant());
+        eventlog.setUserId(rs.getObject("user_id", UUID.class));
+        eventlog.setRoles(arrayToString(rs.getArray("roles")));
+        eventlog.setStatus(EventlogEntryStatus.valueOf(rs.getString("status")));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
-        return eventlogEntry;
+        return eventlog;
     }
     private Set<String> arrayToString(Array array) throws SQLException {
         String[] roles = (String[])array.getArray();

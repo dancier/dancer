@@ -2,7 +2,7 @@ package net.dancier.dancer.eventlog.service;
 
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.repository.EventlogDAO;
 import net.dancier.dancer.eventlog.repository.EventlogEntryStatus;
 import org.slf4j.Logger;
@@ -29,21 +29,21 @@ public class EventPublisherJob {
     @Scheduled(fixedRate = 2000)
     public void process() throws SQLException {
         log.trace("Storing eventlog-entries in S3");
-        List<EventlogEntry> eventlogEntries = eventlogDAO.lockAndGet(50);
-        for(EventlogEntry eventlogEntry: eventlogEntries) {
-            log.debug("Processing: " + eventlogEntry);
+        List<Eventlog> eventlogEntries = eventlogDAO.lockAndGet(50);
+        for(Eventlog eventlog : eventlogEntries) {
+            log.debug("Processing: " + eventlog);
             try {
-                storeInS3(eventlogEntry);
-                eventlogEntry.setStatus(EventlogEntryStatus.OK);
+                storeInS3(eventlog);
+                eventlog.setStatus(EventlogEntryStatus.OK);
             } catch (Exception e) {
-                eventlogEntry.setStatus(EventlogEntryStatus.FAILED);
-                eventlogEntry.setErrorMessage(e.getMessage());
+                eventlog.setStatus(EventlogEntryStatus.FAILED);
+                eventlog.setErrorMessage(e.getMessage());
             }
-            eventlogDAO.update(eventlogEntry);
+            eventlogDAO.update(eventlog);
         }
     }
 
-    public void storeInS3(EventlogEntry eventlogEntry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, InvalidResponseException, XmlParserException {
-        eventlogS3Service.storeEventLogEntry(eventlogEntry);
+    public void storeInS3(Eventlog eventlog) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, InvalidResponseException, XmlParserException {
+        eventlogS3Service.storeEventLogEntry(eventlog);
     }
 }

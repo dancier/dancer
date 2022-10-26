@@ -1,7 +1,7 @@
 package net.dancier.dancer.eventlog.service;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.model.EventlogEntry;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,7 +15,7 @@ public class EventlogS3ServiceStubbed implements EventlogS3Service {
     private static final Logger log = LoggerFactory.getLogger(EventlogS3ServiceStubbed.class);
 
     @Override
-    public void storeEventLogEntry(EventlogEntry entry) {
+    public void storeEventLogEntry(Eventlog entry) {
         log.info("Not sending anything to s3, running in stubbed mode...");
     }
 
