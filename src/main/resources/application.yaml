@@ -46,6 +46,7 @@ app:
   s3:
     active: true
     host: test-s3.dancier.net
+    bucket: lake
     stsEndpoint: https://test-s3.dancier.net
     oidc:
       tokenUri: https://test-iam.dancier.net/realms/dancier/protocol/openid-connect/token

@@ -2,6 +2,8 @@ package net.dancier.dancer.eventlog.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.credentials.ClientGrantsProvider;
@@ -37,12 +39,15 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     @Value("${app.s3.stsEndpoint}")
     String stsEndpoint;
 
+    @Value("${app.s3.bucket}")
+    String bucket;
+
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     MinioClient minioClient;
 
     @PostConstruct
-    public void init() {
+    public void init()  {
         Provider provider = new ClientGrantsProvider
                 (
                         () -> jwtProvider.getJwt(),
@@ -56,6 +61,15 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                 .endpoint(s3Host)
                 .credentialsProvider(provider)
                 .build();
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
+                log.info("Bucket " + bucket + " did not exist. Creating it.");
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
+            }
+
+        } catch (Exception e) {
+            log.error("Problem creating needed bucket");
+        }
     }
 
     @Override
