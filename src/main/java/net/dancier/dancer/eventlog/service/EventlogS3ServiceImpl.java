@@ -25,6 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,8 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     private final JwtProvider jwtProvider;
     MinioClient minioClient;
 
+    private AtomicBoolean bucketCreated = new AtomicBoolean(false);
+
     @PostConstruct
     public void init()  {
         Provider provider = new ClientGrantsProvider
@@ -61,20 +64,23 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                 .endpoint(s3Host)
                 .credentialsProvider(provider)
                 .build();
-        try {
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
-                log.info("Bucket " + bucket + " did not exist. Creating it.");
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
-            }
-
-        } catch (Exception e) {
-            log.error("Problem creating needed bucket" + e.getMessage());
-            log.error("One Token: " + jwtProvider.getJwt());
-        }
     }
 
     @Override
     public void storeEventLog(Eventlog entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        if (!bucketCreated.get()) {
+            try {
+                if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
+                    log.info("Bucket " + bucket + " did not exist. Creating it.");
+                    minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
+                    bucketCreated.set(true);
+                }
+            } catch (Exception e) {
+                log.error("Problem creating needed bucket" + e.getMessage());
+                log.error("One Token: " + jwtProvider.getJwt());
+            }
+        }
+
         minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
     }
 
