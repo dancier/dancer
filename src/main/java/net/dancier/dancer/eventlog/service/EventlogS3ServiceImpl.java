@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +68,24 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
         return PutObjectArgs.builder()
                 .bucket("test")
                 .contentType("application/json")
-                .object(eventlog.getTopic() + "/" + eventlog.getId())
+                .object(objectNameFromEventlog(eventlog))
                 .stream(bais, bais.available(), -1).build();
+    }
+
+    private String objectNameFromEventlog(Eventlog eventlog) {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(eventlog.getCreated(),ZoneId.systemDefault());
+        StringBuilder sb = new StringBuilder();
+        sb.append(localDateTime.getYear());
+        sb.append("/");
+        sb.append(localDateTime.getMonth());
+        sb.append("/");
+        sb.append(localDateTime.getDayOfMonth());
+        sb.append("/");
+        sb.append(localDateTime.getHour());
+        sb.append("/");
+        sb.append(eventlog.getTopic());
+        sb.append("/");
+        sb.append(eventlog.getId());
+        return sb.toString();
     }
 }
