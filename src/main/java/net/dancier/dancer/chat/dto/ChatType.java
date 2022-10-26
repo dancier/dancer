@@ -1,6 +1,6 @@
 package net.dancier.dancer.chat.dto;
 
-public enum DanceType {
+public enum ChatType {
     GROUP,
     IN_PERSON
 }

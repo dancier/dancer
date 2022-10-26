@@ -1,19 +1,20 @@
 package net.dancier.dancer.chat;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.chat.dto.ChatDto;
+import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.contact.ContactController;
+import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -25,12 +26,62 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping
+    @GetMapping("/")
     @Secured(ROLE_USER)
-    public ResponseEntity<List<ChatDto>> get(@CurrentUser AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<ChatsDto> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
         log.info("Fetching chats for user {}.", authenticatedUser.getId());
         return ResponseEntity.ok(
                 chatService.getChatsByUserId(authenticatedUser.getId())
         );
+    }
+
+    @PostMapping("/")
+    @Secured(ROLE_USER)
+    public ResponseEntity<ChatDto> postChat(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @RequestBody CreateChatDto createChatDto) {
+        log.info("Creating a new chat for user {}.", authenticatedUser.getId());
+        return new ResponseEntity(
+                chatService.createChat(authenticatedUser.getId(), createChatDto), HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping("/{chatId}/")
+    @Secured(ROLE_USER)
+    public ResponseEntity<ChatDto> getChat(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @PathVariable UUID chatId) {
+        log.info("Fetching single chat {} for user {}.", chatId, authenticatedUser.getId());
+        return ResponseEntity.ok(
+                chatService.getChat(chatId, authenticatedUser.getId())
+        );
+    }
+
+    @GetMapping("/{chatId}/messages/")
+    @Secured(ROLE_USER)
+    public ResponseEntity<MessagesDto> getMessages(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @PathVariable UUID chatId,
+            @RequestParam Optional<UUID> lastMessageId) {
+        log.info("Fetching messages for chat {} for user {}.", chatId, authenticatedUser.getId());
+        return ResponseEntity.ok(
+                chatService.getMessages(chatId, authenticatedUser.getId(), lastMessageId)
+        );
+    }
+
+    @PostMapping("/{chatId}/messages/")
+    @Secured(ROLE_USER)
+    public ResponseEntity postMessage(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @PathVariable UUID chatId,
+            @RequestBody CreateMessageDto createMessageDto) {
+        log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getId());
+        chatService.createMessage(chatId, authenticatedUser.getId(), createMessageDto);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler({BusinessException.class})
+    public ResponseEntity handle(Throwable throwable) {
+        return ResponseEntity.badRequest().build();
     }
 }
