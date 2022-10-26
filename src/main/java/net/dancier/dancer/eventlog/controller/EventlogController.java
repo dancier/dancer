@@ -52,7 +52,7 @@ public class EventlogController {
             }
             case default -> {
                 newEventlogDto.setUserId(null);
-                newEventlogDto.setRoles(Set.of());
+                newEventlogDto.setRoles(Set.of("ROLE_ANONYMOUS"));
             }
         }
     }
