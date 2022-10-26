@@ -25,10 +25,7 @@ import java.util.stream.Collectors;
 public class EventlogController {
 
     private static Logger log = LoggerFactory.getLogger(EventlogController.class);
-
-    @Autowired
     private final EventlogService eventlogService;
-
     @PostMapping
     public ResponseEntity publish(@RequestBody NewEventlogDto newEventlogDto) {
         newEventlogDto.setUserId(null);

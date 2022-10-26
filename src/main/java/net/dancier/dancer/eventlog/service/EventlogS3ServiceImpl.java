@@ -10,6 +10,7 @@ import io.minio.credentials.ClientGrantsProvider;
 import io.minio.credentials.Provider;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +68,21 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     }
 
     @Override
-    public void storeEventLog(Eventlog entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void storeEventLog(Eventlog entry) {
         createBucketIfNotExist();
-        minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
+        try {
+            minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
+        } catch (ErrorResponseException|
+                 InsufficientDataException|
+                 InvalidKeyException|
+                 IOException|
+                 InvalidResponseException|
+                 InternalException |
+                 NoSuchAlgorithmException |
+                 XmlParserException |
+                 ServerException e) {
+            new AppliationException("Problem with s3: " + e, e);
+        }
     }
 
     private void createBucketIfNotExist() {
@@ -82,18 +95,21 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                 }
             } catch (Exception e) {
                 log.error("Problem creating needed bucket" + e.getMessage());
-                log.error("One Token: " + jwtProvider.getJwt());
             }
         }
     }
 
-    private PutObjectArgs putObjectArgsFromEventlogEntry(Eventlog eventlog) throws JsonProcessingException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(objectMapper.writeValueAsString(eventlog).getBytes(StandardCharsets.UTF_8));
-        return PutObjectArgs.builder()
-                .bucket(bucket)
-                .contentType("application/json")
-                .object(objectNameFromEventlog(eventlog))
-                .stream(bais, bais.available(), -1).build();
+    private PutObjectArgs putObjectArgsFromEventlogEntry(Eventlog eventlog)  {
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(objectMapper.writeValueAsString(eventlog).getBytes(StandardCharsets.UTF_8));
+            return PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .contentType("application/json")
+                    .object(objectNameFromEventlog(eventlog))
+                    .stream(bais, bais.available(), -1).build();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new AppliationException("Could not process eventlog entry: " + eventlog, jsonProcessingException);
+        }
     }
 
     private String objectNameFromEventlog(Eventlog eventlog) {
