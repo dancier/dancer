@@ -59,7 +59,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     }
 
     @Override
-    public void storeEventLogEntry(Eventlog entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void storeEventLog(Eventlog entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
     }
 
@@ -77,7 +77,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
         StringBuilder sb = new StringBuilder();
         sb.append(localDateTime.getYear());
         sb.append("/");
-        sb.append(localDateTime.getMonth());
+        sb.append(localDateTime.getMonthValue());
         sb.append("/");
         sb.append(localDateTime.getDayOfMonth());
         sb.append("/");

@@ -15,7 +15,7 @@ public class EventlogS3ServiceStubbed implements EventlogS3Service {
     private static final Logger log = LoggerFactory.getLogger(EventlogS3ServiceStubbed.class);
 
     @Override
-    public void storeEventLogEntry(Eventlog entry) {
+    public void storeEventLog(Eventlog entry) {
         log.info("Not sending anything to s3, running in stubbed mode...");
     }
 

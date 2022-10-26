@@ -44,6 +44,6 @@ public class EventPublisherJob {
     }
 
     public void storeInS3(Eventlog eventlog) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, InvalidResponseException, XmlParserException {
-        eventlogS3Service.storeEventLogEntry(eventlog);
+        eventlogS3Service.storeEventLog(eventlog);
     }
 }
