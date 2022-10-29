@@ -5,9 +5,7 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerRepository;
-import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.security.AuthenticatedUser;
-import org.junit.jupiter.api.BeforeEach;
+import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,19 +35,13 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     DancerRepository dancerRepository;
 
     @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     UUID userId = UUID.fromString("62ff5258-8976-11ec-b58c-e35f5b1fc926");
-    UUID chatId = UUID.fromString("00000000-0000-0000-0000-00000000");
-
-    @BeforeEach
-    void init() {
-        Dancer dancer = new Dancer();
-        dancer.setUserId(userId);
-        dancer.setDancerName("dancero");
-        dancer.setCity("Dortmund");
-        dancerRepository.save(dancer);
-    }
+    UUID chatId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     @Nested
     @DisplayName("GET /chats")
@@ -58,8 +51,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         @WithUserDetails("user@dancier.net")
         void getChatsShouldReturnChats() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
-
-
+            
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
             chat.setChatId(chatId);
@@ -68,7 +60,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChats(dancerId)).thenReturn(chats);
 
-            ResultActions result = mockMvc.perform(get("/chats")).andExpect(status().isOk());
+            ResultActions result = mockMvc
+                    .perform(get("/chats")
+                            .cookie(getUserCookie()))
+                    .andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chats[0].chatId").value(chatId.toString()));
         }
@@ -96,7 +91,8 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             ResultActions result = mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsBytes(chat)))
+                            .content(objectMapper.writeValueAsBytes(chat))
+                            .cookie(getUserCookie()))
                     .andExpect(status().isCreated())
                     .andExpect(header().exists("Location"));
 
@@ -115,7 +111,8 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsBytes(chat)))
+                            .content(objectMapper.writeValueAsBytes(chat))
+                            .cookie(getUserCookie()))
                     .andExpect(status().isBadRequest());
 
         }
@@ -136,7 +133,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            ResultActions result = mockMvc.perform(get("/chats/" + chatId)).andExpect(status().isOk());
+            ResultActions result = mockMvc.perform(
+                    get("/chats/" + chatId)
+                            .cookie(getUserCookie())
+            ).andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chatId").value(chatId.toString()));
         }
@@ -150,7 +150,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(get("/chats/" + chatId)).andExpect(status().isBadRequest());
+            mockMvc.perform(
+                    get("/chats/" + chatId)
+                            .cookie(getUserCookie())
+            ).andExpect(status().isBadRequest());
         }
     }
 
@@ -166,7 +169,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
-            mockMvc.perform(get("/chats/" + chatId + "/messages")).andExpect(status().isBadRequest());
+            mockMvc.perform(
+                            get("/chats/" + chatId + "/messages")
+                                    .cookie(getUserCookie()))
+                    .andExpect(status().isBadRequest());
 
         }
 
@@ -186,7 +192,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
             when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(messages);
 
-            ResultActions result = mockMvc.perform(get("/chats/" + chatId + "/messages")).andExpect(status().isOk());
+            ResultActions result = mockMvc.perform(
+                            get("/chats/" + chatId + "/messages")
+                                    .cookie(getUserCookie()))
+                    .andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.messages[0].text").value("Hallo"));
 
@@ -211,9 +220,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
+                    .cookie(getUserCookie())
             ).andExpect(status().isBadRequest());
 
-            verify(chatServiceClient, times(0)).createMessage(any(),any());
+            verify(chatServiceClient, times(0)).createMessage(any(), any());
 
         }
 
@@ -233,9 +243,14 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
+                    .cookie(getUserCookie())
             ).andExpect(status().isCreated());
 
         }
+    }
+
+    private Cookie getUserCookie() {
+        return new Cookie("jwt-token", jwtTokenProvider.generateJwtToken(userId.toString()));
     }
 
 }

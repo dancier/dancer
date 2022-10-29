@@ -31,3 +31,12 @@ SELECT '21df1a30-89a6-11ec-b4cf-67ea17ff4219',
        id
   FROM roles
  WHERE name = 'ROLE_USER';
+
+INSERT
+  INTO dancer (id, user_id, dancer_name, city)
+VALUES (
+  '00000000-0000-0000-0000-000000000002',
+  '62ff5258-8976-11ec-b58c-e35f5b1fc926',
+  'dancero',
+  'Dortmund'
+);
