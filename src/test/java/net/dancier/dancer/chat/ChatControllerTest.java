@@ -5,7 +5,9 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerRepository;
+import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.security.JwtTokenProvider;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,15 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
     UUID userId = UUID.fromString("62ff5258-8976-11ec-b58c-e35f5b1fc926");
     UUID chatId = UUID.fromString("00000000-0000-0000-0000-000000000001");
+
+    @BeforeEach
+    void init() {
+        Dancer dancer = new Dancer();
+        dancer.setUserId(userId);
+        dancer.setDancerName("dancero");
+        dancer.setCity("Dortmund");
+        dancerRepository.save(dancer);
+    }
 
     @Nested
     @DisplayName("GET /chats")
