@@ -2,9 +2,9 @@ package net.dancier.dancer.chat.dto;
 
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class ChatsDto {
-    private Set<ChatDto> chats;
+    private List<ChatDto> chats;
 }

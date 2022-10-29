@@ -6,11 +6,10 @@ import net.dancier.dancer.chat.client.RemoteCreateMessageDto;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.BusinessException;
-import net.dancier.dancer.core.model.Dancer;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -21,54 +20,48 @@ public class ChatService {
 
     private final ChatServiceClient chatServiceClient;
 
-    public ChatsDto getChatsByUserId(UUID userId) {
-        Dancer currentDancer = dancerService.loadByUserId(userId);
-        return chatServiceClient.getChats(currentDancer.getId());
+    public ChatsDto getChatsByUserId(UUID dancerId) {
+        return chatServiceClient.getChats(dancerId);
     }
 
-    public ChatDto createChat(UUID userId, CreateChatDto createChatDto) {
-        Dancer currentDancer = dancerService.loadByUserId(userId);
-
-        throwIfDancerIsNotInChat(createChatDto.getDancerIds(), currentDancer);
+    public ChatDto createChat(UUID dancerId, CreateChatDto createChatDto) {
+        throwIfDancerIsNotInChat(createChatDto.getDancerIds(), dancerId);
 
         return chatServiceClient.createChat(createChatDto);
     }
 
-    public ChatDto getChat(UUID chatId, UUID userId) {
-        Dancer currentDancer = dancerService.loadByUserId(userId);
+    public ChatDto getChat(UUID chatId, UUID dancerId) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), currentDancer);
+        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
 
         return chat;
     }
 
-    public MessagesDto getMessages(UUID chatId, UUID userId, Optional<UUID> lastMessageId) {
-        Dancer currentDancer = dancerService.loadByUserId(userId);
+    public MessagesDto getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), currentDancer);
+        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
 
-        MessagesDto messages = chatServiceClient.getMessages(chatId, currentDancer.getId(), lastMessageId);
+        MessagesDto messages = chatServiceClient.getMessages(chatId, dancerId, lastMessageId);
         return messages;
     }
 
-    public Void createMessage(UUID chatId, UUID userId, CreateMessageDto createMessageDto) {
-        Dancer currentDancer = dancerService.loadByUserId(userId);
+    public Void createMessage(UUID chatId, UUID dancerId, CreateMessageDto createMessageDto) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), currentDancer);
+        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
 
         RemoteCreateMessageDto remoteCreateMessageDto = new RemoteCreateMessageDto.RemoteCreateMessageDtoBuilder()
                 .fromCreateMessageDto(createMessageDto)
-                .withAuthor(currentDancer.getId())
+                .withAuthor(dancerId)
                 .build();
 
         return chatServiceClient.createMessage(chatId, remoteCreateMessageDto);
     }
 
-    private void throwIfDancerIsNotInChat(Set<UUID> dancerIds, Dancer currentDancer) {
-        if (!dancerIds.contains(currentDancer.getId())) {
+    private void throwIfDancerIsNotInChat(List<UUID> dancerIds, UUID currentDancerId) {
+        if (!dancerIds.contains(currentDancerId)) {
             throw new BusinessException("Current dancer must be part of the chat");
         }
     }

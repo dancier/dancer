@@ -410,12 +410,11 @@ paths:
                     dancer_ids: [123, 433]
                     last_activity: "2022-10-10T18:29:48.843Z"
                     type: "group"
-                    messages: []
                     last_message:
                       text: Lorem ipsum
                       author: 123
                       id: 1234
-                      read_by_users: [123]
+                      read_by_dancers: [123]
                       creation_timestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
@@ -444,7 +443,6 @@ paths:
                 dancer_ids: [ 123, 234 ]
                 last_activity: null
                 type: "group"
-                messages: [ ]
                 last_message: null
         default:
           description: Unexpected error
@@ -861,11 +859,6 @@ components:
         chat_id:
           type: string
           example: 543
-        title:
-          type: string
-          description: |
-            title of the chat group. For a personal chat it is the username of the chat partner
-          example: dancero
         image_hash:
           type: string
           description: |
@@ -901,10 +894,10 @@ components:
               type: string
               description: The id of the author of the message
               example: 123
-            read_by_users:
+            read_by_dancers:
               type: array
               description: |
-                User ids of users that already have read the message
+                User ids of dancers that already have read the message
               items:
                 type: string
                 example: 123

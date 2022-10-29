@@ -11,8 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,7 +35,7 @@ public class ChatController {
     public ResponseEntity<ChatsDto> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
         log.info("Fetching chats for user {}.", authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getChatsByUserId(authenticatedUser.getUserId())
+                chatService.getChatsByUserId(authenticatedUser.getDancerIdOrThrow())
         );
     }
 
@@ -41,8 +45,22 @@ public class ChatController {
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody CreateChatDto createChatDto) {
         log.info("Creating a new chat for user {}.", authenticatedUser.getUserId());
+
+        ChatDto createdChat = chatService.createChat(authenticatedUser.getDancerIdOrThrow(), createChatDto);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/chats/" + createdChat.getChatId())
+                .build()
+                .toUri();
+
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.set("Location", location.toString());
+
         return new ResponseEntity(
-                chatService.createChat(authenticatedUser.getUserId(), createChatDto), HttpStatus.CREATED
+                createdChat,
+                headers,
+                HttpStatus.CREATED
         );
     }
 
@@ -53,7 +71,7 @@ public class ChatController {
             @PathVariable UUID chatId) {
         log.info("Fetching single chat {} for user {}.", chatId, authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getChat(chatId, authenticatedUser.getUserId())
+                chatService.getChat(chatId, authenticatedUser.getDancerIdOrThrow())
         );
     }
 
@@ -65,7 +83,7 @@ public class ChatController {
             @RequestParam Optional<UUID> lastMessageId) {
         log.info("Fetching messages for chat {} for user {}.", chatId, authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getMessages(chatId, authenticatedUser.getUserId(), lastMessageId)
+                chatService.getMessages(chatId, authenticatedUser.getDancerIdOrThrow(), lastMessageId)
         );
     }
 
@@ -76,7 +94,7 @@ public class ChatController {
             @PathVariable UUID chatId,
             @RequestBody CreateMessageDto createMessageDto) {
         log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getUserId());
-        chatService.createMessage(chatId, authenticatedUser.getUserId(), createMessageDto);
+        chatService.createMessage(chatId, authenticatedUser.getDancerIdOrThrow(), createMessageDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
