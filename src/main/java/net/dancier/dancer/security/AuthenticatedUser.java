@@ -2,6 +2,7 @@ package net.dancier.dancer.security;
 
 import lombok.ToString;
 import net.dancier.dancer.authentication.model.User;
+import net.dancier.dancer.core.exception.BusinessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -94,6 +95,10 @@ public class AuthenticatedUser implements UserDetails {
 
     public Optional<UUID> getOptionalDancerId() {
         return optionalDancerId;
+    }
+
+    public UUID getDancerIdOrThrow() {
+        return optionalDancerId.orElseThrow(() -> new BusinessException("User has not yet created a dancer profile"));
     }
 
     public void setOptionalDancerId(Optional<UUID> optionalDancerId) {
