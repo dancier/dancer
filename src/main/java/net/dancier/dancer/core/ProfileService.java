@@ -63,7 +63,7 @@ public class ProfileService {
         dancer.setZipCode(profileDto.getZipCode());
         dancer.setProfileImageHash(profileDto.getProfileImageHash());
         dancer.setAboutMe(profileDto.getAboutMe());
-        if (dancer.getDancerName() == null && profileDto.getDancerName() != null) {
+        if (dancer.getDancerName() == null || profileDto.getDancerName() != null) {
             checkDancerNameRules(profileDto.getDancerName());
             dancer.setDancerName(profileDto.getDancerName());
         }
