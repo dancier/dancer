@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
 @RestController
@@ -25,8 +27,8 @@ public class ProfileController {
     public ResponseEntity<?> checkUsernameAvailability(@PathVariable String dancerName) {
         return ResponseEntity.ok(
                 profileService.existsByDancerName(dancerName) ?
-                    UsernameAvailableDto.builder().available(false).name(dancerName).build() :
-                    UsernameAvailableDto.builder().available(true).name(dancerName).build()
+                        UsernameAvailableDto.builder().available(false).name(dancerName).build() :
+                        UsernameAvailableDto.builder().available(true).name(dancerName).build()
         );
     }
 
@@ -40,7 +42,7 @@ public class ProfileController {
 
     @Secured(ROLE_USER)
     @PutMapping
-    public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @RequestBody ProfileDto profileDto) {
+    public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @Valid @RequestBody ProfileDto profileDto) {
         profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileDto);
         return ResponseEntity.ok().build();
     }
