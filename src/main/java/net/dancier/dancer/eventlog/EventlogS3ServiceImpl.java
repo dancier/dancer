@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +34,9 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
 
     @Value("${app.s3.stsEndpoint}")
     String stsEndpoint;
+
+    @Value("${app.s3.bucket}")
+    String bucket;
 
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
@@ -62,9 +67,27 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     private PutObjectArgs putObjectArgsFromEventlogEntry(EventlogEntry eventlogEntry) throws JsonProcessingException {
         ByteArrayInputStream bais = new ByteArrayInputStream(objectMapper.writeValueAsString(eventlogEntry).getBytes(StandardCharsets.UTF_8));
         return PutObjectArgs.builder()
-                .bucket("test")
+                .bucket(bucket)
                 .contentType("application/json")
-                .object(eventlogEntry.getTopic() + "/" + eventlogEntry.getId())
+                .object(objectNameFromEventlogEntry(eventlogEntry))
                 .stream(bais, bais.available(), -1).build();
+    }
+
+    private String objectNameFromEventlogEntry(EventlogEntry entry) {
+        OffsetDateTime offsetDateTime = entry.getCreated().atOffset(ZoneOffset.UTC);
+        StringBuilder sb = new StringBuilder();
+        sb.append(offsetDateTime.getYear());
+        sb.append("/");
+        sb.append(offsetDateTime.getMonthValue());
+        sb.append("/");
+        sb.append(offsetDateTime.getDayOfMonth());
+        sb.append("/");
+        sb.append(offsetDateTime.getHour());
+        sb.append("/");
+        sb.append(entry.getTopic());
+        sb.append("/");
+        sb.append(entry.getId());
+        sb.append(".json");
+        return sb.toString();
     }
 }
