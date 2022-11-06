@@ -1,4 +1,4 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

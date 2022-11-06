@@ -1,6 +1,7 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.service;
 
 import io.minio.errors.*;
+import net.dancier.dancer.eventlog.repository.EventlogEntry;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;

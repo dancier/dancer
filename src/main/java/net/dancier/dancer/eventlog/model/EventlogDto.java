@@ -1,4 +1,4 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;

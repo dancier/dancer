@@ -1,8 +1,8 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.repository;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
-import net.dancier.dancer.authentication.model.Role;
+import net.dancier.dancer.eventlog.repository.EventlogEntryStatus;
 
 import java.time.Instant;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,7 @@ import io.minio.credentials.ClientGrantsProvider;
 import io.minio.credentials.Provider;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.repository.EventlogEntry;
 import net.dancier.dancer.eventlog.token.JwtProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

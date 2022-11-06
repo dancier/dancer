@@ -1,4 +1,4 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.eventlog.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

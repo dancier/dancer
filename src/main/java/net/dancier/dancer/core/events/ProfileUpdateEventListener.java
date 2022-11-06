@@ -1,7 +1,7 @@
 package net.dancier.dancer.core.events;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.EventlogService;
+import net.dancier.dancer.eventlog.service.EventlogService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

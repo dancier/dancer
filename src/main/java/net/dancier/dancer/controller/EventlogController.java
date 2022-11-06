@@ -1,6 +1,8 @@
-package net.dancier.dancer.eventlog;
+package net.dancier.dancer.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.model.EventlogDto;
+import net.dancier.dancer.eventlog.service.EventlogService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
