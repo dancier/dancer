@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,4 +59,6 @@ public class Dancer implements Recommendable{
     private String profileImageHash;
 
     private String aboutMe;
+
+    private Instant updatedAt;
 }
