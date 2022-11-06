@@ -6,8 +6,12 @@ import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.DanceProfileDto;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.events.ProfileUpdatedEvent;
+import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.core.model.*;
+import net.dancier.dancer.core.model.Country;
+import net.dancier.dancer.core.model.Dance;
+import net.dancier.dancer.core.model.DanceProfile;
+import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.util.ModelMapper;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
@@ -15,6 +19,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -34,10 +39,11 @@ public class ProfileService {
     private final ZipCodeRepository zipCodeRepository;
 
     private final ApplicationEventPublisher applicationEventPublisher;
-    public ProfileDto getProfileByUserId(UUID userId)  {
+
+    public ProfileDto getProfileByUserId(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found for id: " + userId));
-        Dancer dancer = dancerRepository.findByUserId(userId).orElseGet( () -> new Dancer());
+        Dancer dancer = dancerRepository.findByUserId(userId).orElseGet(() -> new Dancer());
 
         return ModelMapper.dancerAndUserToProfile(dancer, user);
     }
@@ -47,35 +53,46 @@ public class ProfileService {
         Dancer dancer = dancerRepository
                 .findByUserId(userId)
                 .orElseGet(
-                () -> {
-                    Dancer d = new Dancer();
-                    d.setUserId(userId);
-                    return d;
-                });
+                        () -> {
+                            Dancer d = new Dancer();
+                            d.setUserId(userId);
+                            return d;
+                        });
         dancer.setGender(profileDto.getGender());
         dancer.setBirthDate(profileDto.getBirthDate());
         dancer.setSize(profileDto.getSize());
         dancer.setZipCode(profileDto.getZipCode());
         dancer.setProfileImageHash(profileDto.getProfileImageHash());
         dancer.setAboutMe(profileDto.getAboutMe());
-        if (dancer.getDancerName()==null) {
+        if (dancer.getDancerName() == null && profileDto.getDancerName() != null) {
+            checkDancerNameRules(profileDto.getDancerName());
             dancer.setDancerName(profileDto.getDancerName());
         }
         ZipCode zipCode = zipCodeRepository.findByCountryAndZipCode(profileDto.getCountry(), profileDto.getZipCode());
-        if (zipCode!=null) {
+        if (zipCode != null) {
             dancer.setCity(zipCode.getCity());
             dancer.setLatitude(zipCode.getLatitude());
             dancer.setLongitude(zipCode.getLongitude());
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
         }
         handleDancerProfiles(dancer, profileDto);
+        dancer.setUpdatedAt(Instant.now());
         dancerRepository.save(dancer);
         applicationEventPublisher.publishEvent(
                 ProfileUpdatedEvent
                         .builder()
                         .dancer(dancer)
                         .build());
-    };
+    }
+
+    private void checkDancerNameRules(String dancerName) {
+        if (dancerName == null || dancerName.length() < 3) {
+            throw new BusinessException("Dancer name must be at least 3 characters long (name: " + dancerName + ")");
+        }
+        if (dancerRepository.existsByDancerName(dancerName)) {
+            throw new BusinessException("Dancer name already taken (name: " + dancerName + ")");
+        }
+    }
 
     private void handleDancerProfiles(Dancer dancer, ProfileDto profileDto) {
         Set<Dance> allDances = getNeededDances(profileDto);
@@ -92,7 +109,7 @@ public class ProfileService {
             Set<DanceProfileDto> wishedProfiles,
             Set<Dance> allDances) {
         Set<DanceProfile> newDanceProfiles = new HashSet<>();
-        for (DanceProfileDto danceProfileDto: wishedProfiles) {
+        for (DanceProfileDto danceProfileDto : wishedProfiles) {
             DanceProfile danceProfile = getByName(currentDanceProfiles, danceProfileDto.getDance()).orElseGet(
                     () -> {
                         DanceProfile tmpDp = new DanceProfile();
@@ -130,10 +147,10 @@ public class ProfileService {
                 .collect(Collectors.toSet());
         Set<Dance> alreadyPersistedDances = danceService.getAllDances();
         Set<String> newDanceNames = new HashSet<>(allRequestedDanceNames);
-            newDanceNames.removeAll(
+        newDanceNames.removeAll(
                 alreadyPersistedDances
                         .stream()
-                        .map(d-> d.getName()).collect(Collectors.toSet()));
+                        .map(d -> d.getName()).collect(Collectors.toSet()));
         Set<Dance> newDances = newDanceNames.stream().map(name -> new Dance(null, name)).collect(Collectors.toSet());
         danceService.saveAll(newDances);
         Set<Dance> allDances = new HashSet<>(alreadyPersistedDances);

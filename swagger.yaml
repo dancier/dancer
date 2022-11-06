@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Dancier
-  version: '1.0'
+  version: '1.1'
 servers:
   - url: 'https://dancier.net'
   - url: 'http://localhost:8080'
@@ -40,7 +40,7 @@ paths:
               $ref: '#/components/schemas/register_user'
       responses:
         '201':
-          description: In case the account could be created. 
+          description: In case the account could be created.
             The user still has to validate his email address.
             An Email has been send out to the provided address.
           content:
@@ -77,7 +77,7 @@ paths:
         - IAM
       summary: The customer will be logged in.
       description:  It ist necessary that the customer has already
-       successfully validated his email-address.
+        successfully validated his email-address.
       requestBody:
         description: attempt to login the user
         required: true
@@ -145,27 +145,27 @@ paths:
           required: true
           description: ID of the user to got via mail
       summary: validates the email address of a user
-      description: Validates the email address, that the user provided when he started 
+      description: Validates the email address, that the user provided when he started
         the registration process.
         When he clicks on the link, that browser will be redirected, to the frontend,
         that will extract the validation code and in turn will make
         a request to this endpoint.
-        When the validation was successfull, the user will be 
+        When the validation was successfull, the user will be
         directly logged in, by the response setting a proper cookie.
         In all other case the reason for failing will be returned.
       responses:
         '200':
-          description: In case the validation was successfully. 
+          description: In case the validation was successfully.
             The response, also contains a login cookie.
         '400':
-          description: in case of any problems like the code not known in the system, 
+          description: in case of any problems like the code not known in the system,
             outdated or any other problem like this.
   /authentication/password-changes:
     post:
       tags:
         - IAM
       summary: send a link via mail to enable password reset
-      description: requests a code to be send to the user via email to reset 
+      description: requests a code to be send to the user via email to reset
         the passwort
       requestBody:
         required: true
@@ -175,14 +175,14 @@ paths:
               create_password_reset_code:
                 $ref: '#/components/examples/create_password_reset_code'
             schema:
-                $ref: '#/components/schemas/create_password_reset_code'
+              $ref: '#/components/schemas/create_password_reset_code'
       responses:
         '200':
           description: mail was send
   /authentication/password-changes/{validationCode}:
     put:
       summary: set the user password to the one provided
-      description: the link with the validationCode has been send to the 
+      description: the link with the validationCode has been send to the
         user. So we can be sure, das the link is used by the user and
         change the password.
       tags:
@@ -392,7 +392,154 @@ paths:
       responses:
         '201':
           description: when the mail is on it's way
-
+  /chats:
+    get:
+      summary: returns a list of all chats of a user. This endpoint does not return dancers or messages, for this, the resource endpoint needs to be called
+      tags:
+        - Chats
+      responses:
+        '200':
+          description: "list of chats for a user"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chat_list_response'
+              example:
+                chats:
+                  - chat_id: 543
+                    dancer_ids: [123, 433]
+                    last_activity: "2022-10-10T18:29:48.843Z"
+                    type: "group"
+                    last_message:
+                      text: Lorem ipsum
+                      author: 123
+                      id: 1234
+                      read_by_dancers: [123]
+                      creation_timestamp: "2022-10-10T18:29:48.843Z"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: Creates a new chat group
+      tags:
+        - Chats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/chat_creation'
+      responses:
+        '201':
+          description: "chat created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chat_response'
+              example:
+                chat_id: 543
+                dancer_ids: [ 123, 234 ]
+                last_activity: null
+                type: "group"
+                last_message: null
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /chats/{chat_id}:
+    get:
+      summary: returns a chat
+      tags:
+        - Chats
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+      responses:
+        '200':
+          description: "data of a chat"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/detailed_chat'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /chats/{chat_id}/messages:
+    get:
+      summary: returns messages for a chat
+      tags:
+        - Chats
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/last_message_id'
+      responses:
+        '200':
+          description: "detailed data of a chat"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message_list_response'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: Creates a new message
+      tags:
+        - Chats
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/base_message'
+      responses:
+        '201':
+          description: "message created"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /dancers:
+    post:
+      summary: Used to retrieve a list of dancers
+      tags:
+        - Chats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dancer_list_request'
+      responses:
+        '201':
+          description: "list of dancers created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dancer_list_response'
+              example:
+                123:
+                  id: 123
+                  dancer_name: dancero
+                  city: Dortmund
+                  profile_image_hash: 10887E4B-293E-4837-8132-CA85C942316F
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
 components:
   securitySchemes:
     jwt-token:
@@ -408,8 +555,8 @@ components:
       value:
         "topic": "registration_succeded_event"
         "metaData":
-           "sourceTime": "2022-12-31 12:50:99"
-           "appInstanceId": "23ljljalfjlasjdfl"
+          "sourceTime": "2022-12-31 12:50:99"
+          "appInstanceId": "23ljljalfjlasjdfl"
         "payload":
           "emailAddress": "marc@gorzala.de"
     register_user:
@@ -430,6 +577,20 @@ components:
     change_profile:
       value:
         "bla": string
+  parameters:
+    chat_id:
+      name: chat_id
+      in: path
+      description: Chat ID
+      required: true
+      schema:
+        type: string
+    last_message_id:
+      name: last_message_id
+      in: query
+      description: Id of the last message already received. If set, the endpoint only returns newer messages
+      schema:
+        type: string
   schemas:
     contact_mail:
       type: object
@@ -633,3 +794,137 @@ components:
           type: number
         "city":
           type: string
+
+    chat_creation:
+      type: object
+      properties:
+        dancer_ids:
+          type: array
+          items:
+            type: string
+          example: [ 123, 321 ]
+        type:
+          $ref: '#/components/schemas/chat_type'
+    chat_response:
+      $ref: '#/components/schemas/detailed_chat'
+    chat_list_response:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: '#/components/schemas/detailed_chat'
+    dancer_list_request:
+      type: object
+      properties:
+        dancer_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+    dancer_list_response:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          dancer_name:
+            type: string
+          city:
+            type: string
+          profile_image_hash:
+            type: string
+    detailed_chat:
+      allOf:
+        - $ref: '#/components/schemas/base_chat'
+        - type: object
+          properties:
+            last_message:
+              $ref: '#/components/schemas/message'
+    chat_profile:
+      type: object
+      properties:
+        id:
+          type: string
+        dancerName:
+          type: string
+        city:
+          type: string
+        profileImageHash:
+          type: string
+    base_chat:
+      properties:
+        chat_id:
+          type: string
+          example: 543
+        image_hash:
+          type: string
+          description: |
+            hash for the image shown for this chat. For a personal chat it is the image hash of the profile picture of teh chat partner
+        dancers:
+          type: array
+          description: Dancers participating in the chat
+          items:
+            $ref: '#/components/schemas/chat_profile'
+        last_activity:
+          type: string
+          format: date-time
+          description: Datetime of the last activity from this chat
+        type:
+          $ref: '#/components/schemas/chat_type'
+    message_list_response:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/message'
+    message:
+      allOf:
+        - $ref: '#/components/schemas/base_message'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: id of the message
+              example: 1234
+            author:
+              type: string
+              description: The id of the author of the message
+              example: 123
+            read_by_dancers:
+              type: array
+              description: |
+                User ids of dancers that already have read the message
+              items:
+                type: string
+                example: 123
+            creation_timestamp:
+              type: string
+              format: date-time
+              description: |
+                Timestamp of message creation, used for sorting messages
+    base_message:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The content of the message
+          example: Lorem ipsum
+    chat_type:
+      type: string
+      enum:
+        - group
+        - direct
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message

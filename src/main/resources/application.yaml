@@ -7,7 +7,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/dancer
     username: dancer
     password: dancer
-  database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:liquibase-changeLog.xml
   servlet:
@@ -20,7 +19,7 @@ spring:
     database:
       replace: none
   profiles:
-    default: dev
+    active: dev
 app:
   admin:
     email: marc@gorzala.de
@@ -43,11 +42,14 @@ app:
     siteKey: 6LetqBAgAAAAAJXA5K_U88bsxKtyp_vld6J0x-Nv
     apiKey: secret
     magicToken: secret
+  chatDancer:
+    host: chat-dancer
   s3:
     active: true
     host: test-s3.dancier.net
     bucket: lake
     stsEndpoint: https://test-s3.dancier.net
+    bucket: lake
     oidc:
       tokenUri: https://test-iam.dancier.net/realms/dancier/protocol/openid-connect/token
       clientId: s3

@@ -531,4 +531,10 @@
 
         </sql>
     </changeSet>
+    <changeSet id="2022-11-06-add-updated-add-for-dancer" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
