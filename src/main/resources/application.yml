@@ -19,7 +19,7 @@ spring:
     database:
       replace: none
   profiles:
-    default: dev
+    active: dev
 app:
   admin:
     email: marc@gorzala.de
