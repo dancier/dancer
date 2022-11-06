@@ -7,7 +7,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/dancer
     username: dancer
     password: dancer
-  database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:liquibase-changeLog.xml
   servlet:
