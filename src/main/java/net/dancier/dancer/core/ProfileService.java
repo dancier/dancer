@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class ProfileService {
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
         }
         handleDancerProfiles(dancer, profileDto);
+        dancer.setUpdatedAt(Instant.now());
         dancerRepository.save(dancer);
         applicationEventPublisher.publishEvent(
                 ProfileUpdatedEvent
