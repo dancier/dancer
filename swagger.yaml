@@ -170,12 +170,9 @@ paths:
       requestBody:
         required: true
         content:
-          text/plain:
-            examples:
-              create_password_reset_code:
-                $ref: '#/components/examples/create_password_reset_code'
+          application/json:
             schema:
-              $ref: '#/components/schemas/create_password_reset_code'
+              $ref: '#/components/schemas/password_change'
       responses:
         '200':
           description: mail was send
@@ -571,9 +568,6 @@ components:
     create_email_validation_code:
       value:
         foo@bar.de
-    create_password_reset_code:
-      value:
-        foobar
     change_profile:
       value:
         "bla": string
@@ -760,8 +754,12 @@ components:
           type: string
     create_email_validation_code:
       type: string
-    create_password_reset_code:
-      type: string
+    password_change:
+      type: object
+      properties:
+        email:
+          type: string
+          example: foo@bar.de
     api_response:
       type: object
       properties:
