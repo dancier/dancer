@@ -1,13 +1,8 @@
 package net.dancier.dancer.eventlog.service;
 
-import io.minio.errors.*;
-import net.dancier.dancer.eventlog.repository.EventlogEntry;
-
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import net.dancier.dancer.eventlog.model.Eventlog;
 
 public interface EventlogS3Service {
-    void storeEventLogEntry(EventlogEntry entry) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException ;
+    void storeEventLog(Eventlog entry);
 
 }

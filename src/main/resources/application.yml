@@ -45,6 +45,7 @@ app:
   chatDancer:
     host: chat-dancer
   s3:
+    active: true
     host: test-s3.dancier.net
     stsEndpoint: https://test-s3.dancier.net
     bucket: lake

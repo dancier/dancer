@@ -1,6 +1,6 @@
 package net.dancier.dancer.eventlog.repository;
 
-public enum EventlogEntryStatus {
+public enum EventlogStatus {
 
     QUEUED,
     IN_PROGRESS,
