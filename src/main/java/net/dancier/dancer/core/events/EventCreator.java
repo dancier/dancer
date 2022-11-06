@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.AppInstanceIdFilter;
-import net.dancier.dancer.eventlog.model.EventlogDto;
+import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.MDC;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,23 +22,23 @@ public class EventCreator {
 
     private final ObjectMapper objectMapper;
 
-    public EventlogDto createEventlogDto(String eventType, Object payload) {
-        EventlogDto eventlogDto = new EventlogDto();
-        setUserAndRoles(eventlogDto);
-        setMetaData(eventlogDto);
-        eventlogDto.setTopic(eventType);
-        eventlogDto.setPayload(objectMapper.convertValue(payload, JsonNode.class));
-        return eventlogDto;
+    public Eventlog createEventlog(String eventType, Object payload) {
+        Eventlog eventlog = new Eventlog();
+        setUserAndRoles(eventlog);
+        setMetaData(eventlog);
+        eventlog.setTopic(eventType);
+        eventlog.setPayload(objectMapper.convertValue(payload, JsonNode.class));
+        return eventlog;
     }
 
-    private void setMetaData(EventlogDto eventlogDto) {
+    private void setMetaData(Eventlog eventlog) {
         Map<String, String> metaData = new HashMap<>();
         metaData.put("appInstanceId", MDC.get(AppInstanceIdFilter.APP_INSTANCE_ID_CONTEXT_FIELD));
         metaData.put("sourceTime", Instant.now().toString());
-        eventlogDto.setMetaData(objectMapper.convertValue(metaData, JsonNode.class));
+        eventlog.setMetaData(objectMapper.convertValue(metaData, JsonNode.class));
     }
 
-    private void setUserAndRoles(EventlogDto eventlogDto) {
+    private void setUserAndRoles(Eventlog eventlogDto) {
         try {
             AuthenticatedUser authenticatedUser = (AuthenticatedUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             eventlogDto.setUserId(authenticatedUser.getUserId());

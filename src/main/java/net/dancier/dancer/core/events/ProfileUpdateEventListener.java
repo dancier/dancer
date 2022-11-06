@@ -15,8 +15,8 @@ public class ProfileUpdateEventListener {
 
     @EventListener
     public void handle(ProfileUpdatedEvent profileUpdatedEvent) {
-        eventlogService.createNew(
-                eventCreator.createEventlogDto(
+        eventlogService.appendNew(
+                eventCreator.createEventlog(
                         "profile-updated",
                         profileUpdatedEvent.getDancer()));
     }
