@@ -1,6 +1,7 @@
 package net.dancier.dancer.authentication;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.authentication.dto.PasswordChangeDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.dto.SetEmailValidationDto;
 import net.dancier.dancer.authentication.dto.WhoAmIDto;
@@ -157,10 +158,10 @@ public class AuthenticationController {
 
     @Secured(ROLE_HUMAN)
     @PostMapping("/password-changes")
-    public ResponseEntity createPasswortResetCode(@RequestBody String email) {
-        Optional<String> optionalCode =  authenticationService.createPasswordResetCode(email.trim());
+    public ResponseEntity createPasswortResetCode(@RequestBody PasswordChangeDto passwordChangeDto) {
+        Optional<String> optionalCode =  authenticationService.createPasswordResetCode(passwordChangeDto.getEmail().trim());
         if (optionalCode.isPresent()) {
-            authenticationService.sendChangePasswordMail(email.trim(), optionalCode.get());
+            authenticationService.sendChangePasswordMail(passwordChangeDto.getEmail().trim(), optionalCode.get());
         }
         return ResponseEntity.ok().build();
     }
