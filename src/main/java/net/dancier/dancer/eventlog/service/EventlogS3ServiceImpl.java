@@ -71,7 +71,9 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     public void storeEventLog(Eventlog entry) {
         createBucketIfNotExist();
         try {
+            log.info("About to put the object.");
             minioClient.putObject(putObjectArgsFromEventlogEntry(entry));
+            log.info("Put it.");
         } catch (ErrorResponseException|
                  InsufficientDataException|
                  InvalidKeyException|
