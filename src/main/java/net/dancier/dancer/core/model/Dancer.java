@@ -61,4 +61,7 @@ public class Dancer implements Recommendable{
     private String aboutMe;
 
     private Instant updatedAt;
+
+    private Integer version;
+
 }

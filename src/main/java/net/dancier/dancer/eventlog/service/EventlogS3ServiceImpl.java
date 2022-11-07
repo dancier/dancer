@@ -126,6 +126,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
         sb.append(eventlog.getTopic());
         sb.append("/");
         sb.append(eventlog.getId());
+        sb.append(".json");
         return sb.toString();
     }
 }

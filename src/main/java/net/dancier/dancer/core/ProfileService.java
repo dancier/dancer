@@ -56,6 +56,7 @@ public class ProfileService {
                         () -> {
                             Dancer d = new Dancer();
                             d.setUserId(userId);
+                            d.setVersion(0);
                             return d;
                         });
         dancer.setGender(profileDto.getGender());
@@ -77,6 +78,7 @@ public class ProfileService {
         }
         handleDancerProfiles(dancer, profileDto);
         dancer.setUpdatedAt(Instant.now());
+        dancer.setVersion(dancer.getVersion() + 1);
         dancerRepository.save(dancer);
         applicationEventPublisher.publishEvent(
                 ProfileUpdatedEvent

@@ -537,4 +537,10 @@
             ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
         </sql>
     </changeSet>
+    <changeSet id="2022-11-07-add-version-for-dacner" author="Marc">
+        <sql>
+            ALTER TABLE dancer
+            ADD COLUMN version INTEGER;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
