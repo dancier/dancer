@@ -117,6 +117,8 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
     private String objectNameFromEventlog(Eventlog eventlog) {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(eventlog.getCreated(),ZoneId.systemDefault());
         StringBuilder sb = new StringBuilder();
+        sb.append(eventlog.getTopic());
+        sb.append("/");
         sb.append(localDateTime.getYear());
         sb.append("/");
         sb.append(localDateTime.getMonthValue());
@@ -124,8 +126,6 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
         sb.append(localDateTime.getDayOfMonth());
         sb.append("/");
         sb.append(localDateTime.getHour());
-        sb.append("/");
-        sb.append(eventlog.getTopic());
         sb.append("/");
         sb.append(eventlog.getId());
         sb.append(".json");
