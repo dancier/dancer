@@ -79,6 +79,11 @@ public class ProfileService {
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
         } else if (StringUtils.hasText(profileDto.getZipCode())) {
             throw new UnresolvableZipCode("Zip Code could not be resolved.");
+        } else {
+            dancer.setCity(null);
+            dancer.setLatitude(null);
+            dancer.setLongitude(null);
+            dancer.setCountry(null);
         }
         handleDancerProfiles(dancer, profileDto);
         dancer.setUpdatedAt(Instant.now());
