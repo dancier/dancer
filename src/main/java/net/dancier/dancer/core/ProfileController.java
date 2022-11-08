@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.dto.UsernameAvailableDto;
 import net.dancier.dancer.core.exception.NotFoundException;
+import net.dancier.dancer.core.exception.UnresolvableZipCode;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.MediaType;
@@ -12,6 +13,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Map;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -45,6 +48,11 @@ public class ProfileController {
     public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @Valid @RequestBody ProfileDto profileDto) {
         profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileDto);
         return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler({UnresolvableZipCode.class})
+    public ResponseEntity handleUnresolvable(Throwable throwable) {
+        return ResponseEntity.badRequest().body(Map.of("error","unresolvable zip code"));
     }
 
     @ExceptionHandler({NotFoundException.class})

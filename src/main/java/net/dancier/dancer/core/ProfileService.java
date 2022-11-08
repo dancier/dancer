@@ -8,6 +8,7 @@ import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.events.ProfileUpdatedEvent;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
+import net.dancier.dancer.core.exception.UnresolvableZipCode;
 import net.dancier.dancer.core.model.Country;
 import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.core.model.DanceProfile;
@@ -18,6 +19,7 @@ import net.dancier.dancer.location.ZipCodeRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -75,6 +77,8 @@ public class ProfileService {
             dancer.setLatitude(zipCode.getLatitude());
             dancer.setLongitude(zipCode.getLongitude());
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
+        } else if (StringUtils.hasText(profileDto.getZipCode())) {
+            throw new UnresolvableZipCode("Zip Code could not be resolved.");
         }
         handleDancerProfiles(dancer, profileDto);
         dancer.setUpdatedAt(Instant.now());
