@@ -383,36 +383,36 @@ paths:
           application/json:
             examples:
               register_user:
-                $ref: '#/components/examples/contact_mail'
+                $ref: '#/components/examples/contactMail'
             schema:
-              $ref: '#/components/schemas/contact_mail'
+              $ref: '#/components/schemas/contactMail'
       responses:
         '201':
           description: when the mail is on it's way
   /chats:
     get:
-      summary: returns a list of all chats of a user. This endpoint does not return dancers or messages, for this, the resource endpoint needs to be called
+      summary: returns a list of all chats of a dancer. This endpoint does not return dancers or messages, for this, the resource endpoint needs to be called
       tags:
         - Chats
       responses:
         '200':
-          description: "list of chats for a user"
+          description: "list of chats for a dancer"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/chat_list_response'
+                $ref: '#/components/schemas/chatListResponse'
               example:
                 chats:
-                  - chat_id: 543
-                    dancer_ids: [123, 433]
-                    last_activity: "2022-10-10T18:29:48.843Z"
-                    type: "group"
-                    last_message:
+                  - chatId: 543
+                    dancerIds: [123, 433]
+                    lastActivity: "2022-10-10T18:29:48.843Z"
+                    type: "direct"
+                    lastMessage:
                       text: Lorem ipsum
                       author: 123
                       id: 1234
-                      read_by_dancers: [123]
-                      creation_timestamp: "2022-10-10T18:29:48.843Z"
+                      readByDancers: [123]
+                      creationTimestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
           content:
@@ -427,14 +427,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/chat_creation'
+              $ref: '#/components/schemas/chatCreation'
       responses:
         '201':
           description: "chat created"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/chat_response'
+                $ref: '#/components/schemas/chatResponse'
               example:
                 chat_id: 543
                 dancer_ids: [ 123, 234 ]
@@ -447,41 +447,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /chats/{chat_id}:
+  /chats/{chatId}:
     get:
       summary: returns a chat
       tags:
         - Chats
       parameters:
-        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/chatId'
       responses:
         '200':
           description: "data of a chat"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/detailed_chat'
+                $ref: '#/components/schemas/detailedChat'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /chats/{chat_id}/messages:
+  /chats/{chatId}/messages:
     get:
       summary: returns messages for a chat
       tags:
         - Chats
       parameters:
-        - $ref: '#/components/parameters/chat_id'
-        - $ref: '#/components/parameters/last_message_id'
+        - $ref: '#/components/parameters/chatId'
+        - $ref: '#/components/parameters/lastMessageId'
       responses:
         '200':
           description: "detailed data of a chat"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/message_list_response'
+                $ref: '#/components/schemas/messageListResponse'
         default:
           description: Unexpected error
           content:
@@ -493,12 +493,12 @@ paths:
       tags:
         - Chats
       parameters:
-        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/chatId'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/base_message'
+              $ref: '#/components/schemas/baseMessage'
       responses:
         '201':
           description: "message created"
@@ -517,20 +517,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/dancer_list_request'
+              $ref: '#/components/schemas/dancerListRequest'
       responses:
         '201':
           description: "list of dancers created"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dancer_list_response'
+                $ref: '#/components/schemas/dancerListResponse'
               example:
                 123:
                   id: 123
-                  dancer_name: dancero
+                  dancerName: dancero
                   city: Dortmund
-                  profile_image_hash: 10887E4B-293E-4837-8132-CA85C942316F
+                  profileImageHash: 10887E4B-293E-4837-8132-CA85C942316F
         default:
           description: Unexpected error
           content:
@@ -544,7 +544,7 @@ components:
       in: cookie
       name: jwt-token
   examples:
-    contact_mail:
+    contactMail:
       value:
         "sender": "customer@gmail.com"
         "message": "Dear Grandmaster of dance"
@@ -572,21 +572,21 @@ components:
       value:
         "bla": string
   parameters:
-    chat_id:
-      name: chat_id
+    chatId:
+      name: chatId
       in: path
       description: Chat ID
       required: true
       schema:
         type: string
-    last_message_id:
-      name: last_message_id
+    lastMessageId:
+      name: lastMessageId
       in: query
       description: Id of the last message already received. If set, the endpoint only returns newer messages
       schema:
         type: string
   schemas:
-    contact_mail:
+    contactMail:
       type: object
 
     eventlog:
@@ -793,26 +793,26 @@ components:
         "city":
           type: string
 
-    chat_creation:
+    chatCreation:
       type: object
       properties:
-        dancer_ids:
+        dancerIds:
           type: array
           items:
             type: string
           example: [ 123, 321 ]
         type:
-          $ref: '#/components/schemas/chat_type'
-    chat_response:
-      $ref: '#/components/schemas/detailed_chat'
-    chat_list_response:
+          $ref: '#/components/schemas/chatType'
+    chatResponse:
+      $ref: '#/components/schemas/detailedChat'
+    chatListResponse:
       type: object
       properties:
         chats:
           type: array
           items:
-            $ref: '#/components/schemas/detailed_chat'
-    dancer_list_request:
+            $ref: '#/components/schemas/detailedChat'
+    dancerListRequest:
       type: object
       properties:
         dancer_ids:
@@ -820,7 +820,7 @@ components:
           items:
             type: string
             format: uuid
-    dancer_list_response:
+    dancerListResponse:
       type: object
       additionalProperties:
         type: object
@@ -828,20 +828,20 @@ components:
           id:
             type: string
             format: uuid
-          dancer_name:
+          dancerName:
             type: string
           city:
             type: string
-          profile_image_hash:
+          profileImageHash:
             type: string
-    detailed_chat:
+    detailedChat:
       allOf:
-        - $ref: '#/components/schemas/base_chat'
+        - $ref: '#/components/schemas/baseChat'
         - type: object
           properties:
-            last_message:
+            lastMessage:
               $ref: '#/components/schemas/message'
-    chat_profile:
+    chatProfile:
       type: object
       properties:
         id:
@@ -852,27 +852,27 @@ components:
           type: string
         profileImageHash:
           type: string
-    base_chat:
+    baseChat:
       properties:
-        chat_id:
+        chatId:
           type: string
           example: 543
-        image_hash:
+        imageHash:
           type: string
           description: |
-            hash for the image shown for this chat. For a personal chat it is the image hash of the profile picture of teh chat partner
+            hash for the image shown for this chat. For a personal chat it is the image hash of the profile picture of the chat partner
         dancers:
           type: array
           description: Dancers participating in the chat
           items:
-            $ref: '#/components/schemas/chat_profile'
-        last_activity:
+            $ref: '#/components/schemas/chatProfile'
+        lastActivity:
           type: string
           format: date-time
           description: Datetime of the last activity from this chat
         type:
-          $ref: '#/components/schemas/chat_type'
-    message_list_response:
+          $ref: '#/components/schemas/chatType'
+    messageListResponse:
       type: object
       properties:
         messages:
@@ -881,7 +881,7 @@ components:
             $ref: '#/components/schemas/message'
     message:
       allOf:
-        - $ref: '#/components/schemas/base_message'
+        - $ref: '#/components/schemas/baseMessage'
         - type: object
           properties:
             id:
@@ -892,26 +892,26 @@ components:
               type: string
               description: The id of the author of the message
               example: 123
-            read_by_dancers:
+            readByDancers:
               type: array
               description: |
-                User ids of dancers that already have read the message
+                Dancer ids of dancers that already have read the message
               items:
                 type: string
                 example: 123
-            creation_timestamp:
+            creationTimestamp:
               type: string
               format: date-time
               description: |
                 Timestamp of message creation, used for sorting messages
-    base_message:
+    baseMessage:
       type: object
       properties:
         text:
           type: string
           description: The content of the message
           example: Lorem ipsum
-    chat_type:
+    chatType:
       type: string
       enum:
         - group
