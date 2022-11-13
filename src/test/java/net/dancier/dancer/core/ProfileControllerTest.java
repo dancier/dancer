@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -59,7 +60,7 @@ public class ProfileControllerTest {
         {
             User user = new User();
             user.setRoles(new HashSet<>());
-            AuthenticatedUser authenticatedUser = AuthenticatedUser.create(user);
+            AuthenticatedUser authenticatedUser = AuthenticatedUser.create(user, Optional.empty());
             CustomUserDetailsService mock = Mockito.mock(CustomUserDetailsServiceImpl.class);
             when(mock.loadUserById(any())).thenReturn(authenticatedUser);
             when(mock.loadUserByUsername(any())).thenReturn(authenticatedUser);

@@ -5,6 +5,9 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerRepository;
+import net.dancier.dancer.core.ProfileService;
+import net.dancier.dancer.core.ProfileTestFactory;
+import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +38,9 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     DancerRepository dancerRepository;
+
+    @Autowired
+    ProfileService profileService;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;

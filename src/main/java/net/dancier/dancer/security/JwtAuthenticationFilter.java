@@ -1,8 +1,6 @@
 package net.dancier.dancer.security;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.DancerRepository;
-import net.dancier.dancer.core.model.Dancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.LockedException;
@@ -34,8 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
 
     private final CustomUserDetailsServiceImpl customUserDetailsService;
-
-    private final DancerRepository dancerRepository;
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
@@ -101,7 +97,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Authentication systemUser(HttpServletRequest httpServletRequest, String subject) {
         AuthenticatedUser authenticatedUser = customUserDetailsService.loadUserById(UUID.fromString(subject));
         if (authenticatedUser.isEmailValidated()) {
-            authenticatedUser.setOptionalDancerId(dancerRepository.findByUserId(UUID.fromString(subject)).map(Dancer::getId));
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
