@@ -205,7 +205,7 @@ public class AuthenticationService {
         PasswordResetCode passwordResetCode = this.passwordResetCodeRepository
                 .findByCode(code)
                 .orElseThrow(
-                        () -> new BusinessException("No such code"));
+                        () -> new AppliationException("No such code"));
         User user = userRepository.getById(passwordResetCode.getUserId());
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
