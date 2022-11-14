@@ -25,13 +25,12 @@ import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
-    private final DancerService dancerService;
 
     @Secured(ROLE_USER)
     @GetMapping
     public ResponseEntity getTopRecommendations(@CurrentUser AuthenticatedUser authenticatedUser) {
-        Dancer dancer = dancerService.loadByUserId(authenticatedUser.getUserId());
-        List<Recommendable> recommendables = recommendationService.getRecommendationsForDancerId(dancer.getId());
+        List<Recommendable> recommendables =
+                recommendationService.getRecommendationsForDancerId(authenticatedUser.getDancerIdOrThrow());
       return ResponseEntity.ok(recommendables.stream().map(ModelMapper::recommendableToRecommendationDto));
     };
 

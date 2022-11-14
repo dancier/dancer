@@ -5,6 +5,9 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerRepository;
+import net.dancier.dancer.core.ProfileService;
+import net.dancier.dancer.core.ProfileTestFactory;
+import net.dancier.dancer.core.dto.ProfileDto;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,7 +116,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void postChatShouldNotCreateTheChatIfUserIsNotPartOfIt() throws Exception {
             List dancerIds = List.of(UUID.randomUUID(), UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
@@ -134,7 +136,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class GetChat {
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void getChatShouldReturnTheChat() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
@@ -153,7 +154,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void getChatShouldNotReturnTheChatIfUserIsNotPartOfIt() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -173,7 +173,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class GetMessages {
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void getMessagesShouldNotReturnMessagesIfUserIsNotInChat() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -188,7 +187,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void getMessagesShouldReturnMessagesIfUserIsInChat() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
@@ -218,7 +216,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class PostMessages {
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void postMessagesShouldNotCreateTheMessageIfUserIsNotInTheChat() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -239,7 +236,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
-        @WithUserDetails("user@dancier.net")
         void postMessagesShouldCreateAMessage() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 

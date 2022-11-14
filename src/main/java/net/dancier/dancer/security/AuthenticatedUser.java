@@ -28,15 +28,17 @@ public class AuthenticatedUser implements UserDetails {
                              String email,
                              boolean isEmailValidated,
                              String password,
+                             Optional<UUID> optionalDancerId,
                              Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.email = email;
         this.isEmailValidated = isEmailValidated;
         this.password = password;
         this.authorities = authorities;
+        this.optionalDancerId = optionalDancerId;
     }
 
-    public static AuthenticatedUser create(User user) {
+    public static AuthenticatedUser create(User user, Optional<UUID> optionalDancerId) {
         List<GrantedAuthority> authorities = user
                 .getRoles()
                 .stream()
@@ -47,6 +49,7 @@ public class AuthenticatedUser implements UserDetails {
                 user.getEmail(),
                 user.isEmailValidated(),
                 user.getPassword(),
+                optionalDancerId,
                 authorities);
     }
 

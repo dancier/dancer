@@ -1,42 +1,23 @@
-name: Deploy the dancer
+name: deploy dancer to docker hub
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout the code
+      uses: actions/checkout@v3
     - name: Set up JDK 1.17
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
-        java-version: 1.17
+        java-version: 17.0.4+1
+        distribution: zulu
     - name: Build the project with Maven
-      run: mvn -B package --file pom.xml
-    - name: Install Docker on build system
-      run: |
-           curl -fsSL https://get.docker.com -o get-docker.sh
-           sh get-docker.sh
+      run: ./mvnw --batch-mode -update-snapshots package
     - name: Login to the Docker registry
       run:  docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_PASS }}
     - name: Build the Docker image
       run:  docker build -t dancier/dancer:1.0 .
     - name: Publish the Docker image on hub.docker.com
       run:  docker push dancier/dancer:1.0
-#    - name: Install the Hetzner cloud api
-#      run:  |
-#            sudo apt -y install python3-pip
-#            sudo apt -y install python3-setuptools
-#            sudo -H pip3 install hcloud
-#    - name: Create ssh key for deployment
-#      run:  |
-#            echo "${{ secrets.DEPLOY_KEY }}" >> ./deploy/dancier.key
-#            chmod 400 ./deploy/dancier.key
-#    - name: Create cloud api token
- #     run:  |
- #       echo "${{ secrets.DEPLOY_API_KEY }}" >> ./deploy/cloud-api-token
- #       chmod 400 ./deploy/cloud-api-token
- #   - name: Let the dancer dance
- #     run: ./deploy/deploy.sh
