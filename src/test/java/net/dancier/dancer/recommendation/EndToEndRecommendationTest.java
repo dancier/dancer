@@ -1,13 +1,7 @@
 package net.dancier.dancer.recommendation;
 
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
-import net.dancier.dancer.authentication.model.User;
-import net.dancier.dancer.authentication.repository.UserRepository;
-import net.dancier.dancer.core.DancerRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 

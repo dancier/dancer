@@ -1,9 +1,7 @@
 package net.dancier.dancer.recommendation;
 
 import lombok.AllArgsConstructor;
-import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
