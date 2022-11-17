@@ -4,15 +4,12 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.DancerRepository;
-import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
-
-import javax.servlet.http.Cookie;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,35 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class EndToEndRecommendationTest extends AbstractPostgreSQLEnabledTest {
 
-    @Autowired
-    DancerRepository dancerRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    User user = null;
-    @BeforeEach
-    public void init() {
-        user = userRepository.findByEmail("user@dancier.net").get();
-        Dancer dancer = new Dancer();
-        dancer.setUserId(user.getId());
-        dancer.setDancerName("dancero");
-        dancer.setCity("Dortmund");
-        dancerRepository.save(dancer);
-    }
-
     @Test
+    @WithUserDetails("user-with-a-profile@dancier.net")
     public void getRecommendation() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/recommendations").cookie(getUserCookie(user.getId())));
+        ResultActions resultActions =
+                mockMvc.perform(get("/recommendations"));
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$").isArray());
-    }
-
-    private Cookie getUserCookie(UUID userId) {
-        return new Cookie("jwt-token", jwtTokenProvider.generateJwtToken(userId.toString()));
     }
 
 }

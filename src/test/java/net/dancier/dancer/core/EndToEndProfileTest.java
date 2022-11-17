@@ -43,7 +43,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
     }
 
     @Test
-    @WithUserDetails("user@dancier.net")
+    @WithUserDetails("user-without-profile@dancier.net")
     void fromVirginProfileToPopulatedProfile() throws Exception {
         ResultActions initialGetOfProfile = mockMvc.perform(get("/profile"));
         initialGetOfProfile.andExpect(status().isOk())
