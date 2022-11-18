@@ -53,7 +53,7 @@ public class RecommendationService {
                 log.info("Version Match");
                 return Boolean.TRUE;
             } else {
-                log.info("Outdated Recommendation");
+                log.info(String.format("Outdated Recommendation: recommended: %s, current: %s", recommendedVersion, currentVersion));
                 return Boolean.FALSE;
             }
         }).map( d-> {
