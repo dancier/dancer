@@ -28,7 +28,7 @@ public class RecommendationService {
     private final RecommendationServiceClient recommendationServiceClient;
 
     // https://www.baeldung.com/java-collectors-tomap
-    public List<Recommendable> getRecommendationsForDancerId(UUID dancerId) {
+    public List<RecommendationWrapper> getRecommendationsForDancerId(UUID dancerId) {
         log.info("Getting Recommendations for dancer with ID: " + dancerId);
         Dancer dancer = dancerRepository.getReferenceById(dancerId);
         log.info("This has version: " + dancer.getVersion());
@@ -57,14 +57,12 @@ public class RecommendationService {
                 return Boolean.FALSE;
             }
         }).map( d-> {
-            RecommendationWrapper recommendationWrapper = new RecommendationWrapper();
-            recommendationWrapper.setDancer(d);
+            RecommendationWrapper<Dancer> recommendationWrapper = new RecommendationWrapper();
+            recommendationWrapper.setPayload(d);
             recommendationWrapper.setScore(dancerId2Score.get(d.getId()));
             return recommendationWrapper;
         }).collect(Collectors.toList());
-        log.info("The result: " + recommendationWrappers);
-        List<Recommendable> recommendables = new ArrayList<>();
-        return recommendables;
+        return recommendationWrappers;
     }
 
 }

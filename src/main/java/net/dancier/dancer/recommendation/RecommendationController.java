@@ -3,6 +3,7 @@ package net.dancier.dancer.recommendation;
 import lombok.AllArgsConstructor;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.model.Recommendable;
+import net.dancier.dancer.recommendation.model.RecommendationWrapper;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class RecommendationController {
     @Secured(ROLE_USER)
     @GetMapping
     public ResponseEntity getTopRecommendations(@CurrentUser AuthenticatedUser authenticatedUser) {
-        List<Recommendable> recommendables =
+        List<RecommendationWrapper> recommendables =
                 recommendationService.getRecommendationsForDancerId(authenticatedUser.getDancerIdOrThrow());
       return ResponseEntity.ok(recommendables);
     };

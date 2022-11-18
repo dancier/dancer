@@ -1,6 +1,7 @@
 package net.dancier.dancer.recommendation.dto;
 
 import net.dancier.dancer.recommendation.model.BaseRecommendation;
+import net.dancier.dancer.recommendation.model.RecommendationWrapper;
 
 public class Mapper {
 
@@ -12,5 +13,9 @@ public class Mapper {
         baseRecommendation.setTargetVersion(recommendationDto.getTargetVersion());
         baseRecommendation.setScore(recommendationDto.getScore());
         return baseRecommendation;
+    }
+
+    public static ExposedRecommendationDto recommendationWrapper2ExposedRecommendationDto(RecommendationWrapper recommendationWrapper) {
+        return null;
     }
 }
