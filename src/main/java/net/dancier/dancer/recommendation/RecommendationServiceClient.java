@@ -18,7 +18,7 @@ public class RecommendationServiceClient {
 
     private WebClient webClient;
 
-    static final String BASE_URI = "/recommendations";
+    static final String BASE_URI = "/recommendations/";
 
     @PostConstruct
     public void init() {
