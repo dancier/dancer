@@ -5,11 +5,6 @@ import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerRepository;
-import net.dancier.dancer.core.ProfileService;
-import net.dancier.dancer.core.ProfileTestFactory;
-import net.dancier.dancer.core.dto.ProfileDto;
-import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
-import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,21 +34,15 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     DancerRepository dancerRepository;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     ObjectMapper objectMapper;
 
-    UUID userId = UUID.fromString("62ff5258-8976-11ec-b58c-e35f5b1fc926");
+    UUID userId = UUID.fromString("55bbf334-6649-11ed-8f65-5b299f0e161f");
     UUID chatId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
+    UUID dancerId = null;
     @BeforeEach
     void init() {
-        Dancer dancer = new Dancer();
-        dancer.setUserId(userId);
-        dancer.setDancerName("dancero");
-        dancer.setCity("Dortmund");
-        dancerRepository.save(dancer);
+        this.dancerId = dancerRepository.findByUserId(userId).get().getId();
     }
 
     @Nested
@@ -62,10 +50,9 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class GetChats {
 
         @Test
-        @WithUserDetails("user@dancier.net")
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void getChatsShouldReturnChats() throws Exception {
-            UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
-            
+
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
             chat.setChatId(chatId);
@@ -75,8 +62,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             when(chatServiceClient.getChats(dancerId)).thenReturn(chats);
 
             ResultActions result = mockMvc
-                    .perform(get("/chats")
-                            .cookie(getUserCookie()))
+                    .perform(get("/chats"))
                     .andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chats[0].chatId").value(chatId.toString()));
@@ -88,9 +74,8 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class PostChats {
 
         @Test
-        @WithUserDetails("user@dancier.net")
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void postChatShouldReturnTheChat() throws Exception {
-            UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
             List dancerIds = List.of(dancerId, UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
             chat.setDancerIds(dancerIds);
@@ -105,8 +90,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             ResultActions result = mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsBytes(chat))
-                            .cookie(getUserCookie()))
+                            .content(objectMapper.writeValueAsBytes(chat)))
                     .andExpect(status().isCreated())
                     .andExpect(header().exists("Location"));
 
@@ -116,6 +100,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void postChatShouldNotCreateTheChatIfUserIsNotPartOfIt() throws Exception {
             List dancerIds = List.of(UUID.randomUUID(), UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
@@ -124,8 +109,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsBytes(chat))
-                            .cookie(getUserCookie()))
+                            .content(objectMapper.writeValueAsBytes(chat)))
                     .andExpect(status().isBadRequest());
 
         }
@@ -136,6 +120,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class GetChat {
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void getChatShouldReturnTheChat() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
@@ -147,13 +132,13 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             ResultActions result = mockMvc.perform(
                     get("/chats/" + chatId)
-                            .cookie(getUserCookie())
             ).andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.chatId").value(chatId.toString()));
         }
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void getChatShouldNotReturnTheChatIfUserIsNotPartOfIt() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -163,7 +148,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             mockMvc.perform(
                     get("/chats/" + chatId)
-                            .cookie(getUserCookie())
             ).andExpect(status().isBadRequest());
         }
     }
@@ -173,6 +157,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class GetMessages {
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void getMessagesShouldNotReturnMessagesIfUserIsNotInChat() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -180,13 +165,13 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
             mockMvc.perform(
-                            get("/chats/" + chatId + "/messages")
-                                    .cookie(getUserCookie()))
+                            get("/chats/" + chatId + "/messages"))
                     .andExpect(status().isBadRequest());
 
         }
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void getMessagesShouldReturnMessagesIfUserIsInChat() throws Exception {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
@@ -202,8 +187,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(messages);
 
             ResultActions result = mockMvc.perform(
-                            get("/chats/" + chatId + "/messages")
-                                    .cookie(getUserCookie()))
+                            get("/chats/" + chatId + "/messages"))
                     .andExpect(status().isOk());
 
             result.andExpect(jsonPath("$.messages[0].text").value("Hallo"));
@@ -216,6 +200,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
     public class PostMessages {
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void postMessagesShouldNotCreateTheMessageIfUserIsNotInTheChat() throws Exception {
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
@@ -228,7 +213,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
-                    .cookie(getUserCookie())
             ).andExpect(status().isBadRequest());
 
             verify(chatServiceClient, times(0)).createMessage(any(), any());
@@ -236,9 +220,8 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         }
 
         @Test
+        @WithUserDetails("user-with-a-profile@dancier.net")
         void postMessagesShouldCreateAMessage() throws Exception {
-            UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
-
             ChatDto chat = new ChatDto();
             chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
 
@@ -250,14 +233,9 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             mockMvc.perform(post("/chats/" + chatId + "/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(message))
-                    .cookie(getUserCookie())
             ).andExpect(status().isCreated());
 
         }
-    }
-
-    private Cookie getUserCookie() {
-        return new Cookie("jwt-token", jwtTokenProvider.generateJwtToken(userId.toString()));
     }
 
 }
