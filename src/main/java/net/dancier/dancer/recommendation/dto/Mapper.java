@@ -30,6 +30,6 @@ public class Mapper {
                 throw  new IllegalStateException();
             }
         }
-        return null;
+        return exposedRecommendationDto;
     }
 }
