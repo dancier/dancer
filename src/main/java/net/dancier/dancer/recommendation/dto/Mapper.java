@@ -1,5 +1,6 @@
 package net.dancier.dancer.recommendation.dto;
 
+import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.recommendation.model.BaseRecommendation;
 import net.dancier.dancer.recommendation.model.RecommendationWrapper;
 
@@ -16,6 +17,19 @@ public class Mapper {
     }
 
     public static ExposedRecommendationDto recommendationWrapper2ExposedRecommendationDto(RecommendationWrapper recommendationWrapper) {
+        ExposedRecommendationDto exposedRecommendationDto = new ExposedRecommendationDto();
+        switch (recommendationWrapper.getPayload()) {
+            case Dancer dancer -> {
+                exposedRecommendationDto.setType("DANCER");
+                ExposedRecommendationDto.DancerPayload dancerPayload = new ExposedRecommendationDto.DancerPayload();
+                dancerPayload.setId(dancer.getId().toString());
+                dancerPayload.setName(dancer.getDancerName());
+                exposedRecommendationDto.setPayload(dancerPayload);
+            }
+            case default -> {
+                throw  new IllegalStateException();
+            }
+        }
         return null;
     }
 }
