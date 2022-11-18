@@ -20,13 +20,16 @@ public class RecommendationService {
 
     private final RecommendationServiceClient recommendationServiceClient;
 
+    // https://www.baeldung.com/java-collectors-tomap
     public List<Recommendable> getRecommendationsForDancerId(UUID dancerId) {
         List<RecommendationDto> recommendationDtos = recommendationServiceClient.getRecommendations(dancerId);
         log.info("Got : " + recommendationDtos);
-        Map<UUID, Integer> dancerIds = recommendationDtos
+        Map<UUID, Integer> dancerId2Version = recommendationDtos
                 .stream()
                 .filter(p -> RecommendationDto.Type.DANCER.equals(p.getType()))
                 .collect(Collectors.toMap(RecommendationDto::getTargetId, RecommendationDto::getTargetVersion));
+        // Test what happens when we have
+        log.info("With: " + dancerId2Version);
         List<Recommendable> recommendables = new ArrayList<>();
         return recommendables;
     }
