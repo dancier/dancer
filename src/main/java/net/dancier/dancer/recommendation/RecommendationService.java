@@ -40,7 +40,7 @@ public class RecommendationService {
                 .collect(Collectors.toMap(BaseRecommendation::getTargetId, BaseRecommendation::getTargetVersion));
         Map<UUID, Integer> dancerId2Score = baseRecommendations
                 .stream()
-                .collect(Collectors.toMap(BaseRecommendation::TargetId, BaseRecommendation::getScore));
+                .collect(Collectors.toMap(BaseRecommendation::getTargetId, BaseRecommendation::getScore));
         // Test what happens when we have
         log.info("With: " + dancerId2Version.keySet());
         List<Dancer> dancers = dancerRepository.findAllById(dancerId2Version.keySet());
@@ -61,7 +61,7 @@ public class RecommendationService {
             recommendationWrapper.setDancer(d);
             recommendationWrapper.setScore(dancerId2Score.get(d.getId()));
             return recommendationWrapper;
-        });
+        }).collect(Collectors.toList());
         log.info("The result: " + recommendationWrappers);
         List<Recommendable> recommendables = new ArrayList<>();
         return recommendables;

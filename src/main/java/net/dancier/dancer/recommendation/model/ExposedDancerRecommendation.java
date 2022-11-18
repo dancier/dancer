@@ -2,6 +2,7 @@ package net.dancier.dancer.recommendation.model;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
