@@ -24,6 +24,13 @@ public class Mapper {
                 ExposedRecommendationDto.DancerPayload dancerPayload = new ExposedRecommendationDto.DancerPayload();
                 dancerPayload.setId(dancer.getId().toString());
                 dancerPayload.setName(dancer.getDancerName());
+                dancerPayload.setImageHash(dancer.getProfileImageHash());
+                dancerPayload.setAbout(dancer.getAboutMe());
+                dancerPayload.setAge(null);
+                dancerPayload.setZip(dancer.getZipCode());
+                dancerPayload.setCity(dancer.getCity());
+                dancerPayload.setDances(null);
+                dancerPayload.setScore(recommendationWrapper.getScore());
                 exposedRecommendationDto.setPayload(dancerPayload);
             }
             case default -> {

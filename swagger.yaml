@@ -624,6 +624,10 @@ components:
           type: string
         age:
           type: integer
+        zip:
+          type: string
+        city:
+          type: string
         dances:
           type: array
           items:
