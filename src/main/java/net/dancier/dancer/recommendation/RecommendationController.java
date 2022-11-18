@@ -1,10 +1,10 @@
 package net.dancier.dancer.recommendation;
 
 import lombok.AllArgsConstructor;
-import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.NotFoundException;
-import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
+import net.dancier.dancer.recommendation.dto.Mapper;
+import net.dancier.dancer.recommendation.model.RecommendationWrapper;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.springframework.http.MediaType;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -29,9 +30,9 @@ public class RecommendationController {
     @Secured(ROLE_USER)
     @GetMapping
     public ResponseEntity getTopRecommendations(@CurrentUser AuthenticatedUser authenticatedUser) {
-        List<Recommendable> recommendables =
+        List<RecommendationWrapper> recommendables =
                 recommendationService.getRecommendationsForDancerId(authenticatedUser.getDancerIdOrThrow());
-      return ResponseEntity.ok(recommendables.stream().map(ModelMapper::recommendableToRecommendationDto));
+      return ResponseEntity.ok( recommendables.stream().map(Mapper::recommendationWrapper2ExposedRecommendationDto).collect(Collectors.toList()));
     };
 
     @ExceptionHandler({NotFoundException.class})

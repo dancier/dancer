@@ -44,6 +44,8 @@ app:
     magicToken: secret
   chatDancer:
     host: chat-dancer
+  recommendation:
+    host: recommendation
   s3:
     active: true
     host: test-s3.dancier.net
