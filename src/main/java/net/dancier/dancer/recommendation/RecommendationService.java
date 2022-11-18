@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +35,24 @@ public class RecommendationService {
         log.info("Got so many recommendations: " + baseRecommendations.size());
         Map<UUID, Integer> dancerId2Version = baseRecommendations
                 .stream()
-                .filter(p -> RecommendationDto.Type.DANCER.equals(p.getType()))
+                .filter(p -> BaseRecommendation.Type.DANCER.equals(p.getType()))
                 .collect(Collectors.toMap(BaseRecommendation::getTargetId, BaseRecommendation::getTargetVersion));
         // Test what happens when we have
         log.info("With: " + dancerId2Version.keySet());
         List<Dancer> dancers = dancerRepository.findAllById(dancerId2Version.keySet());
         log.info("So many are current: " + dancers.size());
 
-        
+        dancers.stream().filter(d -> {
+            Integer currentVersion = d.getVersion();
+            Integer recommendedVersion = dancerId2Version.get(d.getId());
+            if (currentVersion.equals(recommendedVersion)) {
+                log.info("Version Match");
+                return Boolean.TRUE;
+            } else {
+                log.info("Outdated Recommendation");
+                return Boolean.FALSE;
+            }
+        });
         log.info("Got them.");
         List<Recommendable> recommendables = new ArrayList<>();
         return recommendables;
