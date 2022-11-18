@@ -19,7 +19,7 @@ public class RecommendationService {
 
     private static Logger log = LoggerFactory.getLogger(RecommendationService.class);
 
-    private DancerRepository dancerRepository;
+    private final DancerRepository dancerRepository;
     private final RecommendationServiceClient recommendationServiceClient;
 
     // https://www.baeldung.com/java-collectors-tomap
