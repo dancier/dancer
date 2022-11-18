@@ -2,7 +2,10 @@ package net.dancier.dancer.recommendation;
 
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.DancerRepository;
+import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Recommendable;
+import net.dancier.dancer.recommendation.dto.RecommendationDto;
+import net.dancier.dancer.recommendation.model.BaseRecommendation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,15 +27,21 @@ public class RecommendationService {
 
     // https://www.baeldung.com/java-collectors-tomap
     public List<Recommendable> getRecommendationsForDancerId(UUID dancerId) {
-        List<RecommendationDto> recommendationDtos = recommendationServiceClient.getRecommendations(dancerId);
-        log.info("Got : " + recommendationDtos);
-        Map<UUID, Integer> dancerId2Version = recommendationDtos
+        log.info("Getting Recommendations for dancer with ID: " + dancerId);
+        Dancer dancer = dancerRepository.getReferenceById(dancerId);
+        log.info("This has version: " + dancer.getVersion());
+        List<BaseRecommendation> baseRecommendations = recommendationServiceClient.getRecommendations(dancerId);
+        log.info("Got so many recommendations: " + baseRecommendations.size());
+        Map<UUID, Integer> dancerId2Version = baseRecommendations
                 .stream()
                 .filter(p -> RecommendationDto.Type.DANCER.equals(p.getType()))
-                .collect(Collectors.toMap(RecommendationDto::getTargetId, RecommendationDto::getTargetVersion));
+                .collect(Collectors.toMap(BaseRecommendation::getTargetId, BaseRecommendation::getTargetVersion));
         // Test what happens when we have
-        log.info("With: " + dancerId2Version);
-        dancerRepository.findAllById(dancerId2Version.keySet());
+        log.info("With: " + dancerId2Version.keySet());
+        List<Dancer> dancers = dancerRepository.findAllById(dancerId2Version.keySet());
+        log.info("So many are current: " + dancers.size());
+
+        
         log.info("Got them.");
         List<Recommendable> recommendables = new ArrayList<>();
         return recommendables;

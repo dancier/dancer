@@ -1,5 +1,8 @@
 package net.dancier.dancer.recommendation;
 
+import net.dancier.dancer.recommendation.dto.Mapper;
+import net.dancier.dancer.recommendation.dto.RecommendationDto;
+import net.dancier.dancer.recommendation.model.BaseRecommendation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +31,7 @@ public class RecommendationServiceClient {
     }
 
     // https://www.baeldung.com/spring-webclient-json-list
-    public List<RecommendationDto> getRecommendations(UUID dancerId) {
+    public List<BaseRecommendation> getRecommendations(UUID dancerId) {
         return Arrays.stream(webClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -38,7 +41,9 @@ public class RecommendationServiceClient {
         )
                 .retrieve()
                 .bodyToMono(RecommendationDto[].class)
-                .block()).collect(Collectors.toList());
+                .block())
+                .map(Mapper::recommendationDto2BaseRecommendation)
+                .collect(Collectors.toList());
     }
 
 }

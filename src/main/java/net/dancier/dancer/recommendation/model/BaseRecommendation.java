@@ -1,16 +1,14 @@
-package net.dancier.dancer.recommendation;
+package net.dancier.dancer.recommendation.model;
 
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class RecommendationDto {
+public class BaseRecommendation {
+
     public enum Type {
-        DANCER,
-        SCHOOL,
-        EVENT,
-        LINK
+        DANCER
     }
 
     private Type type;
