@@ -1,8 +1,19 @@
 package net.dancier.dancer.recommendation.dto;
 
+import net.dancier.dancer.core.model.Dance;
+import net.dancier.dancer.core.model.DanceProfile;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.recommendation.model.BaseRecommendation;
 import net.dancier.dancer.recommendation.model.RecommendationWrapper;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Mapper {
 
@@ -26,10 +37,10 @@ public class Mapper {
                 dancerPayload.setName(dancer.getDancerName());
                 dancerPayload.setImageHash(dancer.getProfileImageHash());
                 dancerPayload.setAbout(dancer.getAboutMe());
-                dancerPayload.setAge(null);
+                dancerPayload.setAge(age(dancer.getBirthDate()));
                 dancerPayload.setZip(dancer.getZipCode());
                 dancerPayload.setCity(dancer.getCity());
-                dancerPayload.setDances(null);
+                dancerPayload.setDances(getDances(dancer));
                 dancerPayload.setScore(recommendationWrapper.getScore());
                 exposedRecommendationDto.setPayload(dancerPayload);
             }
@@ -38,5 +49,32 @@ public class Mapper {
             }
         }
         return exposedRecommendationDto;
+    }
+
+    private static List<String> getDances(Dancer dancer) {
+        Set<String> result = Set.of();
+        result.addAll(
+                dancer.getAbleTo().stream()
+                        .map(DanceProfile::getDance)
+                        .map(Dance::getName).collect(Collectors.toSet())
+        );
+        result.addAll(
+                dancer.getWantsTo().stream()
+                        .map(DanceProfile::getDance)
+                        .map(Dance::getName).collect(Collectors.toSet())
+        );
+        return result.stream().toList();
+    }
+    private static Integer age(Date birthdate) {
+        LocalDate now = LocalDate.now();
+        if (birthdate!=null) {
+            return Period.between(
+                    Instant
+                            .ofEpochMilli(birthdate.getTime())
+                            .atZone(ZoneId.systemDefault()).toLocalDate() , now)
+                    .getYears();
+        } else {
+            return 0;
+        }
     }
 }
