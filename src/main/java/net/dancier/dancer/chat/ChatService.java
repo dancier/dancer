@@ -16,8 +16,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final DancerService dancerService;
-
     private final ChatServiceClient chatServiceClient;
 
     public ChatsDto getChatsByUserId(UUID dancerId) {

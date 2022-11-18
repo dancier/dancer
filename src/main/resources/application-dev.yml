@@ -1,3 +1,5 @@
 app:
   s3:
     active: false
+  recommendation:
+    host: http://test.dancier.net:5000

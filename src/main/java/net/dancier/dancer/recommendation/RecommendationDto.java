@@ -1,8 +1,10 @@
 package net.dancier.dancer.recommendation;
 
-import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.school.School;
+import lombok.Data;
 
+import java.util.UUID;
+
+@Data
 public class RecommendationDto {
     public enum Type {
         DANCER,
@@ -11,16 +13,14 @@ public class RecommendationDto {
         LINK
     }
 
-    public Type type;
-    public Object payload;
+    private Type type;
 
-    public RecommendationDto(Object recommendable) {
-        if (recommendable instanceof Dancer){
-            this.type = Type.DANCER;
-            this.payload = recommendable;
-        } else if (recommendable instanceof School) {
-            this.type = Type.SCHOOL;
-            this.payload = ModelMapper.schoolToSchoolDto((School)recommendable);
-        }
-    }
+    private Integer dancerVersion;
+
+    private UUID targetId;
+
+    private Integer targetVersion;
+
+    private Integer score;
+
 }

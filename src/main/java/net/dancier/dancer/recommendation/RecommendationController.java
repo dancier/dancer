@@ -29,7 +29,7 @@ public class RecommendationController {
     public ResponseEntity getTopRecommendations(@CurrentUser AuthenticatedUser authenticatedUser) {
         List<Recommendable> recommendables =
                 recommendationService.getRecommendationsForDancerId(authenticatedUser.getDancerIdOrThrow());
-      return ResponseEntity.ok(recommendables.stream().map(ModelMapper::recommendableToRecommendationDto));
+      return ResponseEntity.ok(recommendables);
     };
 
     @ExceptionHandler({NotFoundException.class})
