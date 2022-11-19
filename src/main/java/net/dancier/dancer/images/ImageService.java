@@ -1,6 +1,6 @@
 package net.dancier.dancer.images;
 
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.*;
 import java.security.MessageDigest;
-import java.util.Optional;
 
 @Service
 public class ImageService {
@@ -32,7 +31,7 @@ public class ImageService {
         try {
             Files.createDirectories(this.imageLocation);
         } catch (Exception ex) {
-            throw new AppliationException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new ApplicationException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
 
@@ -47,7 +46,7 @@ public class ImageService {
             Files.createDirectory(targetLocation);
             Files.write(targetLocation.resolve(ORIGINAL_FILE_NAME), allBytes);
         } catch (Exception noSuchAlgorithmException) {
-            new AppliationException("Unable to save ...");
+            new ApplicationException("Unable to save ...");
         }
         return new DancierImage(sha256String);
     }

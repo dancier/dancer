@@ -11,7 +11,8 @@ import net.dancier.dancer.authentication.service.CaptchaService;
 import net.dancier.dancer.core.controller.payload.ApiResponse;
 import net.dancier.dancer.core.controller.payload.JwtAuthenticationResponse;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
+import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,9 +189,15 @@ public class AuthenticationController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(AppliationException.class)
-    public String handle(AppliationException ae) {
+    @ExceptionHandler(ApplicationException.class)
+    public String handle(ApplicationException ae) {
         return ae.getLocalizedMessage();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BusinessException.class)
+    public String handle(BusinessException be) {
+        return be.getLocalizedMessage();
     }
 
 }
