@@ -932,8 +932,8 @@ components:
     chatType:
       type: string
       enum:
-        - group
-        - direct
+        - GROUP
+        - DIRECT
     error:
       type: object
       properties:

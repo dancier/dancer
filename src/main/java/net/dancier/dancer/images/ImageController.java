@@ -1,7 +1,6 @@
 package net.dancier.dancer.images;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.exception.AppliationException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

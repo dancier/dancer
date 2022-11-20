@@ -1,8 +1,8 @@
 package net.dancier.dancer.authentication;
 
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
 
-public class UserOrEmailAlreadyExistsException extends AppliationException {
+public class UserOrEmailAlreadyExistsException extends ApplicationException {
 
     public UserOrEmailAlreadyExistsException(String message) {
         super(message);

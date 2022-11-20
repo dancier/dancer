@@ -1,7 +1,7 @@
 package net.dancier.dancer.eventlog.service;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.repository.EventlogDAO;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class EventlogService {
             eventlog.setCreated(Instant.now());
             this.eventlogDAO.schedule(eventlog);
         } catch (SQLException sqlException) {
-            throw new AppliationException("Unable to create new Eventlog-Entry.", sqlException);
+            throw new ApplicationException("Unable to create new Eventlog-Entry.", sqlException);
         }
     }
 

@@ -79,11 +79,11 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             List dancerIds = List.of(dancerId, UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
             chat.setDancerIds(dancerIds);
-            chat.setType(ChatType.IN_PERSON);
+            chat.setType(ChatType.DIRECT);
 
             ChatDto createdChat = new ChatDto();
             createdChat.setDancerIds(dancerIds);
-            createdChat.setType(ChatType.IN_PERSON);
+            createdChat.setType(ChatType.DIRECT);
             createdChat.setChatId(UUID.randomUUID());
 
             when(chatServiceClient.createChat(chat)).thenReturn(createdChat);
@@ -96,7 +96,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             result.andExpect(jsonPath("$.dancerIds").isNotEmpty());
             result.andExpect(jsonPath("$.chatId").isNotEmpty());
-            result.andExpect(jsonPath("$.type").value(ChatType.IN_PERSON.name()));
+            result.andExpect(jsonPath("$.type").value(ChatType.DIRECT.name()));
         }
 
         @Test
@@ -105,7 +105,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             List dancerIds = List.of(UUID.randomUUID(), UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
             chat.setDancerIds(dancerIds);
-            chat.setType(ChatType.IN_PERSON);
+            chat.setType(ChatType.DIRECT);
 
             mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)

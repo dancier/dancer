@@ -10,7 +10,7 @@ import io.minio.credentials.ClientGrantsProvider;
 import io.minio.credentials.Provider;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                  NoSuchAlgorithmException |
                  XmlParserException |
                  ServerException e) {
-            new AppliationException("Problem with s3: " + e, e);
+            new ApplicationException("Problem with s3: " + e, e);
         }
     }
 
@@ -110,7 +110,7 @@ public class EventlogS3ServiceImpl implements EventlogS3Service {
                     .object(objectNameFromEventlog(eventlog))
                     .stream(bais, bais.available(), -1).build();
         } catch (JsonProcessingException jsonProcessingException) {
-            throw new AppliationException("Could not process eventlog entry: " + eventlog, jsonProcessingException);
+            throw new ApplicationException("Could not process eventlog entry: " + eventlog, jsonProcessingException);
         }
     }
 

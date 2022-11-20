@@ -5,7 +5,7 @@ import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.*;
-import net.dancier.dancer.core.exception.AppliationException;
+import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
@@ -97,9 +97,9 @@ public class AuthenticationService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                    .orElseThrow(() -> new AppliationException("User Role could not be set."));
+                    .orElseThrow(() -> new ApplicationException("User Role could not be set."));
             Role humanRole = roleRepository.findByName(RoleName.ROLE_HUMAN)
-                    .orElseThrow(() -> new AppliationException("Human Role could not be set."));
+                    .orElseThrow(() -> new ApplicationException("Human Role could not be set."));
             List<Role> roles = new ArrayList<>();
             roles.add(userRole);
             roles.add(humanRole);
@@ -167,13 +167,13 @@ public class AuthenticationService {
     @Transactional
     public User checkEmailValidationCode(String code) {
         EmailValidationCode emailValidationCode = emailValidationCodeRepository
-                .findByCode(code).orElseThrow(() ->new AppliationException("Unable to validate"));
+                .findByCode(code).orElseThrow(() ->new ApplicationException("Unable to validate"));
         if (emailValidationCode.getExpiresAt().isBefore(Instant.now())) {
-            throw new AppliationException("Unable to Validate, code already expired");
+            throw new ApplicationException("Unable to Validate, code already expired");
         };
         User user = userRepository.findById(emailValidationCode
                 .getUserId())
-                .orElseThrow(() -> new AppliationException("No user associated with this code."));
+                .orElseThrow(() -> new ApplicationException("No user associated with this code."));
         user.setEmailValidated(true);
         emailValidationCodeRepository.delete(emailValidationCode);
         userRepository.save(user);
