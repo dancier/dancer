@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+
+  dancer:
+    build: ./
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "5005:5005"
+    depends_on:
+      - dancer-db
+    environment:
+#   https://ckinan.com/blog/remote-debug-spring-boot-docker-intellij/:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   dancer-db:
     image: postgres:14
     restart: always
@@ -23,3 +35,11 @@ services:
       PGADMIN_DEFAULT_PASSWORD: secret
     volumes:
       - ./volumes/pg-admin-data:/var/lib/pgadmin
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+

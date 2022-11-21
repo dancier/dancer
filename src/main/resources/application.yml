@@ -4,7 +4,7 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:postgresql://localhost:5432/dancer
+    url: jdbc:postgresql://dancer-db:5432/dancer
     username: dancer
     password: dancer
   liquibase:
@@ -70,3 +70,14 @@ logging:
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - beans
+          - prometheus

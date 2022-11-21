@@ -61,7 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/authentication/**",
                             "/profile/checkDancerNameAvailability/*",
-                            "/eventlog/**")
+                            "/eventlog/**",
+                            "/actuator/**"
+                            )
                         .permitAll()
                     .anyRequest()
                         .authenticated();
