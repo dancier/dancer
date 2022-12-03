@@ -3,3 +3,6 @@ app:
     active: false
   recommendation:
     host: http://test.dancier.net:5000
+  chatDancer:
+    host: http://test.dancier.net:9999
+
