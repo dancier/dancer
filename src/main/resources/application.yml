@@ -43,7 +43,7 @@ app:
     apiKey: secret
     magicToken: secret
   chatDancer:
-    host: chat-dancer:8080
+    host: http://chat-dancer:8080
   recommendation:
     host: recommendation
   s3:
