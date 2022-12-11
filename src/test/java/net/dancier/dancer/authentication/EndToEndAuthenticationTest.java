@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.TestDatabaseHelper;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
+import net.dancier.dancer.authentication.dto.SendLinkDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
 import net.dancier.dancer.mail.service.MailEnqueueService;
@@ -46,7 +47,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
         registerUser(dummyUser)
                 .andExpect(
-                    status().isCreated()
+                        status().isCreated()
                 );
 
         String emailValidationCode = testDatabaseHelper
@@ -115,14 +116,17 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
     }
 
     private ResultActions reRequestEmailValidationCode(User user) throws Exception {
+        SendLinkDto sendLinkDto = new SendLinkDto();
+        sendLinkDto.setEmail(user.getEmail());
         return mockMvc.perform(
                 post("/authentication/email-validations")
                         .cookie(getHumanCookie())
-                        .contentType(MediaType.TEXT_PLAIN).content(user.getEmail())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(sendLinkDto))
         );
     }
 
-    private ResultActions validateEmailAddress(String emailValidationCode) throws Exception{
+    private ResultActions validateEmailAddress(String emailValidationCode) throws Exception {
         return mockMvc.perform(
                 put("/authentication/email-validations/" + emailValidationCode)
         );
