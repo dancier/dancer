@@ -8,11 +8,11 @@ import java.util.UUID;
 @Data
 public class RemoteCreateMessageDto {
     private String text;
-    private UUID author;
+    private UUID authorId;
 
     public static class RemoteCreateMessageDtoBuilder {
         private String text;
-        private UUID author;
+        private UUID authorId;
 
         public RemoteCreateMessageDtoBuilder() {}
 
@@ -21,15 +21,15 @@ public class RemoteCreateMessageDto {
             return this;
         }
 
-        public RemoteCreateMessageDtoBuilder withAuthor(UUID author) {
-            this.author = author;
+        public RemoteCreateMessageDtoBuilder withAuthorId(UUID authorId) {
+            this.authorId = authorId;
             return this;
         }
 
         public RemoteCreateMessageDto build() {
             RemoteCreateMessageDto remoteCreateMessageDto = new RemoteCreateMessageDto();
             remoteCreateMessageDto.text = this.text;
-            remoteCreateMessageDto.author = this.author;
+            remoteCreateMessageDto.authorId = this.authorId;
             return remoteCreateMessageDto;
         }
     }
