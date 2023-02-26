@@ -34,9 +34,9 @@ Here you can configure the connection to the postgres instance:
 |dancer-db|dancer|dancer|dancer|
 
 ### Run the dancer locally
-````shell
+```shell
 ./mvnw spring-boot:run
-````
+```
 This will bootstrap the database. You can start using it.
 See the api-documentation to see what you can do:
 
@@ -44,7 +44,9 @@ See the api-documentation to see what you can do:
 
 ### Building
 
-``./mvnw clean install`
+```shell
+./mvnw clean install
+```
 
 This will also run the test _and_ integration tests.
 
