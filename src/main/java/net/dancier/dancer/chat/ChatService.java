@@ -52,7 +52,7 @@ public class ChatService {
 
         RemoteCreateMessageDto remoteCreateMessageDto = new RemoteCreateMessageDto.RemoteCreateMessageDtoBuilder()
                 .fromCreateMessageDto(createMessageDto)
-                .withAuthor(dancerId)
+                .withAuthorId(dancerId)
                 .build();
 
         return chatServiceClient.createMessage(chatId, remoteCreateMessageDto);

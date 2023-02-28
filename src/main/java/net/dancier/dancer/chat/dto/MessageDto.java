@@ -10,10 +10,10 @@ import java.util.UUID;
 @Data
 public class MessageDto {
     private UUID id;
-    private UUID author;
+    private UUID authorId;
     private String text;
     private List<UUID> readByDancers;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private OffsetDateTime creationTimestamp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private OffsetDateTime createdAt;
 
 }

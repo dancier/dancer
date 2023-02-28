@@ -1,7 +1,7 @@
 package net.dancier.dancer.authentication;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.authentication.dto.PasswordChangeDto;
+import net.dancier.dancer.authentication.dto.SendLinkDto;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.dto.SetEmailValidationDto;
 import net.dancier.dancer.authentication.dto.WhoAmIDto;
@@ -135,9 +135,9 @@ public class AuthenticationController {
 
     @Secured(ROLE_HUMAN)
     @PostMapping("/email-validations")
-    public ResponseEntity createEmailValidationCode(@NotNull @RequestBody String emailAddress) {
-        log.info("sending mail for " + emailAddress);
-        authenticationService.createEmailValidationCode(emailAddress.trim());
+    public ResponseEntity createEmailValidationCode(@NotNull @RequestBody SendLinkDto sendLinkDto) {
+        log.info("sending mail for " + sendLinkDto.getEmail());
+        authenticationService.createEmailValidationCode(sendLinkDto.getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -159,10 +159,10 @@ public class AuthenticationController {
 
     @Secured(ROLE_HUMAN)
     @PostMapping("/password-changes")
-    public ResponseEntity createPasswortResetCode(@RequestBody PasswordChangeDto passwordChangeDto) {
-        Optional<String> optionalCode =  authenticationService.createPasswordResetCode(passwordChangeDto.getEmail().trim());
+    public ResponseEntity createPasswortResetCode(@RequestBody SendLinkDto sendLinkDto) {
+        Optional<String> optionalCode =  authenticationService.createPasswordResetCode(sendLinkDto.getEmail().trim());
         if (optionalCode.isPresent()) {
-            authenticationService.sendChangePasswordMail(passwordChangeDto.getEmail().trim(), optionalCode.get());
+            authenticationService.sendChangePasswordMail(sendLinkDto.getEmail().trim(), optionalCode.get());
         }
         return ResponseEntity.ok().build();
     }
