@@ -14,6 +14,7 @@ import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -65,14 +67,14 @@ public class AuthenticationService {
         return this.tokenProvider.generateJwtToken(subject);
     }
 
-    public Cookie generateCookie(String token) {
-        Cookie cookie = new Cookie("jwt-token", token);
-        // one month
-        cookie.setMaxAge(30 * 24 * 60 * 60);
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        return cookie;
+    public ResponseCookie generateCookie(String token) {
+        return ResponseCookie.from("jwt-token", token)
+                .maxAge(Duration.ofDays(30))
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .sameSite("None")
+                .build();
     }
 
     public User getUser(UUID userId) {

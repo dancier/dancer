@@ -16,9 +16,7 @@ import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.security.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -61,6 +58,7 @@ public class AuthenticationController {
         if (principalObject!=null && principalObject instanceof AuthenticatedUser) {
             AuthenticatedUser authenticatedUser = (AuthenticatedUser) principalObject;
             builder.withEmailAddress(authenticatedUser.getUsername());
+            builder.withUserId(authenticatedUser.getUserId());
         }
         return ResponseEntity.ok(builder.build());
     }
@@ -100,8 +98,8 @@ public class AuthenticationController {
                     .body(new ApiResponse(false, "You have to validate the email."));
         }
         String jwt = authenticationService.generateJwtToken(authentication);
-        Cookie cookie = authenticationService.generateCookie(jwt);
-        httpServletResponse.addCookie(cookie);
+        ResponseCookie cookie = authenticationService.generateCookie(jwt);
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
@@ -109,14 +107,14 @@ public class AuthenticationController {
     public ResponseEntity<?> loginAsHuman(@RequestHeader(required = false, name = "X-Captcha-Token") String token,
                                           HttpServletResponse httpServletResponse) {
         log.info("Log in as human");
-        Cookie cookie = null;
+        ResponseCookie cookie = null;
         try {
            captchaService.verifyToken(token);
            cookie = authenticationService
                    .generateCookie(
                            authenticationService.generateJwtToken("HUMAN")
                    );
-           httpServletResponse.addCookie(cookie);
+           httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         } catch (CaptchaException captchaException) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
@@ -127,9 +125,9 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logoutUser(HttpServletResponse httpServletResponse) {
-        Cookie cookie = authenticationService.generateCookie(null);
-        cookie.setMaxAge(0);
-        httpServletResponse.addCookie(cookie);
+        ResponseCookie cookie = authenticationService.generateCookie(null);
+        //cookie.setMaxAge(0);
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok().build();
     }
 
@@ -144,9 +142,9 @@ public class AuthenticationController {
     @PutMapping("/email-validations/{validationCode}")
     public ResponseEntity validateEmail(@PathVariable String validationCode, HttpServletResponse httpServletResponse) {
         User validatedUser = authenticationService.checkEmailValidationCode(validationCode);
-        Cookie cookie = authenticationService
+        ResponseCookie cookie = authenticationService
                 .generateCookie(authenticationService.generateJwtToken(validatedUser.getId().toString()));
-        httpServletResponse.addCookie(cookie);
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(new ApiResponse(true, "Validated and logged in"));
     }
 
