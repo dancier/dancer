@@ -124,8 +124,7 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logoutUser(HttpServletResponse httpServletResponse) {
-        ResponseCookie cookie = authenticationService.generateCookie(null);
-        //cookie.setMaxAge(0);
+        ResponseCookie cookie = authenticationService.generateClearingCookie();
         httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok().build();
     }

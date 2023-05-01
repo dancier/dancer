@@ -77,6 +77,20 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Generates a cookie that clears the jwt-token cookie.
+     * By setting the maxAge to 0, the cookie will be deleted by the browser.
+     */
+    public ResponseCookie generateClearingCookie() {
+        return ResponseCookie.from("jwt-token", "")
+                .maxAge(Duration.ofDays(0))
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .sameSite("None")
+                .build();
+    }
+
     public User getUser(UUID userId) {
         try {
             return this.userRepository.getById(userId);
