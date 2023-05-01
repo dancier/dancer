@@ -58,7 +58,6 @@ public class AuthenticationController {
         if (principalObject!=null && principalObject instanceof AuthenticatedUser) {
             AuthenticatedUser authenticatedUser = (AuthenticatedUser) principalObject;
             builder.withEmailAddress(authenticatedUser.getUsername());
-            builder.withUserId(authenticatedUser.getUserId());
         }
         return ResponseEntity.ok(builder.build());
     }
