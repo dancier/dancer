@@ -35,7 +35,7 @@ Here you can configure the connection to the postgres instance:
 
 ### Run the dancer locally
 ````shell
-./mvnw spring-boot:run
+    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/dancer"
 ````
 This will bootstrap the database. You can start using it.
 See the api-documentation to see what you can do:
