@@ -1,3 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dancer
+
 app:
   s3:
     active: false
