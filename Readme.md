@@ -53,9 +53,6 @@ Here you can configure the connection to the postgres instance:
 #### running the dancer not inside docker-compose
 (assuming the docker-compose setup is up and running)
 
-#### checking test-coverage
-[Show test coverage in target/site/jacoco/index.html](.target/site/jacoco/index.html)
-
 
 ````shell
 # stopping dancer in docker-compose
@@ -63,6 +60,12 @@ docker-compose stop dancer;
 # running the boot app with overwriting the needed host
 ./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/dancer --spring.kafka.bootstrap-servers=localhost:9092"
 ````
+
+#### checking test-coverage
+Show test coverage in target/site/jacoco/index.html: 
+`.target/site/jacoco/index.html
+
+
 
 ### Accessing the API-Definition
 [OpenApi](https://editor.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdancier%2Fdancer%2Fmaster%2Fopenapi.yml)
