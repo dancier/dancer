@@ -26,7 +26,7 @@ services:
       - ./volumes/dancer-data:/var/lib/postgresql/data
 
   pg-admin:
-    image: dpage/pgadmin4:6.15
+    image: dpage/pgadmin4:7
     restart: always
     ports:
       - "5050:80"
