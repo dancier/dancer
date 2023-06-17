@@ -132,7 +132,7 @@ public class AuthenticationService {
     }
 
     private String passwordResetLink(String passwordResetCode) {
-        return frontendBaseName + "/authentication/change-password/" + passwordResetCode;
+        return frontendBaseName + "/registration/reset-password/" + passwordResetCode;
     }
 
     private String emailValidationLink(String validationCode) {
@@ -170,7 +170,7 @@ public class AuthenticationService {
                 .findByCode(code).orElseThrow(() ->new ApplicationException("Unable to validate"));
         if (emailValidationCode.getExpiresAt().isBefore(Instant.now())) {
             throw new ApplicationException("Unable to Validate, code already expired");
-        };
+        }
         User user = userRepository.findById(emailValidationCode
                 .getUserId())
                 .orElseThrow(() -> new ApplicationException("No user associated with this code."));
