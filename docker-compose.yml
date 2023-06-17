@@ -26,7 +26,7 @@ services:
       - ./volumes/dancer-data:/var/lib/postgresql/data
 
   pg-admin:
-    image: dpage/pgadmin4:6.15
+    image: dpage/pgadmin4:7
     restart: always
     ports:
       - "5050:80"
@@ -43,3 +43,41 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
+  kafka:
+    container_name: kafka
+    image: bitnami/kafka:3.3.1
+    environment:
+      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_KRAFT_CLUSTER_ID: r7dMBY60T16TrNCGeXniLw
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: BROKER://:9092 ,CONTROLLER://:9093, LOCALHOST://:9081
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: BROKER:PLAINTEXT, CONTROLLER:PLAINTEXT, LOCALHOST:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: BROKER://kafka:9092, LOCALHOST://localhost:9081
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+    volumes:
+      - ./volumes/kafka:/bitnami/kafka
+    ports:
+      - 127.0.0.1:9092:9081
+      - 127.0.0.1:9081:9081
+  kafka-ui:
+    container_name: kafka-ui
+    image: tchiotludo/akhq:latest
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ui"]
+      interval: 10s
+      timeout: 2s
+    ports:
+      - "8088:8080"
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka:9092"

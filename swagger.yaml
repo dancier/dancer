@@ -409,10 +409,10 @@ paths:
                     type: "direct"
                     lastMessage:
                       text: Lorem ipsum
-                      author: 123
+                      authorId: 123
                       id: 1234
                       readByDancers: [123]
-                      creationTimestamp: "2022-10-10T18:29:48.843Z"
+                      createdAt: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
           content:
@@ -436,11 +436,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/chatResponse'
               example:
-                chat_id: 543
-                dancer_ids: [ 123, 234 ]
-                last_activity: null
+                chatId: 543
+                dancerIds: [ 123, 234 ]
+                lastActivity: null
                 type: "group"
-                last_message: null
+                lastMessage: null
         default:
           description: Unexpected error
           content:
@@ -906,7 +906,7 @@ components:
               type: string
               description: id of the message
               example: 1234
-            author:
+            authorId:
               type: string
               description: The id of the author of the message
               example: 123
@@ -917,7 +917,7 @@ components:
               items:
                 type: string
                 example: 123
-            creationTimestamp:
+            createdAt:
               type: string
               format: date-time
               description: |

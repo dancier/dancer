@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ChatDto {
     private UUID chatId;
     private List<UUID> dancerIds;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private OffsetDateTime lastActivity;
     @Enumerated(EnumType.STRING)
     private ChatType type;

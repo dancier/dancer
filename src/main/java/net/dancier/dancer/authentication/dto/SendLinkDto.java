@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
-public class PasswordChangeDto {
+public class SendLinkDto {
 
     @NotBlank
     @Size(max = 100)
