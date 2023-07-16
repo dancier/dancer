@@ -1,4 +1,6 @@
 spring:
+  kafka:
+      bootstrap-servers: kafka:9092
   jpa:
     show-sql: false
     hibernate:

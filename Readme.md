@@ -1,24 +1,29 @@
 # Dancer
-This is the backend for dancier.
+This is the backend (for frontend) for dancier.
 
 ## Working locally
 
-### Setting up the database
+We are working locally with a docker-compose setup, that launches every needed service.
 
-Just start the database with the provided docker-compose.yml.
-It will expose the port locally and will also setup a GUI via pg-admin.
-You set up the database and close it to change admin rights. Then you open it again.
-````sh
-docker-compose up -d
-docker-compose down
-cd volumes/
-ls -l
-docker logs dancer_pg-admin_1
-sudo chown 5050:5050 -Rv pg-admin-data/
-cd ..
-docker-compose up -d
+Before you run it the first time, you have to set this up....
 
+### Setting everything up
+
+You have to have maven, docker and docker-compose being installed.
+
+Then in the project root folder create the following directories with the proper rights.
+
+````bash
+# for the pg-admin volume
+mkdir -p volumes/pg-admin-data
+sudo chown 5050:5050 volumes/pg-admin-data
+
+# for the kafka volume
+
+mkdir -p volumes/kafka
+sudo chown 1001:1001 volumes/kafka
 ````
+
 You can now access the database GUI with your browser:
 
 [PG-Admin](http://localhost:5050)
@@ -33,24 +38,35 @@ Here you can configure the connection to the postgres instance:
 |--------|--------|----|----|
 |dancer-db|dancer|dancer|dancer|
 
-### Run the dancer locally
-````shell
-./mvnw spring-boot:run
+
+### Building and running the dancer
+
+#### Without test and update the running docker environment
+(assuming the docker-compose setup is up and running)
+````bash
+./mvnw clean install -DskipTests; docker-compose up --build -d dancer
 ````
-This will bootstrap the database. You can start using it.
-See the api-documentation to see what you can do:
+#### Building with tests
+````bash
+./mvnw clean install
+````
+#### running the dancer not inside docker-compose
+(assuming the docker-compose setup is up and running)
 
+
+````shell
+# stopping dancer in docker-compose
+docker-compose stop dancer;
+# running the boot app with overwriting the needed host
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/dancer --spring.kafka.bootstrap-servers=localhost:9092"
+````
+
+#### checking test-coverage
+Show test coverage in target/site/jacoco/index.html: 
+`.target/site/jacoco/index.html
+
+### Accessing the API-Definition
 [OpenApi](https://editor.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdancier%2Fdancer%2Fmaster%2Fopenapi.yml)
-
-### Building
-
-``./mvnw clean install`
-
-This will also run the test _and_ integration tests.
-
-You can then inspect the test-coverage:
-
-[Show test coverage in target/site/jacoco/index.html](.target/site/jacoco/index.html)
 
 ### Local Mailing
 When working locally the mailing-system of the backend is configured to _not_ send the mails, but to dump them only to the log.
