@@ -20,8 +20,10 @@ spring:
   test:
     database:
       replace: none
-  profiles:
-    active: dev
+#  config:
+#    activate:
+#      on-profile:
+#        - dev
 app:
   admin:
     email: marc@gorzala.de

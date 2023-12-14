@@ -12,7 +12,7 @@ import java.util.UUID;
  * state in the database that could not be checked with production
  * Repository implementations, because they would have to be implemented their
  * sole for testing purposes.
- * This help is supposed to be run in an Transaction that encapsulates the whole test.
+ * This helper is supposed to run in a Transaction that encapsulates the whole test.
  * For this reason we flush the entityManager before checking the database state,
  * because otherwise it could be, that entities would not have been saved/updated by
  * hibernate.

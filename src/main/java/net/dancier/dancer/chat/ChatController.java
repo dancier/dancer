@@ -26,7 +26,7 @@ import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 @RequestMapping("/chats")
 @RequiredArgsConstructor
 public class ChatController {
-    private final static Logger log = LoggerFactory.getLogger(ContactController.class);
+    private final static Logger log = LoggerFactory.getLogger(ChatController.class);
 
     private final ChatService chatService;
 

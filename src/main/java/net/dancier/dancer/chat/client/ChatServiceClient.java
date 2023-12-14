@@ -4,6 +4,8 @@ import net.dancier.dancer.chat.dto.ChatDto;
 import net.dancier.dancer.chat.dto.CreateChatDto;
 import net.dancier.dancer.chat.dto.ChatsDto;
 import net.dancier.dancer.chat.dto.MessagesDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -18,6 +20,8 @@ import java.util.UUID;
 
 @Service
 public class ChatServiceClient {
+
+    private static Logger log = LoggerFactory.getLogger(ChatServiceClient.class);
 
     @Value("${app.chatDancer.host}")
     private String host;
