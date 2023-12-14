@@ -65,8 +65,6 @@ docker-compose stop dancer;
 Show test coverage in target/site/jacoco/index.html: 
 `.target/site/jacoco/index.html
 
-
-
 ### Accessing the API-Definition
 [OpenApi](https://editor.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdancier%2Fdancer%2Fmaster%2Fopenapi.yml)
 
