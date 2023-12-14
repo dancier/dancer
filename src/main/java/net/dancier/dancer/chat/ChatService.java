@@ -6,6 +6,8 @@ import net.dancier.dancer.chat.client.RemoteCreateMessageDto;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.BusinessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +18,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final static Logger log = LoggerFactory.getLogger(ChatService.class);
+
     private final ChatServiceClient chatServiceClient;
 
     public ChatsDto getChatsByUserId(UUID dancerId) {
+        log.info("Getting Chats for: " + dancerId);
         return chatServiceClient.getChats(dancerId);
     }
 
