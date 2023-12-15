@@ -76,7 +76,7 @@ public class ChatServiceClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URI + "/{chatId}/messages")
-                        .queryParam("dancer_id", dancerId)
+                        .queryParam("dancer_id", dancerId) // this parameter seems to make no sense
                         .queryParamIfPresent("last_message_id", lastMessageId)
                         .build(chatId)
                 )
