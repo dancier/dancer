@@ -33,6 +33,10 @@ public class ChatServiceClient {
     public void init() {
         this.webClient = WebClient.builder()
                 .baseUrl(host)
+                .filters(filtersConsumer -> {
+                    filtersConsumer.add(buildRetryExchangeFilterFunction());
+                    filtersConsumer.add(logRequest());
+                })
                 .filter(buildRetryExchangeFilterFunction())
                 .build();
     }
@@ -109,4 +113,20 @@ public class ChatServiceClient {
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(500)));
     }
 
+    private ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            if (log.isDebugEnabled()) {
+                StringBuilder sb = new StringBuilder("Request: \n");
+                //append clientRequest method and url
+                clientRequest
+                        .headers()
+                        .forEach((name, values) -> values.forEach(value -> sb.append(value)/* append header key/value */));
+                log.info(sb.toString());
+            }
+            return Mono.just(clientRequest);
+        });
+    }
+
+
 }
+
