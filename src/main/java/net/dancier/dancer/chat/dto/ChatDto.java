@@ -13,8 +13,8 @@ import java.util.UUID;
 public class ChatDto {
     private UUID chatId;
     private List<UUID> participantIds;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private OffsetDateTime lastActivity;
+   // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+   // private OffsetDateTime lastActivity;
     private MessageDto lastMessage;
-    private OffsetDateTime createdAt;
+   // private OffsetDateTime createdAt;
 }
