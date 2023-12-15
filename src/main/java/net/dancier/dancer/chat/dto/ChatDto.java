@@ -15,6 +15,6 @@ public class ChatDto {
     private List<UUID> participantIds;
    // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
    // private OffsetDateTime lastActivity;
-    private MessageDto lastMessage;
+  // private MessageDto lastMessage;
    // private OffsetDateTime createdAt;
 }
