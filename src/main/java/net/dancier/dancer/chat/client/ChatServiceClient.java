@@ -59,6 +59,7 @@ public class ChatServiceClient {
     }
 
     public ChatDto createChat(CreateChatDto createChatDto) {
+        log.info("now creating");
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URI)
@@ -117,21 +118,6 @@ public class ChatServiceClient {
                 )
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(500)));
     }
-
-    private ExchangeFilterFunction logRequest() {
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            if (log.isDebugEnabled()) {
-                StringBuilder sb = new StringBuilder("Request: \n");
-                //append clientRequest method and url
-                clientRequest
-                        .headers()
-                        .forEach((name, values) -> values.forEach(value -> sb.append(value)/* append header key/value */));
-                log.info(sb.toString());
-            }
-            return Mono.just(clientRequest);
-        });
-    }
-
 
 }
 
