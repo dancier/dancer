@@ -22,7 +22,7 @@ public class ChatService {
 
     private final ChatServiceClient chatServiceClient;
 
-    public ChatsDto getChatsByUserId(UUID dancerId) {
+    public ChatDto[] getChatsByUserId(UUID dancerId) {
         log.info("Getting Chats for: " + dancerId);
         return chatServiceClient.getChats(dancerId);
     }

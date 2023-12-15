@@ -46,7 +46,7 @@ public class ChatServiceClient {
                 .build();
     }
 
-    public ChatsDto getChats(UUID dancerId) {
+    public ChatDto[] getChats(UUID dancerId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URI)
@@ -54,7 +54,7 @@ public class ChatServiceClient {
                         .build()
                 )
                 .retrieve()
-                .bodyToMono(ChatsDto.class)
+                .bodyToMono(ChatDto[].class)
                 .block();
     }
 

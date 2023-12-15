@@ -59,8 +59,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             ChatDto chat = new ChatDto();
             chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
             chat.setChatId(chatId);
-            ChatsDto chats = new ChatsDto();
-            chats.setChats(List.of(chat));
+            ChatDto[] chats = {chat};
 
             when(chatServiceClient.getChats(dancerId)).thenReturn(chats);
 
@@ -68,7 +67,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
                     .perform(get("/chats"))
                     .andExpect(status().isOk());
 
-            result.andExpect(jsonPath("$.chats[0].chatId").value(chatId.toString()));
+            result.andExpect(jsonPath("$.[0].chatId").value(chatId.toString()));
         }
     }
 

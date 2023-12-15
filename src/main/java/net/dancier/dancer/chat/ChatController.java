@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,10 +33,10 @@ public class ChatController {
 
     @GetMapping("")
     @Secured(ROLE_USER)
-    public ResponseEntity<ChatsDto> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<List<ChatDto>> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
         log.info("Fetching chats for user {}.", authenticatedUser.getUserId());
         return ResponseEntity.ok(
-                chatService.getChatsByUserId(authenticatedUser.getDancerIdOrThrow())
+                List.of(chatService.getChatsByUserId(authenticatedUser.getDancerIdOrThrow()))
         );
     }
 
