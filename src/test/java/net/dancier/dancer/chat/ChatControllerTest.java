@@ -54,7 +54,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         void getChatsShouldReturnChats() throws Exception {
 
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
+            chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
             chat.setChatId(chatId);
             ChatsDto chats = new ChatsDto();
             chats.setChats(List.of(chat));
@@ -81,7 +81,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             chat.setParticipantIds(dancerIds);
 
             ChatDto createdChat = new ChatDto();
-            createdChat.setDancerIds(dancerIds);
+            createdChat.setParticipantIds(dancerIds);
             createdChat.setChatId(UUID.randomUUID());
 
             when(chatServiceClient.createChat(chat)).thenReturn(createdChat);
@@ -92,7 +92,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
                     .andExpect(status().isCreated())
                     .andExpect(header().exists("Location"));
 
-            result.andExpect(jsonPath("$.dancerIds").isNotEmpty());
+            result.andExpect(jsonPath("$.participantIds").isNotEmpty());
             result.andExpect(jsonPath("$.chatId").isNotEmpty());
         }
 
@@ -121,7 +121,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
+            chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
             chat.setChatId(chatId);
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
@@ -137,7 +137,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         @WithUserDetails("user-with-a-profile@dancier.net")
         void getChatShouldNotReturnTheChatIfUserIsNotPartOfIt() throws Exception {
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
+            chat.setParticipantIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
             chat.setChatId(chatId);
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
@@ -156,7 +156,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         @WithUserDetails("user-with-a-profile@dancier.net")
         void getMessagesShouldNotReturnMessagesIfUserIsNotInChat() throws Exception {
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
+            chat.setParticipantIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
 
@@ -172,7 +172,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             UUID dancerId = dancerRepository.findByUserId(userId).get().getId();
 
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
+            chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
 
             MessagesDto messages = new MessagesDto();
             MessageDto message = new MessageDto();
@@ -199,7 +199,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         @WithUserDetails("user-with-a-profile@dancier.net")
         void postMessagesShouldNotCreateTheMessageIfUserIsNotInTheChat() throws Exception {
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
+            chat.setParticipantIds(List.of(UUID.randomUUID(), UUID.randomUUID()));
 
             CreateMessageDto message = new CreateMessageDto();
             message.setText("Hallo");
@@ -219,7 +219,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         @WithUserDetails("user-with-a-profile@dancier.net")
         void postMessagesShouldCreateAMessage() throws Exception {
             ChatDto chat = new ChatDto();
-            chat.setDancerIds(List.of(dancerId, UUID.randomUUID()));
+            chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
 
             CreateMessageDto message = new CreateMessageDto();
             message.setText("Hallo");

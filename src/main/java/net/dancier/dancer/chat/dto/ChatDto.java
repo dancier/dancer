@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 public class ChatDto {
     private UUID chatId;
-    private List<UUID> dancerIds;
+    private List<UUID> participantIds;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private OffsetDateTime lastActivity;
     @Enumerated(EnumType.STRING)

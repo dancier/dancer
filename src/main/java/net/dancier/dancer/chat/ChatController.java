@@ -47,7 +47,7 @@ public class ChatController {
         log.info("Creating a new chat for user {}.", authenticatedUser.getUserId());
 
         ChatDto createdChat = chatService.createChat(authenticatedUser.getDancerIdOrThrow(), createChatDto);
-
+        log.info("this chat was created " + createdChat);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/chats/" + createdChat.getChatId())

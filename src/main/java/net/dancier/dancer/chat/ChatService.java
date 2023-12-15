@@ -35,7 +35,7 @@ public class ChatService {
     public ChatDto getChat(UUID chatId, UUID dancerId) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
+        throwIfDancerIsNotInChat(chat.getParticipantIds(), dancerId);
 
         return chat;
     }
@@ -43,7 +43,7 @@ public class ChatService {
     public MessagesDto getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
+        throwIfDancerIsNotInChat(chat.getParticipantIds(), dancerId);
 
         MessagesDto messages = chatServiceClient.getMessages(chatId, dancerId, lastMessageId);
         return messages;
@@ -52,7 +52,7 @@ public class ChatService {
     public Void createMessage(UUID chatId, UUID dancerId, CreateMessageDto createMessageDto) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
-        throwIfDancerIsNotInChat(chat.getDancerIds(), dancerId);
+        throwIfDancerIsNotInChat(chat.getParticipantIds(), dancerId);
 
         RemoteCreateMessageDto remoteCreateMessageDto = new RemoteCreateMessageDto.RemoteCreateMessageDtoBuilder()
                 .fromCreateMessageDto(createMessageDto)
@@ -62,8 +62,8 @@ public class ChatService {
         return chatServiceClient.createMessage(chatId, remoteCreateMessageDto);
     }
 
-    private void throwIfDancerIsNotInChat(List<UUID> dancerIds, UUID currentDancerId) {
-        if (!dancerIds.contains(currentDancerId)) {
+    private void throwIfDancerIsNotInChat(List<UUID> participantIds, UUID currentDancerId) {
+        if (!participantIds.contains(currentDancerId)) {
             throw new BusinessException("Current dancer must be part of the chat");
         }
     }
