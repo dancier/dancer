@@ -27,6 +27,7 @@ public class ChatService {
     }
 
     public ChatDto createChat(UUID dancerId, CreateChatDto createChatDto) {
+        log.info("check if dancer is in chat.");
         throwIfDancerIsNotInChat(createChatDto.getParticipantIds(), dancerId);
         log.info("About to make the rest-call");
         return chatServiceClient.createChat(createChatDto);
