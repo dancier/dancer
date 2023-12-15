@@ -66,6 +66,8 @@ public class ChatService {
 
     private void throwIfDancerIsNotInChat(List<UUID> participantIds, UUID currentDancerId) {
         log.info("Before Check");
+        log.info("Part: " + participantIds);
+        log.info("Current: " + currentDancerId);
         if (!participantIds.contains(currentDancerId)) {
             throw new BusinessException("Current dancer must be part of the chat");
         }
