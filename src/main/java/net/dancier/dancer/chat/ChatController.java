@@ -99,6 +99,7 @@ public class ChatController {
 
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity handle(Throwable throwable) {
+        log.info("got this: " + throwable);
         return ResponseEntity.badRequest().build();
     }
 }
