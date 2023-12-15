@@ -50,7 +50,7 @@ public class ChatServiceClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URI)
-                        .queryParam("dancerId", dancerId)
+                        .queryParam("participantId", dancerId)
                         .build()
                 )
                 .retrieve()
