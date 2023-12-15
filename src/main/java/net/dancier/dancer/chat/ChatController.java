@@ -41,16 +41,16 @@ public class ChatController {
 
     @PostMapping("")
     @Secured(ROLE_USER)
-    public ResponseEntity<ChatDto> postChat(
+    public ResponseEntity postChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody CreateChatDto createChatDto) {
         log.info("Creating a new chat for User {}.", authenticatedUser.getUserId());
 
-        ChatDto createdChat = chatService.createChat(authenticatedUser.getDancerIdOrThrow(), createChatDto);
-        log.info("this chat was created " + createdChat);
+        CreatedChatDto createdChatDto = chatService.createChat(authenticatedUser.getDancerIdOrThrow(), createChatDto);
+        log.info("Got this stuff: " + createdChatDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/chats/" + createdChat.getChatId())
+                .path("/chats/" + createdChatDto.id)
                 .build()
                 .toUri();
 
@@ -58,7 +58,6 @@ public class ChatController {
         headers.set("Location", location.toString());
 
         return new ResponseEntity(
-                createdChat,
                 headers,
                 HttpStatus.CREATED
         );

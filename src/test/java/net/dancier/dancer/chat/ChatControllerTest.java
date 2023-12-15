@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -84,7 +87,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             createdChat.setParticipantIds(dancerIds);
             createdChat.setChatId(UUID.randomUUID());
 
-            when(chatServiceClient.createChat(chat)).thenReturn(createdChat);
+            CreatedChatDto createdChatDto = new CreatedChatDto();
+            createdChatDto.id = UUID.randomUUID();
+
+            when(chatServiceClient.createChat(chat)).thenReturn(createdChatDto);
 
             ResultActions result = mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -92,8 +98,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
                     .andExpect(status().isCreated())
                     .andExpect(header().exists("Location"));
 
-            result.andExpect(jsonPath("$.participantIds").isNotEmpty());
-            result.andExpect(jsonPath("$.chatId").isNotEmpty());
+            result.andExpect(jsonPath("$").doesNotExist());
         }
 
         @Test

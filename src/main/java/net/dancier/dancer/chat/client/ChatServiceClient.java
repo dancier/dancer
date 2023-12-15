@@ -1,13 +1,12 @@
 package net.dancier.dancer.chat.client;
 
 import io.netty.handler.logging.LogLevel;
-import net.dancier.dancer.chat.dto.ChatDto;
-import net.dancier.dancer.chat.dto.CreateChatDto;
-import net.dancier.dancer.chat.dto.ChatsDto;
-import net.dancier.dancer.chat.dto.MessagesDto;
+import net.dancier.dancer.chat.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -39,6 +38,7 @@ public class ChatServiceClient {
                 .create()
                 .wiretap("reactor.netty.http.client.HttpClient",
                         LogLevel.INFO, AdvancedByteBufFormat.TEXTUAL);
+
         this.webClient = WebClient.builder()
                 .baseUrl(host)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
@@ -58,7 +58,7 @@ public class ChatServiceClient {
                 .block();
     }
 
-    public ChatDto createChat(CreateChatDto createChatDto) {
+    public CreatedChatDto createChat(CreateChatDto createChatDto) {
         log.info("now creating");
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -67,7 +67,7 @@ public class ChatServiceClient {
                 )
                 .body(Mono.just(createChatDto), CreateChatDto.class)
                 .retrieve()
-                .bodyToMono(ChatDto.class)
+                .bodyToMono(CreatedChatDto.class)
                 .block();
     }
 

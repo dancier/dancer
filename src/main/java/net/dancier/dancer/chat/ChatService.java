@@ -7,6 +7,7 @@ import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.core.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ChatService {
         return chatServiceClient.getChats(dancerId);
     }
 
-    public ChatDto createChat(UUID dancerId, CreateChatDto createChatDto) {
+    public CreatedChatDto createChat(UUID dancerId, CreateChatDto createChatDto) {
         log.info("check if dancer is in chat.");
         throwIfDancerIsNotInChat(createChatDto.getParticipantIds(), dancerId);
         log.info("About to make the rest-call");
