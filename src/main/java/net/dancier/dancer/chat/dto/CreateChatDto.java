@@ -9,7 +9,5 @@ import java.util.UUID;
 
 @Data
 public class CreateChatDto {
-    private List<UUID> dancerIds;
-    @Enumerated(EnumType.STRING)
-    private ChatType type;
+    private List<UUID> participantIds;
 }

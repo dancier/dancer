@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.chat.client.ChatServiceClient;
 import net.dancier.dancer.chat.client.RemoteCreateMessageDto;
 import net.dancier.dancer.chat.dto.*;
-import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.core.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class ChatService {
     }
 
     public ChatDto createChat(UUID dancerId, CreateChatDto createChatDto) {
-        throwIfDancerIsNotInChat(createChatDto.getDancerIds(), dancerId);
+        throwIfDancerIsNotInChat(createChatDto.getParticipantIds(), dancerId);
 
         return chatServiceClient.createChat(createChatDto);
     }

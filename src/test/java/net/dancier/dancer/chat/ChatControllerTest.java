@@ -78,12 +78,10 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         void postChatShouldReturnTheChat() throws Exception {
             List dancerIds = List.of(dancerId, UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
-            chat.setDancerIds(dancerIds);
-            chat.setType(ChatType.DIRECT);
+            chat.setParticipantIds(dancerIds);
 
             ChatDto createdChat = new ChatDto();
             createdChat.setDancerIds(dancerIds);
-            createdChat.setType(ChatType.DIRECT);
             createdChat.setChatId(UUID.randomUUID());
 
             when(chatServiceClient.createChat(chat)).thenReturn(createdChat);
@@ -96,7 +94,6 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
             result.andExpect(jsonPath("$.dancerIds").isNotEmpty());
             result.andExpect(jsonPath("$.chatId").isNotEmpty());
-            result.andExpect(jsonPath("$.type").value(ChatType.DIRECT.name()));
         }
 
         @Test
@@ -104,8 +101,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
         void postChatShouldNotCreateTheChatIfUserIsNotPartOfIt() throws Exception {
             List dancerIds = List.of(UUID.randomUUID(), UUID.randomUUID());
             CreateChatDto chat = new CreateChatDto();
-            chat.setDancerIds(dancerIds);
-            chat.setType(ChatType.DIRECT);
+            chat.setParticipantIds(dancerIds);
 
             mockMvc.perform(post("/chats")
                             .contentType(MediaType.APPLICATION_JSON)
