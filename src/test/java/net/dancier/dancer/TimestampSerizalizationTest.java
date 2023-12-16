@@ -19,8 +19,8 @@ public class TimestampSerizalizationTest extends AbstractPostgreSQLEnabledTest{
 
     @Test
     public void testSerialization() throws JsonProcessingException {
-       String serzialized = objectMapper.writeValueAsString(OffsetDateTime.now(ZoneId.of("UTC")));
-       then(serzialized).isNotNull();
+       String serialized = objectMapper.writeValueAsString(OffsetDateTime.now(ZoneId.of("UTC")));
+       then(serialized).isNotNull();
     }
 
 }
