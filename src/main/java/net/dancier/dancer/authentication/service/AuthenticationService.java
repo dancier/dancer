@@ -5,6 +5,7 @@ import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.*;
+import net.dancier.dancer.core.config.CookieConfiguration;
 import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
@@ -55,6 +56,7 @@ public class AuthenticationService {
     private final VerifiedActionCodeRepository verifiedActionCodeRepository;
     private final String frontendBaseName;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final CookieConfiguration cookieConfiguration;
 
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
@@ -70,10 +72,10 @@ public class AuthenticationService {
     public ResponseCookie generateCookie(String token) {
         return ResponseCookie.from("jwt-token", token)
                 .maxAge(Duration.ofDays(30))
-                .secure(true)
+                .secure(cookieConfiguration.getSecure())
                 .httpOnly(true)
                 .path("/")
-                .sameSite("None")
+                .sameSite(cookieConfiguration.getSameSite())
                 .build();
     }
 
@@ -83,12 +85,7 @@ public class AuthenticationService {
      */
     public ResponseCookie generateClearingCookie() {
         return ResponseCookie.from("jwt-token", "")
-                .maxAge(Duration.ofDays(0))
-                .secure(true)
-                .httpOnly(true)
-                .path("/")
-                .sameSite("None")
-                .build();
+                              .build();
     }
 
     public User getUser(UUID userId) {
