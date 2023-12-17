@@ -39,7 +39,7 @@ public class PublicProfileDto {
                         }
                 ).collect(Collectors.toSet()));
         publicProfileDto.setCity(dancer.getCity());
-        //publicProfileDto.setCountry(dancer.getCountry());
+        publicProfileDto.setCountry(dancer.getCountry().name());
         publicProfileDto.setProfileImageHash(dancer.getProfileImageHash());
         publicProfileDto.setAboutMe(dancer.getAboutMe());
         return publicProfileDto;
