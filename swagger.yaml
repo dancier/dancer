@@ -226,6 +226,27 @@ paths:
       responses:
         '200':
           description: indicates that the request was successfull
+  /profile/{dancerId}:
+    get:
+      summary: get the _public_ profile of a dancer
+      tags:
+        - Profile
+      parameters:
+        - in: path
+          name: dancerId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: the id of the dancer
+      responses:
+        '200':
+          description: true of false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/public_profile'
+
   /profile/checkDancerNameAvailibility/{dancerName}:
     get:
       summary: check if a name is still free
@@ -656,7 +677,6 @@ components:
           type: string
         profileImageHash:
           type: string
-
     dance_profile:
       type: object
       properties:
@@ -707,6 +727,39 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/dance_profile"
+    public_profile:
+      type: object
+      properties:
+        id:
+          type: string
+        aboutMe:
+          type: string
+        size:
+          type: integer
+        gender:
+          $ref: "#/components/schemas/gender"
+        dancerName:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        ableTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/dance_profile'
+        wantsTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/dance_profile'
+        city:
+          type: string
+        country:
+          type: string
+          enum:
+            - GER
+        profileImageHash:
+          type: string
+
     get_profile:
       type: object
       properties:
