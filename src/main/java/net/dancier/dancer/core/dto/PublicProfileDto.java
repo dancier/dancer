@@ -5,6 +5,7 @@ import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Gender;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ public class PublicProfileDto {
         publicProfileDto.setSize(dancer.getSize());
         publicProfileDto.setGender(dancer.getGender());
         publicProfileDto.setDancerName(dancer.getDancerName());
-        publicProfileDto.setAge(LocalDate.now().getYear() - dancer.getBirthDate().getYear());
+        publicProfileDto.setAge(Period.between(dancer.getBirthDate(), LocalDate.now()).getYears());
         publicProfileDto.setAbleTo(dancer.getAbleTo().stream()
                 .map(dp -> {
                     DanceProfileDto danceProfileDto = new DanceProfileDto();
