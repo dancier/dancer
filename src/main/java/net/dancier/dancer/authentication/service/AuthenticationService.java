@@ -5,6 +5,7 @@ import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
 import net.dancier.dancer.authentication.model.*;
 import net.dancier.dancer.authentication.repository.*;
+import net.dancier.dancer.core.config.CookieConfiguration;
 import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
@@ -14,6 +15,7 @@ import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -53,6 +56,7 @@ public class AuthenticationService {
     private final VerifiedActionCodeRepository verifiedActionCodeRepository;
     private final String frontendBaseName;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final CookieConfiguration cookieConfiguration;
 
     public Authentication authenticate(Authentication authentication) {
         return this.authenticationManager.authenticate(authentication);
@@ -65,14 +69,23 @@ public class AuthenticationService {
         return this.tokenProvider.generateJwtToken(subject);
     }
 
-    public Cookie generateCookie(String token) {
-        Cookie cookie = new Cookie("jwt-token", token);
-        // one month
-        cookie.setMaxAge(30 * 24 * 60 * 60);
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        return cookie;
+    public ResponseCookie generateCookie(String token) {
+        return ResponseCookie.from("jwt-token", token)
+                .maxAge(Duration.ofDays(30))
+                .secure(cookieConfiguration.getSecure())
+                .httpOnly(true)
+                .path("/")
+                .sameSite(cookieConfiguration.getSameSite())
+                .build();
+    }
+
+    /**
+     * Generates a cookie that clears the jwt-token cookie.
+     * By setting the maxAge to 0, the cookie will be deleted by the browser.
+     */
+    public ResponseCookie generateClearingCookie() {
+        return ResponseCookie.from("jwt-token", "")
+                              .build();
     }
 
     public User getUser(UUID userId) {
