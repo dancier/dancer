@@ -12,6 +12,7 @@ services:
       - dancer-db
     environment:
 #   https://ckinan.com/blog/remote-debug-spring-boot-docker-intellij/:
+      - SPRING_PROFILES_ACTIVE="dev"
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   dancer-db:
     image: postgres:14

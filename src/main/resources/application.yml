@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   kafka:
       bootstrap-servers: kafka:9092
   jpa:
@@ -20,10 +22,6 @@ spring:
   test:
     database:
       replace: none
-#  config:
-#    activate:
-#      on-profile:
-#        - dev
 app:
   admin:
     email: marc@gorzala.de

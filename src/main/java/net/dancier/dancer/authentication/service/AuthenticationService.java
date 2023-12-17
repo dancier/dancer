@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
@@ -90,7 +89,7 @@ public class AuthenticationService {
 
     public User getUser(UUID userId) {
         try {
-            return this.userRepository.getById(userId);
+            return this.userRepository.getReferenceById(userId);
         } catch (EntityNotFoundException entityNotFoundException) {
             throw new NotFoundException("No user found with this userId: " + userId, entityNotFoundException);
         }
@@ -219,7 +218,7 @@ public class AuthenticationService {
                 .findByCode(code)
                 .orElseThrow(
                         () -> new BusinessException("No such code"));
-        User user = userRepository.getById(passwordResetCode.getUserId());
+        User user = userRepository.getReferenceById(passwordResetCode.getUserId());
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         passwordResetCodeRepository.delete(passwordResetCode);

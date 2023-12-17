@@ -77,9 +77,9 @@ public class ImageService {
             BufferedImage originalImage = ImageIO.read(original.toFile());
             Integer originalWidth = originalImage.getWidth();
             Integer originalHeight = originalImage.getHeight();
-            Double ratio = new Double( originalHeight) / new Double(originalWidth);
+            Double ratio = Double.valueOf(originalHeight) / Double.valueOf(originalWidth);
 
-            Integer targetHeight = new Double(width * ratio).intValue();
+            Integer targetHeight = Double.valueOf(width * ratio).intValue();
 
             Image resultingImage = originalImage.getScaledInstance(
                     width, targetHeight, Image.SCALE_DEFAULT

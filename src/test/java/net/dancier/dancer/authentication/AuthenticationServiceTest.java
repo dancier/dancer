@@ -69,7 +69,7 @@ class AuthenticationServiceTest {
 
     @Test
     void getExistingUser_returns_user() {
-        when(userRepositoryMock.getById(userId)).thenReturn(dummyUser());
+        when(userRepositoryMock.getReferenceById(userId)).thenReturn(dummyUser());
 
         User returnedUser = underTest.getUser(userId);
 
@@ -78,7 +78,7 @@ class AuthenticationServiceTest {
 
     @Test
     void attemptToGetNotExistingUser_throwsExeption() {
-        when(userRepositoryMock.getById(userId)).thenThrow(EntityNotFoundException.class);
+        when(userRepositoryMock.getReferenceById(userId)).thenThrow(EntityNotFoundException.class);
         assertThrows(NotFoundException.class, () -> underTest.getUser(userId));
     }
 
@@ -164,7 +164,7 @@ class AuthenticationServiceTest {
 
         when(passwordResetCodeRepositoryMock.findByCode(newPasswordCode))
                 .thenReturn(Optional.of(dummyPasswortResetCode(newPasswordCode)));
-        when(userRepositoryMock.getById(userId)).thenReturn(dummyUser(true));
+        when(userRepositoryMock.getReferenceById(userId)).thenReturn(dummyUser(true));
 
         underTest.checkPasswortCodeRequestAndCreateNew(newPasswordCode, newPassword);
 
