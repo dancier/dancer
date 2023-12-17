@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class ProfileDto {
+public class ProfileOfCurrentUserDto {
 
     private UUID id;
 

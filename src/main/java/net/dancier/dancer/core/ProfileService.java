@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.core.dto.DanceProfileDto;
-import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.dto.ProfileOfCurrentUserDto;
+import net.dancier.dancer.core.dto.PublicProfileDto;
 import net.dancier.dancer.core.events.ProfileUpdatedEvent;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
@@ -42,7 +43,12 @@ public class ProfileService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public ProfileDto getProfileByUserId(UUID userId) {
+    public PublicProfileDto getProfileByDancerId(UUID dancerId) {
+        Dancer dancer = dancerRepository.findById(dancerId).orElseThrow(() -> new NotFoundException("No such Dancer"));
+        return PublicProfileDto.of(dancer);
+    }
+
+    public ProfileOfCurrentUserDto getProfileByUserId(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found for id: " + userId));
         Dancer dancer = dancerRepository.findByUserId(userId).orElseGet(() -> new Dancer());
@@ -51,7 +57,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public void updateProfileForUserId(UUID userId, ProfileDto profileDto) {
+    public void updateProfileForUserId(UUID userId, ProfileOfCurrentUserDto profileOfCurrentUserDto) {
         Dancer dancer = dancerRepository
                 .findByUserId(userId)
                 .orElseGet(
@@ -61,23 +67,23 @@ public class ProfileService {
                             d.setVersion(0);
                             return d;
                         });
-        dancer.setGender(profileDto.getGender());
-        dancer.setBirthDate(profileDto.getBirthDate());
-        dancer.setSize(profileDto.getSize());
-        dancer.setZipCode(profileDto.getZipCode());
-        dancer.setProfileImageHash(profileDto.getProfileImageHash());
-        dancer.setAboutMe(profileDto.getAboutMe());
-        if (dancer.getDancerName() == null && profileDto.getDancerName() != null) {
-            checkDancerNameRules(profileDto.getDancerName());
-            dancer.setDancerName(profileDto.getDancerName());
+        dancer.setGender(profileOfCurrentUserDto.getGender());
+        dancer.setBirthDate(profileOfCurrentUserDto.getBirthDate());
+        dancer.setSize(profileOfCurrentUserDto.getSize());
+        dancer.setZipCode(profileOfCurrentUserDto.getZipCode());
+        dancer.setProfileImageHash(profileOfCurrentUserDto.getProfileImageHash());
+        dancer.setAboutMe(profileOfCurrentUserDto.getAboutMe());
+        if (dancer.getDancerName() == null && profileOfCurrentUserDto.getDancerName() != null) {
+            checkDancerNameRules(profileOfCurrentUserDto.getDancerName());
+            dancer.setDancerName(profileOfCurrentUserDto.getDancerName());
         }
-        ZipCode zipCode = zipCodeRepository.findByCountryAndZipCode(profileDto.getCountry(), profileDto.getZipCode());
+        ZipCode zipCode = zipCodeRepository.findByCountryAndZipCode(profileOfCurrentUserDto.getCountry(), profileOfCurrentUserDto.getZipCode());
         if (zipCode != null) {
             dancer.setCity(zipCode.getCity());
             dancer.setLatitude(zipCode.getLatitude());
             dancer.setLongitude(zipCode.getLongitude());
             dancer.setCountry(Country.valueOf(zipCode.getCountry()));
-        } else if (StringUtils.hasText(profileDto.getZipCode())) {
+        } else if (StringUtils.hasText(profileOfCurrentUserDto.getZipCode())) {
             throw new UnresolvableZipCode("Zip Code could not be resolved.");
         } else {
             dancer.setCity(null);
@@ -85,7 +91,7 @@ public class ProfileService {
             dancer.setLongitude(null);
             dancer.setCountry(null);
         }
-        handleDancerProfiles(dancer, profileDto);
+        handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
         if (dancer.getVersion()!=null) {
             dancer.setVersion(dancer.getVersion() + 1);
@@ -109,13 +115,13 @@ public class ProfileService {
         }
     }
 
-    private void handleDancerProfiles(Dancer dancer, ProfileDto profileDto) {
-        Set<Dance> allDances = getNeededDances(profileDto);
+    private void handleDancerProfiles(Dancer dancer, ProfileOfCurrentUserDto profileOfCurrentUserDto) {
+        Set<Dance> allDances = getNeededDances(profileOfCurrentUserDto);
         dancer.setWantsTo(handleDancerProfileInternal(
-                dancer.getWantsTo(), profileDto.getWantsTo(), allDances
+                dancer.getWantsTo(), profileOfCurrentUserDto.getWantsTo(), allDances
         ));
         dancer.setAbleTo(handleDancerProfileInternal(
-                dancer.getAbleTo(), profileDto.getAbleTo(), allDances
+                dancer.getAbleTo(), profileOfCurrentUserDto.getAbleTo(), allDances
         ));
     }
 
@@ -153,9 +159,9 @@ public class ProfileService {
         return this.dancerRepository.existsByDancerName(dancerName);
     }
 
-    Set<Dance> getNeededDances(ProfileDto profileDto) {
-        Set<DanceProfileDto> allRequestedDanceProfilesDto = new HashSet<>(profileDto.getWantsTo());
-        allRequestedDanceProfilesDto.addAll(new HashSet<>(profileDto.getAbleTo()));
+    Set<Dance> getNeededDances(ProfileOfCurrentUserDto profileOfCurrentUserDto) {
+        Set<DanceProfileDto> allRequestedDanceProfilesDto = new HashSet<>(profileOfCurrentUserDto.getWantsTo());
+        allRequestedDanceProfilesDto.addAll(new HashSet<>(profileOfCurrentUserDto.getAbleTo()));
         Set<String> allRequestedDanceNames = allRequestedDanceProfilesDto
                 .stream()
                 .map(dp -> dp.getDance())

@@ -1,7 +1,8 @@
 package net.dancier.dancer.core;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.dto.PublicProfileDto;
+import net.dancier.dancer.core.dto.ProfileOfCurrentUserDto;
 import net.dancier.dancer.core.dto.UsernameAvailableDto;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.exception.UnresolvableZipCode;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -37,16 +39,23 @@ public class ProfileController {
 
     @Secured(ROLE_USER)
     @GetMapping
-    public ResponseEntity<ProfileDto> get(@CurrentUser AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<ProfileOfCurrentUserDto> get(@CurrentUser AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
                 profileService.getProfileByUserId(authenticatedUser.getUserId())
         );
     }
 
     @Secured(ROLE_USER)
+    @GetMapping("/{dancerId}")
+    public ResponseEntity<PublicProfileDto> get(@PathVariable UUID dancerId) {
+        PublicProfileDto publicProfileDto = profileService.getProfileByDancerId(dancerId);
+        return ResponseEntity.ok(publicProfileDto);
+    }
+
+    @Secured(ROLE_USER)
     @PutMapping
-    public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @Valid @RequestBody ProfileDto profileDto) {
-        profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileDto);
+    public ResponseEntity put(@CurrentUser AuthenticatedUser authenticatedUser, @Valid @RequestBody ProfileOfCurrentUserDto profileOfCurrentUserDto) {
+        profileService.updateProfileForUserId(authenticatedUser.getUserId(), profileOfCurrentUserDto);
         return ResponseEntity.ok().build();
     }
 

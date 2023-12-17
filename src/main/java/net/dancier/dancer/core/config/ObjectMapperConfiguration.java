@@ -21,6 +21,7 @@ public class ObjectMapperConfiguration {
         ObjectMapper mapper = new ObjectMapper();
         JavaTimeModule javaTimeModule=new JavaTimeModule();
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
+
         mapper.registerModule(javaTimeModule);
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

@@ -3,7 +3,7 @@ package net.dancier.dancer.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.core.dto.DanceProfileDto;
-import net.dancier.dancer.core.dto.ProfileDto;
+import net.dancier.dancer.core.dto.ProfileOfCurrentUserDto;
 import net.dancier.dancer.core.model.*;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
@@ -52,12 +52,12 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
                 .andExpect(jsonPath("$.size").isEmpty())
                 .andExpect(jsonPath("$.email").isNotEmpty());
 
-        ProfileDto profileDto = objectMapper.readValue(
+        ProfileOfCurrentUserDto profileOfCurrentUserDto = objectMapper.readValue(
                 initialGetOfProfile
                         .andReturn()
                         .getResponse()
                         .getContentAsString(),
-                ProfileDto.class);
+                ProfileOfCurrentUserDto.class);
 
         DanceProfileDto danceProfileDto = new DanceProfileDto();
         danceProfileDto.setDance("Tango");
@@ -65,17 +65,17 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         danceProfileDto.setLeading(Leading.FOLLOW);
 
 
-        profileDto.setGender(Gender.DIVERS);
-        profileDto.setBirthDate(new Date());
-        profileDto.setAbleTo(Set.of(danceProfileDto));
-        profileDto.setWantsTo(Set.of(danceProfileDto));
-        profileDto.setZipCode("44339");
-        profileDto.setCountry("GER");
+        profileOfCurrentUserDto.setGender(Gender.DIVERS);
+        profileOfCurrentUserDto.setBirthDate(new Date());
+        profileOfCurrentUserDto.setAbleTo(Set.of(danceProfileDto));
+        profileOfCurrentUserDto.setWantsTo(Set.of(danceProfileDto));
+        profileOfCurrentUserDto.setZipCode("44339");
+        profileOfCurrentUserDto.setCountry("GER");
 
         ResultActions changeDaProfile = mockMvc
                 .perform(put("/profile")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsBytes(profileDto))
+                                .content(objectMapper.writeValueAsBytes(profileOfCurrentUserDto))
                 );
 
         changeDaProfile.andExpect(status().isOk());
