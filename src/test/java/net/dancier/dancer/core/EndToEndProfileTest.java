@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -66,7 +67,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
 
 
         profileOfCurrentUserDto.setGender(Gender.DIVERS);
-        profileOfCurrentUserDto.setBirthDate(new Date());
+        profileOfCurrentUserDto.setBirthDate(LocalDate.now());
         profileOfCurrentUserDto.setAbleTo(Set.of(danceProfileDto));
         profileOfCurrentUserDto.setWantsTo(Set.of(danceProfileDto));
         profileOfCurrentUserDto.setZipCode("44339");

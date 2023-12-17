@@ -1,12 +1,10 @@
 package net.dancier.dancer.core.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.model.Gender;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,7 +18,7 @@ public class PublicProfileDto {
         publicProfileDto.setSize(dancer.getSize());
         publicProfileDto.setGender(dancer.getGender());
         publicProfileDto.setDancerName(dancer.getDancerName());
-        publicProfileDto.setBirthDate(dancer.getBirthDate());
+        publicProfileDto.setAge(LocalDate.now().getYear() - dancer.getBirthDate().getYear());
         publicProfileDto.setAbleTo(dancer.getAbleTo().stream()
                 .map(dp -> {
                     DanceProfileDto danceProfileDto = new DanceProfileDto();
@@ -53,8 +51,7 @@ public class PublicProfileDto {
 
     private String dancerName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    private Integer age;
 
     private Set<DanceProfileDto> ableTo;
 

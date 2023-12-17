@@ -66,13 +66,11 @@ public class Mapper {
         );
         return result.stream().toList();
     }
-    private static Integer age(Date birthdate) {
+    private static Integer age(LocalDate birthdate) {
         LocalDate now = LocalDate.now();
         if (birthdate!=null) {
             return Period.between(
-                    Instant
-                            .ofEpochMilli(birthdate.getTime())
-                            .atZone(ZoneId.systemDefault()).toLocalDate() , now)
+                    birthdate , now)
                     .getYears();
         } else {
             return 0;

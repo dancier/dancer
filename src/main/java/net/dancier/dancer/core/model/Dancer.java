@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,9 +39,8 @@ public class Dancer implements Recommendable{
 
     private Integer size;
 
-    @Column(name = "birth_date")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    @Column(name = "birth_date", columnDefinition = "DATE")
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

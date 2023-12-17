@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import net.dancier.dancer.core.model.Gender;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class ProfileOfCurrentUserDto {
     private String dancerName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     private Set<DanceProfileDto> ableTo;
 
