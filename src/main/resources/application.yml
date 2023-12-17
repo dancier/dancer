@@ -35,7 +35,7 @@ app:
     secure: true # otherwise overwrite it via env-var (APP_COOKIE_SECURE)
     sameSite: Strict # other values needs to be overwritten by env vars could be: [Strict|Lax|None]
   cors:
-    allowedOrigins: http://localhost:4200,http://localho.st:4200 # Comma separated list of allowed origins
+    allowedOrigins: http://localhost:4200 # Comma separated list of allowed origins
   # differentiate between success and failure
   mail:
     host: mail.your-server.de
