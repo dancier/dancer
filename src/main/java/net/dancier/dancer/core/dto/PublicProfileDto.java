@@ -9,6 +9,7 @@ import net.dancier.dancer.core.model.Gender;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 public class PublicProfileDto {
@@ -20,7 +21,14 @@ public class PublicProfileDto {
         publicProfileDto.setGender(dancer.getGender());
         publicProfileDto.setDancerName(dancer.getDancerName());
         publicProfileDto.setBirthDate(dancer.getBirthDate());
-        //publicProfileDto.setAbleTo(dancer.getAbleTo());
+        publicProfileDto.setAbleTo(dancer.getAbleTo().stream()
+                .map(dp -> {
+                    DanceProfileDto danceProfileDto = new DanceProfileDto();
+                    danceProfileDto.setDance(dp.getDance().getName());
+                    danceProfileDto.setLeading(dp.getLeading());
+                    danceProfileDto.setLevel(dp.getLevel());
+                    return danceProfileDto;
+                }).collect(Collectors.toSet()));
         //publicProfileDto.setWantsTo(dancer.getWantsTo());
         publicProfileDto.setCity(dancer.getCity());
         //publicProfileDto.setCountry(dancer.getCountry());
