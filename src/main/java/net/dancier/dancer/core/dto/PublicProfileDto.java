@@ -29,7 +29,15 @@ public class PublicProfileDto {
                     danceProfileDto.setLevel(dp.getLevel());
                     return danceProfileDto;
                 }).collect(Collectors.toSet()));
-        //publicProfileDto.setWantsTo(dancer.getWantsTo());
+        publicProfileDto.setWantsTo(dancer.getWantsTo().stream()
+                .map(wt -> {
+                            DanceProfileDto danceProfileDto = new DanceProfileDto();
+                            danceProfileDto.setDance(wt.getDance().getName());
+                            danceProfileDto.setLeading(wt.getLeading());
+                            danceProfileDto.setLevel(wt.getLevel());
+                            return danceProfileDto;
+                        }
+                ).collect(Collectors.toSet()));
         publicProfileDto.setCity(dancer.getCity());
         //publicProfileDto.setCountry(dancer.getCountry());
         publicProfileDto.setProfileImageHash(dancer.getProfileImageHash());
