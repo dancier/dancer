@@ -5,7 +5,7 @@ import net.dancier.dancer.core.model.Country;
 import net.dancier.dancer.core.model.Dance;
 import net.dancier.dancer.core.model.Recommendable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 

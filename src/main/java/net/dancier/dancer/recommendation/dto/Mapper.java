@@ -45,7 +45,7 @@ public class Mapper {
                 dancerPayload.setScore(recommendationWrapper.getScore());
                 exposedRecommendationDto.setPayload(dancerPayload);
             }
-            case default -> {
+            default -> {
                 throw  new IllegalStateException();
             }
         }

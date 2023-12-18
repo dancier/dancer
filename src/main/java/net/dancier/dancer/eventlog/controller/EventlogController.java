@@ -47,7 +47,7 @@ public class EventlogController {
                                 .collect(Collectors.toSet())
                 );
             }
-            case default -> {
+            default -> {
                 eventlog.setUserId(null);
                 eventlog.setRoles(Set.of("ROLE_ANONYMOUS"));
             }

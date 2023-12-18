@@ -3,7 +3,7 @@ package net.dancier.dancer.core.model;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Data

@@ -1,12 +1,13 @@
 package net.dancier.dancer.chat.client;
 
 import io.netty.handler.logging.LogLevel;
-import net.dancier.dancer.chat.dto.*;
+import net.dancier.dancer.chat.dto.ChatDto;
+import net.dancier.dancer.chat.dto.CreateChatDto;
+import net.dancier.dancer.chat.dto.CreatedChatDto;
+import net.dancier.dancer.chat.dto.MessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -16,7 +17,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
 import reactor.util.retry.Retry;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
