@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.util.Map;
 
 @ActiveProfiles({"test", "dev"})
