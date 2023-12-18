@@ -82,7 +82,7 @@ public class ChatServiceClient {
                 .block();
     }
 
-    public MessagesDto getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
+    public MessageDto[] getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URI + "/{chatId}/messages")
@@ -91,7 +91,7 @@ public class ChatServiceClient {
                         .build(chatId)
                 )
                 .retrieve()
-                .bodyToMono(MessagesDto.class)
+                .bodyToMono(MessageDto[].class)
                 .block();
     }
 

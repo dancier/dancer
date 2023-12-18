@@ -42,12 +42,12 @@ public class ChatService {
         return chat;
     }
 
-    public MessagesDto getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
+    public MessageDto[] getMessages(UUID chatId, UUID dancerId, Optional<UUID> lastMessageId) {
         ChatDto chat = chatServiceClient.getChat(chatId);
 
         throwIfDancerIsNotInChat(chat.getParticipantIds(), dancerId);
 
-        MessagesDto messages = chatServiceClient.getMessages(chatId, dancerId, lastMessageId);
+        MessageDto[] messages = chatServiceClient.getMessages(chatId, dancerId, lastMessageId);
         return messages;
     }
 

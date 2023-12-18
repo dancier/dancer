@@ -77,7 +77,7 @@ public class ChatController {
 
     @GetMapping("/{chatId}/messages")
     @Secured(ROLE_USER)
-    public ResponseEntity<MessagesDto> getMessages(
+    public ResponseEntity<MessageDto[]> getMessages(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @PathVariable UUID chatId,
             @RequestParam Optional<UUID> lastMessageId) {

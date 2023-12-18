@@ -498,7 +498,7 @@ paths:
         - $ref: '#/components/parameters/lastMessageId'
       responses:
         '200':
-          description: "detailed data of a chat"
+          description: "list of message in a chat"
           content:
             application/json:
               schema:
@@ -944,12 +944,9 @@ components:
         type:
           $ref: '#/components/schemas/chatType'
     messageListResponse:
-      type: object
-      properties:
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/message'
+      type: array
+      items:
+        $ref: '#/components/schemas/message'
     message:
       allOf:
         - $ref: '#/components/schemas/baseMessage'

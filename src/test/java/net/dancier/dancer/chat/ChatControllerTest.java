@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -184,13 +185,13 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             messages.setMessages(List.of(message));
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
-            when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(messages);
+            when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(new MessageDto[]{message});
 
             ResultActions result = mockMvc.perform(
                             get("/chats/" + chatId + "/messages"))
                     .andExpect(status().isOk());
 
-            result.andExpect(jsonPath("$.messages[0].text").value("Hallo"));
+            result.andExpect(jsonPath("$[0].text").value("Hallo"));
 
         }
     }
