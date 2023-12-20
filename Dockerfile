@@ -1,5 +1,5 @@
 
-FROM openjdk:17-slim
+FROM openjdk:21-slim
 
 ADD target/dancer.jar /dancer.jar
 CMD ["java", "--enable-preview", "-jar", "/dancer.jar"]
