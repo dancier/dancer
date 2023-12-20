@@ -42,7 +42,7 @@ public class ChatController {
 
     @PostMapping("")
     @Secured(ROLE_USER)
-    public ResponseEntity postChat(
+    public ResponseEntity<CreatedChatDto> postChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody CreateChatDto createChatDto) {
         log.info("Creating a new chat for User {}.", authenticatedUser.getUserId());
@@ -59,6 +59,7 @@ public class ChatController {
         headers.set("Location", location.toString());
 
         return new ResponseEntity(
+                createdChatDto,
                 headers,
                 HttpStatus.CREATED
         );
