@@ -99,15 +99,14 @@ public class ChatController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @PutMapping("/messages/{messageId}/read-by/{participantId}")
+    @PutMapping("/messages/{messageId}")
     @Secured(ROLE_USER)
     public ResponseEntity putReadFlag(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @PathVariable UUID messageId,
-            @PathVariable UUID participantId,
             @RequestBody SetReadFlagRequestDto setReadFlagRequestDto
             ) {
-        chatService.setReadFlag(messageId, participantId, setReadFlagRequestDto.getRead());
+        chatService.setReadFlag(messageId, authenticatedUser.getDancerIdOrThrow(), setReadFlagRequestDto.getRead());
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
