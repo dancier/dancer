@@ -98,7 +98,7 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
                     .andExpect(status().isCreated())
                     .andExpect(header().exists("Location"));
 
-            result.andExpect(jsonPath("$").doesNotExist());
+            result.andExpect(jsonPath("$.id").isNotEmpty());
         }
 
         @Test

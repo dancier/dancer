@@ -1,6 +1,7 @@
 package net.dancier.dancer.chat;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.chat.client.SetReadFlagRequestDto;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.contact.ContactController;
 import net.dancier.dancer.core.exception.BusinessException;
@@ -24,14 +25,13 @@ import java.util.UUID;
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
 @RestController
-@RequestMapping("/chats")
 @RequiredArgsConstructor
 public class ChatController {
     private final static Logger log = LoggerFactory.getLogger(ChatController.class);
 
     private final ChatService chatService;
 
-    @GetMapping("")
+    @GetMapping("/chats")
     @Secured(ROLE_USER)
     public ResponseEntity<List<ChatDto>> getChats(@CurrentUser AuthenticatedUser authenticatedUser) {
         log.info("Fetching chats for user {}.", authenticatedUser.getUserId());
@@ -40,9 +40,9 @@ public class ChatController {
         );
     }
 
-    @PostMapping("")
+    @PostMapping("/chats")
     @Secured(ROLE_USER)
-    public ResponseEntity postChat(
+    public ResponseEntity<CreatedChatDto> postChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
             @RequestBody CreateChatDto createChatDto) {
         log.info("Creating a new chat for User {}.", authenticatedUser.getUserId());
@@ -59,12 +59,13 @@ public class ChatController {
         headers.set("Location", location.toString());
 
         return new ResponseEntity(
+                createdChatDto,
                 headers,
                 HttpStatus.CREATED
         );
     }
 
-    @GetMapping("/{chatId}")
+    @GetMapping("/chats/{chatId}")
     @Secured(ROLE_USER)
     public ResponseEntity<ChatDto> getChat(
             @CurrentUser AuthenticatedUser authenticatedUser,
@@ -75,7 +76,7 @@ public class ChatController {
         );
     }
 
-    @GetMapping("/{chatId}/messages")
+    @GetMapping("/chats/{chatId}/messages")
     @Secured(ROLE_USER)
     public ResponseEntity<MessageDto[]> getMessages(
             @CurrentUser AuthenticatedUser authenticatedUser,
@@ -87,7 +88,7 @@ public class ChatController {
         );
     }
 
-    @PostMapping("/{chatId}/messages")
+    @PostMapping("/chats/{chatId}/messages")
     @Secured(ROLE_USER)
     public ResponseEntity postMessage(
             @CurrentUser AuthenticatedUser authenticatedUser,
@@ -96,6 +97,17 @@ public class ChatController {
         log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getUserId());
         chatService.createMessage(chatId, authenticatedUser.getDancerIdOrThrow(), createMessageDto);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/messages/{messageId}")
+    @Secured(ROLE_USER)
+    public ResponseEntity putReadFlag(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @PathVariable UUID messageId,
+            @RequestBody SetReadFlagRequestDto setReadFlagRequestDto
+            ) {
+        chatService.setReadFlag(messageId, authenticatedUser.getDancerIdOrThrow(), setReadFlagRequestDto.getRead());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler({BusinessException.class})

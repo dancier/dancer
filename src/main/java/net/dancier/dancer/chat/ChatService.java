@@ -64,6 +64,9 @@ public class ChatService {
         return chatServiceClient.createMessage(chatId, remoteCreateMessageDto);
     }
 
+    public Void setReadFlag(UUID messageId, UUID participantId, Boolean read) {
+        return chatServiceClient.setReadFlag(messageId, participantId, read);
+    }
     private void throwIfDancerIsNotInChat(List<UUID> participantIds, UUID currentDancerId) {
         log.info("Before Check");
         log.info("Part: " + participantIds);
