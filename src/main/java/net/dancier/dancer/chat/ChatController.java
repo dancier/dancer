@@ -1,6 +1,7 @@
 package net.dancier.dancer.chat;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.chat.client.SetReadFlagRequestDto;
 import net.dancier.dancer.chat.dto.*;
 import net.dancier.dancer.contact.ContactController;
 import net.dancier.dancer.core.exception.BusinessException;
@@ -97,6 +98,18 @@ public class ChatController {
         log.info("Creating new message for chat {} for user {}.", chatId, authenticatedUser.getUserId());
         chatService.createMessage(chatId, authenticatedUser.getDancerIdOrThrow(), createMessageDto);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/messages/{messageId}/read-by/{participantId}")
+    @Secured(ROLE_USER)
+    public ResponseEntity putReadFlag(
+            @CurrentUser AuthenticatedUser authenticatedUser,
+            @PathVariable UUID messageId,
+            @PathVariable UUID participantId,
+            @RequestBody SetReadFlagRequestDto setReadFlagRequestDto
+            ) {
+        chatService.setReadFlag(messageId, participantId, setReadFlagRequestDto.getRead());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler({BusinessException.class})

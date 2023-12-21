@@ -107,6 +107,20 @@ public class ChatServiceClient {
                 .block();
     }
 
+    public Void setReadFlag(UUID messageId, UUID participantId, Boolean read) {
+        SetReadFlagRequestDto setReadFlagRequestDto = new SetReadFlagRequestDto();
+        setReadFlagRequestDto.setRead(read);
+
+        return webClient.put()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/messages/{messagesId}/read-by/{participantId}").build(messageId, participantId)
+                ).body(Mono.just(setReadFlagRequestDto), SetReadFlagRequestDto.class)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+
+    }
+
     private ExchangeFilterFunction buildRetryExchangeFilterFunction() {
         return (request, next) -> next.exchange(request)
                 .flatMap(
