@@ -412,12 +412,12 @@ paths:
           description: when the mail is on it's way
   /chats:
     get:
-      summary: returns a list of all chats of a dancer. This endpoint does not return dancers or messages, for this, the resource endpoint needs to be called
+      summary: returns a list of all chats of a dancer. This endpoint will also include the timestamp of the last message on the chat and the last message. To get a list of all messages, use the endpoints for this purpose
       tags:
         - Chats
       responses:
         '200':
-          description: "list of chats for a dancer"
+          description: "list of chats for the logged in dancer"
           content:
             application/json:
               schema:
@@ -425,14 +425,13 @@ paths:
               example:
                 chats:
                   - chatId: 543
-                    dancerIds: [123, 433]
+                    participantIds: [123, 433]
                     lastActivity: "2022-10-10T18:29:48.843Z"
-                    type: "direct"
                     lastMessage:
                       text: Lorem ipsum
                       authorId: 123
                       id: 1234
-                      readByDancers: [123]
+                      readByParticipants: [123]
                       createdAt: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
@@ -529,6 +528,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+  /messages/{messageId}:
+    put:
+      summary: set the read flag for a message for the logged in user
+      tags:
+        - Chats
+      parameters:
+        - in: path
+          name: messageId
+          description: messageId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                read:
+                  type: boolean
+      responses:
+        '204':
+          description: ""
+
   /dancers:
     post:
       summary: Used to retrieve a list of dancers
@@ -872,8 +895,6 @@ components:
           items:
             type: string
           example: [ 123, 321 ]
-        type:
-          $ref: '#/components/schemas/chatType'
     chatResponse:
       $ref: '#/components/schemas/detailedChat'
     chatListResponse:
@@ -928,21 +949,10 @@ components:
         chatId:
           type: string
           example: 543
-        imageHash:
-          type: string
-          description: |
-            hash for the image shown for this chat. For a personal chat it is the image hash of the profile picture of the chat partner
-        dancers:
-          type: array
-          description: Dancers participating in the chat
-          items:
-            $ref: '#/components/schemas/chatProfile'
         lastActivity:
           type: string
           format: date-time
           description: Datetime of the last activity from this chat
-        type:
-          $ref: '#/components/schemas/chatType'
     messageListResponse:
       type: array
       items:
@@ -979,11 +989,6 @@ components:
           type: string
           description: The content of the message
           example: Lorem ipsum
-    chatType:
-      type: string
-      enum:
-        - GROUP
-        - DIRECT
     error:
       type: object
       properties:
