@@ -11,12 +11,14 @@ import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
 import net.dancier.dancer.mail.service.MailEnqueueService;
+import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +46,7 @@ public class AuthenticationService {
 
     private final PasswordResetCodeRepository passwordResetCodeRepository;
 
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationProvider authenticationProvider;
 
     private final JwtTokenProvider tokenProvider;
 
@@ -58,7 +60,7 @@ public class AuthenticationService {
     private final CookieConfiguration cookieConfiguration;
 
     public Authentication authenticate(Authentication authentication) {
-        return this.authenticationManager.authenticate(authentication);
+        return this.authenticationProvider.authenticate(authentication);
     }
     public String generateJwtToken(Authentication authentication) {
         return this.tokenProvider.generateJwtToken(authentication);
