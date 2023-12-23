@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Primary;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Configuration
+//@Configuration
 public class ObjectMapperConfiguration {
 
-    @Bean
+//    @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         JavaTimeModule javaTimeModule=new JavaTimeModule();
