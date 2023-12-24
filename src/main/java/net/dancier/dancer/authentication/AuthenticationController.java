@@ -64,6 +64,7 @@ public class AuthenticationController {
     @Secured({ROLE_HUMAN})
     @PostMapping("/registrations")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
+        log.info("About to register user: " + registerRequest);
         try {
             authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
