@@ -107,19 +107,19 @@ public class AuthenticationController {
                                           HttpServletResponse httpServletResponse) {
         log.info("Log in as human");
         ResponseCookie cookie = null;
+        String jwt = null;
         try {
            captchaService.verifyToken(token);
+           jwt = authenticationService.generateJwtToken("HUMAN");
            cookie = authenticationService
-                   .generateCookie(
-                           authenticationService.generateJwtToken("HUMAN")
-                   );
+                   .generateCookie(jwt);
            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         } catch (CaptchaException captchaException) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
             );
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @GetMapping("/logout")

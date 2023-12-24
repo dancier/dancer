@@ -13,7 +13,6 @@ public class MessageDto {
     private UUID authorId;
     private String text;
     private List<UUID> readByParticipants;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private OffsetDateTime createdAt;
 

@@ -179,10 +179,8 @@ public class ChatControllerTest extends AbstractPostgreSQLEnabledTest {
             ChatDto chat = new ChatDto();
             chat.setParticipantIds(List.of(dancerId, UUID.randomUUID()));
 
-            MessagesDto messages = new MessagesDto();
             MessageDto message = new MessageDto();
             message.setText("Hallo");
-            messages.setMessages(List.of(message));
 
             when(chatServiceClient.getChat(chatId)).thenReturn(chat);
             when(chatServiceClient.getMessages(chatId, dancerId, Optional.empty())).thenReturn(new MessageDto[]{message});
