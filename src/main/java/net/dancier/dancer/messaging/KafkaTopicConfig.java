@@ -1,4 +1,4 @@
-package net.dancier.dancer.core.config;
+package net.dancier.dancer.messaging;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;

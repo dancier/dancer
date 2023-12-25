@@ -1,4 +1,4 @@
-package net.dancier.dancer.core.config;
+package net.dancier.dancer.messaging;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
