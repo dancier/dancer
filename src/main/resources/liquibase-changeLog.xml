@@ -543,4 +543,19 @@
             ADD COLUMN version INTEGER;
         </sql>
     </changeSet>
+    <changeSet id="2023-12-24-add-outbox" author="Marc Gorzala">
+        <sql>
+            CREATE TABLE IF NOT EXISTS outbox
+            (
+              id uuid NOT NULL,
+              type character varying(256) NOT NULL,
+              data jsonb NOT NULL,
+              created_at timestamp without time zone NOT NULL,
+              status character varying(256) NOT NULL,
+              key character varying(1024),
+              source character varying(256) NOT NULL
+            )
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>
