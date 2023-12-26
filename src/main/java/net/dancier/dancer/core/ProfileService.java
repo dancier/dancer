@@ -97,14 +97,16 @@ public class ProfileService {
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
         dancerRepository.save(dancer);
-        if (dancer.getVersion().equals(oldVersion)) {
+        log.info("{}/{}", dancer.getVersion(), oldVersion);
+        if (!dancer.getVersion().equals(oldVersion)) {
             log.info("Profile-Change detected");
-            log.info("{}/{}", dancer.getVersion(), oldVersion);
             applicationEventPublisher.publishEvent(
                     ProfileUpdatedEvent
                             .builder()
                             .dancer(dancer)
                             .build());
+        } else {
+            log.info("Version unchanged");
         }
     }
 
