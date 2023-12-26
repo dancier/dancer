@@ -15,13 +15,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class ProfileUpdateEventListener {
+public class ApplicationEventListener {
 
-    public static final Logger log = LoggerFactory.getLogger(ProfileUpdateEventListener.class);
+    public static final Logger log = LoggerFactory.getLogger(ApplicationEventListener.class);
+
+    private static final URI FRONTEND_SOURCE = URI.create("http://dancier.net");
+    private static final URI BACKEND_SOURCE = URI.create("http://dancer.dancier.net");
 
     private final EventlogService eventlogService;
 
@@ -43,8 +47,9 @@ public class ProfileUpdateEventListener {
             CloudEvent cloudEvent = CloudEventBuilder
                     .v1()
                     .withId(UUID.randomUUID().toString())
-                    .withSource(URI.create("F"))
+                    .withSource(BACKEND_SOURCE)
                     .withType("profile-updated")
+                    .withTime(OffsetDateTime.now())
                     .withData(objectMapper.writeValueAsBytes(profileUpdatedEvent)).build();
             scheduleMessageAdapter.schedule(cloudEvent, profileUpdatedEvent.getDancer().getId().toString());
         } catch (JsonProcessingException jpe) {
