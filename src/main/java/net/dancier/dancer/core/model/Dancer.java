@@ -19,6 +19,7 @@ public class Dancer implements Recommendable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Version
     private Integer version;
 
     private UUID userId;
