@@ -99,6 +99,7 @@ public class ProfileService {
         dancerRepository.save(dancer);
         if (dancer.getVersion().equals(oldVersion)) {
             log.info("Profile-Change detected");
+            log.info("{}/{}", dancer.getVersion(), oldVersion);
             applicationEventPublisher.publishEvent(
                     ProfileUpdatedEvent
                             .builder()
