@@ -8,7 +8,7 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:postgresql://dancer-db:5432/dancer
+    url: jdbc:postgresql://localhost:5432/dancer
     username: dancer
     password: dancer
   liquibase:
