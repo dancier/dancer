@@ -34,6 +34,7 @@ public class ProfileUpdateEventListener {
     @EventListener
     @Transactional
     public void handle(ProfileUpdatedEvent profileUpdatedEvent) {
+        log.info("Got a Profile Change");
         eventlogService.appendNew(
                 eventCreator.createEventlog(
                         "profile-updated",
