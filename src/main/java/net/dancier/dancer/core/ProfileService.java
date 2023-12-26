@@ -96,10 +96,11 @@ public class ProfileService {
         }
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
-        dancer = dancerRepository.save(dancer);
-
+        dancerRepository.save(dancer);
+        dancer = dancerRepository.findById(dancer.getId()).get();
+        
         log.info("{}/{}", dancer.getVersion(), oldVersion);
-        if (!dancer.getVersion().equals(oldVersion)) {
+        if (dancer.getVersion().equals(oldVersion)) {
             log.info("Profile-Change detected");
             applicationEventPublisher.publishEvent(
                     ProfileUpdatedEvent
