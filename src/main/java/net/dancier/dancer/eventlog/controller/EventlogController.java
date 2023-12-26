@@ -28,14 +28,12 @@ public class EventlogController {
     private static Logger log = LoggerFactory.getLogger(EventlogController.class);
 
     private final EventlogService eventlogService;
-    private final ScheduleMessagePort scheduleMessagePort;
 
     @PostMapping
     public ResponseEntity publish(@RequestBody NewEventlogDto newEventlogDto) {
         Eventlog eventlog = EventlogMapper.toEventlog(newEventlogDto);
         setRolesAndUser(eventlog);
         eventlogService.appendNew(eventlog);
-        scheduleMessagePort.schedule(eventlog, "", "");
         log.info("Appended " + eventlog + " to the eventlog.");
         return ResponseEntity.ok().build();
     }
