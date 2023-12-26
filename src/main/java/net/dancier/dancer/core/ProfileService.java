@@ -97,10 +97,11 @@ public class ProfileService {
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
         dancerRepository.save(dancer);
+        // hack, to retrieve the version, how can I achieve this with less effort?
         dancer = dancerRepository.findById(dancer.getId()).get();
-        
+
         log.info("{}/{}", dancer.getVersion(), oldVersion);
-        if (dancer.getVersion().equals(oldVersion)) {
+        if (!dancer.getVersion().equals(oldVersion)) {
             log.info("Profile-Change detected");
             applicationEventPublisher.publishEvent(
                     ProfileUpdatedEvent
