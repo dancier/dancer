@@ -20,6 +20,8 @@ public class ScheduleMessageAdapter implements ScheduleMessagePort {
     public void schedule(CloudEvent cloudEvent, String key) {
         log.info("sending object: " + cloudEvent);
         log.info("with key:" + key);
-        kafkaTemplate.send(cloudEvent.getType(), key, cloudEvent);
+        kafkaTemplate.send(cloudEvent.getType(),
+                key,
+                cloudEvent);
     }
 }

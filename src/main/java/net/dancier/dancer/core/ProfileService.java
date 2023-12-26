@@ -90,11 +90,6 @@ public class ProfileService {
         }
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
-        if (dancer.getVersion()!=null) {
-            dancer.setVersion(dancer.getVersion() + 1);
-        } else {
-            dancer.setVersion(0);
-        }
         dancerRepository.save(dancer);
         applicationEventPublisher.publishEvent(
                 ProfileUpdatedEvent
