@@ -1,6 +1,8 @@
 package net.dancier.dancer.eventlog;
 
+import io.cloudevents.CloudEvent;
+
 public interface ScheduleMessagePort {
-    void schedule(Object data, String key, String type);
+    void schedule(CloudEvent cloudEvent, String key);
 
 }

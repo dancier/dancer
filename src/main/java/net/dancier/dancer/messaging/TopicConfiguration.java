@@ -14,19 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaTopicConfig {
-    private static Logger log = LoggerFactory.getLogger(KafkaTopicConfig.class);
-
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
-
-    @Bean
-    public KafkaAdmin kafkaAdmin() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        return new KafkaAdmin(configs);
-    }
-
+public class TopicConfiguration {
     @Bean
     public NewTopic profileUpdated() {
         return new NewTopic("profile-updated", 1, (short) 1);

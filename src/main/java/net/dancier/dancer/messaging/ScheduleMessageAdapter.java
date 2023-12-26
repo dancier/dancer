@@ -1,5 +1,6 @@
 package net.dancier.dancer.messaging;
 
+import io.cloudevents.CloudEvent;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.eventlog.ScheduleMessagePort;
 import org.slf4j.Logger;
@@ -16,8 +17,8 @@ public class ScheduleMessageAdapter implements ScheduleMessagePort {
     private final KafkaTemplate kafkaTemplate;
 
     @Override
-    public void schedule(Object data, String key, String type) {
-        log.info("sending object: " + data);
-        kafkaTemplate.send("profile-updated", data.toString());
+    public void schedule(CloudEvent cloudEvent, String key) {
+        log.info("sending object: " + cloudEvent);
+        kafkaTemplate.send(cloudEvent.getType(), key, cloudEvent);
     }
 }
