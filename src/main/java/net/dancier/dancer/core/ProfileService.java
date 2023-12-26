@@ -97,6 +97,7 @@ public class ProfileService {
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
         dancerRepository.save(dancer);
+        dancerRepository.flush();
         log.info("{}/{}", dancer.getVersion(), oldVersion);
         if (!dancer.getVersion().equals(oldVersion)) {
             log.info("Profile-Change detected");

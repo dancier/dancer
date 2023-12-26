@@ -34,9 +34,11 @@ public class EventlogController {
         Eventlog eventlog = EventlogMapper.toEventlog(newEventlogDto);
         setRolesAndUser(eventlog);
         eventlogService.appendNew(eventlog);
+
         log.info("Appended " + eventlog + " to the eventlog.");
         return ResponseEntity.ok().build();
     }
+
 
     private void setRolesAndUser(Eventlog eventlog) {
         switch (SecurityContextHolder.getContext().getAuthentication().getPrincipal()) {

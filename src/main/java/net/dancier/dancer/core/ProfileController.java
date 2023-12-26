@@ -8,6 +8,7 @@ import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.core.exception.UnresolvableZipCode;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
