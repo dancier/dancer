@@ -13,13 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static net.dancier.dancer.core.events.ApplicationEventListener.FRONTEND_SOURCE;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,8 @@ public class EventlogService {
     private final EventlogDAO eventlogDAO;
 
     private final ScheduleMessagePort scheduleMessagePort;
-    private final static Set<String> DEFAULT_AUTHENTICATED = Set.of("ROLE_USER", "ROLE_ADMIN");
+
+    public static final URI FRONTEND_SOURCE = URI.create("http://dancier.net");
     private final static Set<String> AT_LEAST_HUMAN = Set.of("ROLE_HUMAN", "ROLE_USER", "ROLE_ADMIN");
     private final static Set<String> NO_SPECIAL_ROLE_NEEDED = Set.of("ROLE_ANONYMOUS");
     private final static Set<EventlogConfig> allowedEvents = Set.of(

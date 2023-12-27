@@ -16,13 +16,14 @@ public class TopicConfiguration {
         NewTopic navigatedToPage = new NewTopic("navigated-to-page", 1, (short) 1);
         NewTopic humanSessionCreated = new NewTopic("human-session-created", 1, (short) 1);
         NewTopic contactMessageSent = new NewTopic("contact-message-sent", 1, (short) 1);
-
+        NewTopic emailSendingRequested = new NewTopic("email-sending-requested", 1, (short) 1);
         return new KafkaAdmin.NewTopics(
                 profileUpdated,
                 appInstanceIdCreated,
                 navigatedToPage,
                 humanSessionCreated,
-                contactMessageSent);
+                contactMessageSent,
+                emailSendingRequested);
     }
 
 }
