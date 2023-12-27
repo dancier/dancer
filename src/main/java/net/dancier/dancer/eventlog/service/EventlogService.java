@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.authentication.model.Role;
 import net.dancier.dancer.core.ScheduleMessagePort;
 import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
@@ -39,6 +38,11 @@ public class EventlogService {
             EventlogConfig.of("navigated_to_page", NO_SPECIAL_ROLE_NEEDED),
             EventlogConfig.of("human_session_created", AT_LEAST_HUMAN),
             EventlogConfig.of("contact_message_sent", AT_LEAST_HUMAN),
+
+            EventlogConfig.of("app-instance-id-created", NO_SPECIAL_ROLE_NEEDED),
+            EventlogConfig.of("navigated-to-page", NO_SPECIAL_ROLE_NEEDED),
+            EventlogConfig.of("human-session-created", AT_LEAST_HUMAN),
+            EventlogConfig.of("contact-message-sent", AT_LEAST_HUMAN),
             EventlogConfig.of("profile-updated", DEFAULT_AUTHENTICATED) // will not go over the eventlog stuff in the future...
     );
 

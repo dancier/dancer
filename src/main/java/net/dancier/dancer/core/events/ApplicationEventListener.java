@@ -34,10 +34,10 @@ public class ApplicationEventListener {
                 eventCreator.createEventlog(
                         "profile-updated",
                         profileUpdatedEvent.getDancer()));
-            scheduleMessagePort.schedule(
-                    profileUpdatedEvent,
-                    profileUpdatedEvent.getDancer().getId().toString(),
-                    BACKEND_SOURCE,
-                    "profile-updated");
+        scheduleMessagePort.schedule(
+                profileUpdatedEvent,
+                profileUpdatedEvent.getDancer().getId().toString(),
+                BACKEND_SOURCE,
+                "profile-updated");
     }
 }
