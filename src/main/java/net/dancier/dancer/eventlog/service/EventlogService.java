@@ -8,6 +8,8 @@ import net.dancier.dancer.authentication.model.Role;
 import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.repository.EventlogDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -19,15 +21,24 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EventlogService {
 
+    private final Logger log = LoggerFactory.getLogger(EventlogService.class);
+
     private final EventlogDAO eventlogDAO;
 
-    private final static Set<String> DEFAULT_AUTHENTICATED = Set.of();
+    private final static Set<String> DEFAULT_AUTHENTICATED = Set.of("ROLE_USER", "ROLE_ADMIN");
+    private final static Set<String> AT_LEAST_HUMAN = Set.of("ROLE_HUMAN", "ROLE_USER", "ROLE_ADMIN");
+    private final static Set<String> NO_SPECIAL_ROLE_NEEDED = Set.of();
     private final static Set<EventlogConfig> allowedEvents = Set.of(
-            EventlogConfig.of("profile-updated", DEFAULT_AUTHENTICATED)
+            EventlogConfig.of("app_instance_id_created", NO_SPECIAL_ROLE_NEEDED),
+            EventlogConfig.of("navigated_to_page", NO_SPECIAL_ROLE_NEEDED),
+            EventlogConfig.of("human_session_created", AT_LEAST_HUMAN),
+            EventlogConfig.of("contact_message_sent", AT_LEAST_HUMAN),
+            EventlogConfig.of("profile_updated", DEFAULT_AUTHENTICATED) // will not go over the eventlog stuff in the future...
     );
 
     public void appendNew(Eventlog eventlog) {
-
+        validateTopic(eventlog);
+        authorize(eventlog);
         try {
             eventlog.setId(UUID.randomUUID());
             eventlog.setCreated(Instant.now());
@@ -38,10 +49,12 @@ public class EventlogService {
     }
 
     private void validateTopic(Eventlog eventlog) {
-
+        String topic = eventlog.getTopic();
+        log.info("Validating Topic: {}", eventlog.getTopic());
     }
     private void authorize(Eventlog eventlog) {
         String topic = eventlog.getTopic();
+        log.info("Authorizing eventlog request: {}", topic);
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)

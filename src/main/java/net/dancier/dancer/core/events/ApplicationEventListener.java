@@ -6,6 +6,7 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.dancier.dancer.eventlog.ScheduleMessagePort;
 import net.dancier.dancer.eventlog.service.EventlogService;
 import net.dancier.dancer.messaging.ScheduleMessageAdapter;
 import org.slf4j.Logger;
@@ -31,27 +32,26 @@ public class ApplicationEventListener {
 
     private final EventCreator eventCreator;
 
-    private final ScheduleMessageAdapter scheduleMessageAdapter;
+    private final ScheduleMessagePort scheduleMessagePort;
 
     private final ObjectMapper objectMapper;
 
     @EventListener
     @Transactional
     public void handle(ProfileUpdatedEvent profileUpdatedEvent) {
-        log.info("Got a Profile Change");
+        log.info("Got a Profile Change: {}", profileUpdatedEvent);
         eventlogService.appendNew(
                 eventCreator.createEventlog(
                         "profile-updated",
                         profileUpdatedEvent.getDancer()));
         try {
-            CloudEvent cloudEvent = CloudEventBuilder
-                    .v1()
-                    .withId(UUID.randomUUID().toString())
-                    .withSource(BACKEND_SOURCE)
-                    .withType("profile-updated")
-                    .withTime(OffsetDateTime.now())
-                    .withData(objectMapper.writeValueAsBytes(profileUpdatedEvent)).build();
-            scheduleMessageAdapter.schedule(cloudEvent, profileUpdatedEvent.getDancer().getId().toString());
+            String tmp = objectMapper.writeValueAsString(profileUpdatedEvent);
+            System.out.println(tmp);
+            scheduleMessagePort.schedule(
+                    profileUpdatedEvent,
+                    profileUpdatedEvent.getDancer().getId().toString(),
+                    BACKEND_SOURCE,
+                    "profile-updated");
         } catch (JsonProcessingException jpe) {
             log.error("Unable to generate Cloud-Event for: " + profileUpdatedEvent, jpe);
             throw new ApplicationContextException("Unable to create Json", jpe);
