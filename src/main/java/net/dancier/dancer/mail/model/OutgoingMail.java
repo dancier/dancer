@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 
 import jakarta.persistence.*;
 import org.hibernate.type.SqlTypes;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.io.Serializable;
 
@@ -23,5 +24,5 @@ public class OutgoingMail extends EntityWithUUID implements Serializable {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Basic(fetch = FetchType.EAGER)
-    private DancierMailMessage mail;
+    private SimpleMailMessage mail;
 }

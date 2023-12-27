@@ -1,7 +1,6 @@
 package net.dancier.dancer.mail.service;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.mail.model.DancierMailMessage;
 import net.dancier.dancer.mail.repository.OutgoingMailRepository;
 import net.dancier.dancer.mail.model.OutgoingMail;
 import net.dancier.dancer.mail.model.OutgoingMailStatus;
@@ -21,7 +20,7 @@ public class MailEnqueueService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public void enqueueMail(DancierMailMessage dancierMailMessage) {
+    public void enqueueMail(SimpleMailMessage dancierMailMessage) {
         OutgoingMail outgoingMail = new OutgoingMail();
         outgoingMail.setStatus(OutgoingMailStatus.QUEUED);
         outgoingMail.setRetry(0);

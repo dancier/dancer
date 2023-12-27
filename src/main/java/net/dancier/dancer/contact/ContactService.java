@@ -1,9 +1,9 @@
 package net.dancier.dancer.contact;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.mail.model.DancierMailMessage;
 import net.dancier.dancer.mail.service.MailCreationService;
 import net.dancier.dancer.mail.service.MailEnqueueService;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ public class ContactService {
     private final MailEnqueueService mailEnqueueService;
 
     void send(ContactDto contactDto) {
-        DancierMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
+        SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
                 contactDto.getSender(),
                 "dev@dancier.net",
                 "Vielen Dank - Team Dancier",
@@ -24,7 +24,7 @@ public class ContactService {
                 Map.of());
 
         mailEnqueueService.enqueueMail(mailToSender);
-        DancierMailMessage mailToTeamDancier = mailCreationService.createDancierMessageFromTemplate(
+        SimpleMailMessage mailToTeamDancier = mailCreationService.createDancierMessageFromTemplate(
                 "dev@dancier.net",
                 contactDto.getSender(),
                 "Mail über das Kontakt formular",

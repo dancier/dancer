@@ -1,12 +1,11 @@
 package net.dancier.dancer.core.events;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.ScheduleMessagePort;
-import net.dancier.dancer.mail.model.DancierMailMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -22,7 +21,7 @@ public class ApplicationEventListener {
     private final ScheduleMessagePort scheduleMessagePort;
 
     @EventListener
-    public void handle(DancierMailMessage dancierMailMessage) {
+    public void handle(SimpleMailMessage dancierMailMessage) {
         scheduleMessagePort.schedule(
                 dancierMailMessage,
                 UUID.randomUUID().toString(),
