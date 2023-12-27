@@ -52,6 +52,7 @@ public class EventlogService {
         } catch (SQLException sqlException) {
             throw new ApplicationException("Unable to create new Eventlog-Entry.", sqlException);
         }
+        log.info("Now scheduling..." + eventlog);
         scheduleMessagePort.schedule(
                 eventlog,
                 eventlog.getId().toString(),
