@@ -36,4 +36,10 @@ public class DancerController {
                 dancerService.getDancerMap(dancerIdsDto)
         );
     }
+
+    @GetMapping("/{dancerId}/mail")
+    public ResponseEntity<String> getMail(@PathVariable UUID dancierId) {
+        log.info("Getting email-Address for: " + dancierId);
+        return ResponseEntity.ok("foo");
+    }
 }
