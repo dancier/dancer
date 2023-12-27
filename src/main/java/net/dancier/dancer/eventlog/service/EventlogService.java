@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.Role;
+import net.dancier.dancer.core.ScheduleMessagePort;
 import net.dancier.dancer.core.exception.ApplicationException;
+import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.repository.EventlogDAO;
 import org.slf4j.Logger;
@@ -16,6 +18,9 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static net.dancier.dancer.core.events.ApplicationEventListener.FRONTEND_SOURCE;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,7 @@ public class EventlogService {
 
     private final EventlogDAO eventlogDAO;
 
+    private final ScheduleMessagePort scheduleMessagePort;
     private final static Set<String> DEFAULT_AUTHENTICATED = Set.of("ROLE_USER", "ROLE_ADMIN");
     private final static Set<String> AT_LEAST_HUMAN = Set.of("ROLE_HUMAN", "ROLE_USER", "ROLE_ADMIN");
     private final static Set<String> NO_SPECIAL_ROLE_NEEDED = Set.of();
@@ -33,7 +39,7 @@ public class EventlogService {
             EventlogConfig.of("navigated_to_page", NO_SPECIAL_ROLE_NEEDED),
             EventlogConfig.of("human_session_created", AT_LEAST_HUMAN),
             EventlogConfig.of("contact_message_sent", AT_LEAST_HUMAN),
-            EventlogConfig.of("profile_updated", DEFAULT_AUTHENTICATED) // will not go over the eventlog stuff in the future...
+            EventlogConfig.of("profile-updated", DEFAULT_AUTHENTICATED) // will not go over the eventlog stuff in the future...
     );
 
     public void appendNew(Eventlog eventlog) {
@@ -46,15 +52,37 @@ public class EventlogService {
         } catch (SQLException sqlException) {
             throw new ApplicationException("Unable to create new Eventlog-Entry.", sqlException);
         }
+        scheduleMessagePort.schedule(
+                eventlog,
+                eventlog.getId().toString(),
+                FRONTEND_SOURCE,
+                eventlog.getTopic());
     }
 
     private void validateTopic(Eventlog eventlog) {
         String topic = eventlog.getTopic();
         log.info("Validating Topic: {}", eventlog.getTopic());
+        if (!allowedEvents.stream()
+                .map(EventlogConfig::getName)
+                .collect(Collectors.toSet())
+                .contains(topic)) {
+            throw new BusinessException("this eventlog topic is not allowed at all: " + topic);
+        }
+
     }
     private void authorize(Eventlog eventlog) {
         String topic = eventlog.getTopic();
+        Set<String> usedRoles = eventlog.getRoles();
+        Set<String> neededRoles = allowedEvents
+                .stream()
+                .filter(eventlogConfig -> eventlogConfig.name.equals(topic))
+                .flatMap(eventlogConfig -> eventlogConfig.neededRoles.stream())
+                .collect(Collectors.toSet());
         log.info("Authorizing eventlog request: {}", topic);
+        Boolean authorized = usedRoles.stream().anyMatch(usedRole -> neededRoles.contains(usedRole));
+        if (!authorized) {
+            throw new BusinessException("We got this roles: " + usedRoles + " but needed this:" + neededRoles);
+        }
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
