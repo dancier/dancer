@@ -7,6 +7,7 @@ import net.dancier.dancer.mail.model.OutgoingMail;
 import net.dancier.dancer.mail.model.OutgoingMailStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +19,15 @@ public class MailEnqueueService {
 
     private final OutgoingMailRepository outgoingMailRepository;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     public void enqueueMail(DancierMailMessage dancierMailMessage) {
         OutgoingMail outgoingMail = new OutgoingMail();
         outgoingMail.setStatus(OutgoingMailStatus.QUEUED);
         outgoingMail.setRetry(0);
         outgoingMail.setMail(dancierMailMessage);
         this.outgoingMailRepository.save(outgoingMail);
+        applicationEventPublisher.publishEvent(dancierMailMessage);
     }
 
 }
