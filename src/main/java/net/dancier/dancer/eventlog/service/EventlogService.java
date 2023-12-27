@@ -33,7 +33,7 @@ public class EventlogService {
     private final ScheduleMessagePort scheduleMessagePort;
     private final static Set<String> DEFAULT_AUTHENTICATED = Set.of("ROLE_USER", "ROLE_ADMIN");
     private final static Set<String> AT_LEAST_HUMAN = Set.of("ROLE_HUMAN", "ROLE_USER", "ROLE_ADMIN");
-    private final static Set<String> NO_SPECIAL_ROLE_NEEDED = Set.of();
+    private final static Set<String> NO_SPECIAL_ROLE_NEEDED = Set.of("ROLE_ANONYMOUS");
     private final static Set<EventlogConfig> allowedEvents = Set.of(
             EventlogConfig.of("app_instance_id_created", NO_SPECIAL_ROLE_NEEDED),
             EventlogConfig.of("navigated_to_page", NO_SPECIAL_ROLE_NEEDED),
