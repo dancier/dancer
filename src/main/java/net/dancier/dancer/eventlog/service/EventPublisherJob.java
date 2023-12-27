@@ -1,7 +1,6 @@
 package net.dancier.dancer.eventlog.service;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.ScheduleMessagePort;
 import net.dancier.dancer.eventlog.model.Eventlog;
 import net.dancier.dancer.eventlog.repository.EventlogDAO;
 import net.dancier.dancer.eventlog.repository.EventlogStatus;

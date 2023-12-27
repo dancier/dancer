@@ -3,23 +3,15 @@ package net.dancier.dancer.messaging;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.builder.CloudEventBuilder;
-import io.cloudevents.core.data.PojoCloudEventData;
-import io.cloudevents.core.provider.EventFormatProvider;
-import io.cloudevents.jackson.PojoCloudEventDataMapper;
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.eventlog.ScheduleMessagePort;
+import net.dancier.dancer.core.ScheduleMessagePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import static io.cloudevents.core.CloudEventUtils.mapData;
 
 @RequiredArgsConstructor
 @Component
@@ -35,7 +27,7 @@ public class ScheduleMessageAdapter implements ScheduleMessagePort {
     public void schedule(Object object,
                          String key,
                          URI source,
-                         String type) throws JsonProcessingException {
+                         String type) {
         log.info("sending object: " + object);
         log.info("with key:" + key);
 
