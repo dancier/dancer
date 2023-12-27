@@ -42,8 +42,7 @@ public class EventlogService {
             EventlogConfig.of("app-instance-id-created", NO_SPECIAL_ROLE_NEEDED),
             EventlogConfig.of("navigated-to-page", NO_SPECIAL_ROLE_NEEDED),
             EventlogConfig.of("human-session-created", AT_LEAST_HUMAN),
-            EventlogConfig.of("contact-message-sent", AT_LEAST_HUMAN),
-            EventlogConfig.of("profile-updated", DEFAULT_AUTHENTICATED) // will not go over the eventlog stuff in the future...
+            EventlogConfig.of("contact-message-sent", AT_LEAST_HUMAN)
     );
 
     public void appendNew(Eventlog eventlog) {

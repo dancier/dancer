@@ -30,10 +30,6 @@ public class ApplicationEventListener {
     @Transactional
     public void handle(ProfileUpdatedEvent profileUpdatedEvent) {
         log.info("Got a Profile Change: {}", profileUpdatedEvent);
-        eventlogService.appendNew(
-                eventCreator.createEventlog(
-                        "profile-updated",
-                        profileUpdatedEvent.getDancer()));
         scheduleMessagePort.schedule(
                 profileUpdatedEvent,
                 profileUpdatedEvent.getDancer().getId().toString(),
