@@ -57,7 +57,7 @@ public class EventlogService {
                 eventlog,
                 eventlog.getId().toString(),
                 FRONTEND_SOURCE,
-                eventlog.getTopic());
+                eventlog.getTopic().replaceAll("_", "-")); // as long halbe kanne is still sending old event format
     }
 
     private void validateTopic(Eventlog eventlog) {
