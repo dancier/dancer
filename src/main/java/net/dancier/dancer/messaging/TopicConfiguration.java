@@ -10,8 +10,8 @@ import org.springframework.kafka.core.KafkaAdmin;
 public class TopicConfiguration {
     @Bean
     public KafkaAdmin.NewTopics createTopics() {
-        
-        return new NewTopic("profile-updated", 1, (short) 1);
+        NewTopic profileUpdated = new NewTopic("profile-updated", 1, (short) 1)
+        return new KafkaAdmin.NewTopics(profileUpdated);
     }
 
 }
