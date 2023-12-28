@@ -83,8 +83,11 @@ public class AuthenticationService {
      * By setting the maxAge to 0, the cookie will be deleted by the browser.
      */
     public ResponseCookie generateClearingCookie() {
-        return ResponseCookie.from("jwt-token", "")
-                              .build();
+        return ResponseCookie
+                .from("jwt-token", "")
+                .path("/")
+                .maxAge(0)
+                .build();
     }
 
     public User getUser(UUID userId) {
