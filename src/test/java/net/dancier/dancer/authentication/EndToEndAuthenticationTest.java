@@ -1,31 +1,33 @@
 package net.dancier.dancer.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
 import net.dancier.dancer.TestDatabaseHelper;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.dto.SendLinkDto;
 import net.dancier.dancer.authentication.model.User;
 import net.dancier.dancer.core.controller.payload.LoginRequestDto;
-import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.http.MediaType;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import jakarta.servlet.http.Cookie;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RecordApplicationEvents
 public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
@@ -37,8 +39,8 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @MockBean
-    private MailEnqueueService mailEnqueueService;
+    @Autowired
+    ApplicationEvents applicationEvents;
 
     @Test
     void registrationHappyPath() throws Exception {
@@ -82,8 +84,7 @@ public class EndToEndAuthenticationTest extends AbstractPostgreSQLEnabledTest {
         registerUser(dummyUser)
                 .andExpect(status().isCreated());
 
-        Mockito.verify(mailEnqueueService, times(2)).enqueueMail(any());
-
+        then(applicationEvents.stream(SimpleMailMessage.class).count()).isEqualTo(2);
     }
 
     @Test

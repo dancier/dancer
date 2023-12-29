@@ -12,7 +12,6 @@ import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
-import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,13 +47,14 @@ public class AuthenticationService {
 
     private final JwtTokenProvider tokenProvider;
 
-    private final MailEnqueueService mailEnqueueService;
-
     private final MailCreationService mailCreationService;
 
     private final VerifiedActionCodeRepository verifiedActionCodeRepository;
+
     private final String frontendBaseName;
+
     private final ApplicationEventPublisher applicationEventPublisher;
+
     private final CookieConfiguration cookieConfiguration;
 
     public Authentication authenticate(Authentication authentication) {
@@ -139,7 +139,7 @@ public class AuthenticationService {
                             loginLink():
                             emailValidationLink(createEmailValidationCode(user));
 
-        enqueueTypedUserMail(user.getEmail(),"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
+        sendUserMail(user.getEmail(),"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
                 Map.of("passwordResetLink", passwordResetLink(passwordResetCode),
                         "email", user.getEmail(),
                         "loginLink", loginLink)
@@ -229,17 +229,19 @@ public class AuthenticationService {
     }
 
     public void sendChangePasswordMail(String email, String code) {
-        enqueueTypedUserMail(email,
+        sendUserMail(email,
                 "Du möchtest dein Passwort auf dancier.net ändern...",
                 MailCreationService.PASSWORD_CHANGE_REQUEST_EMAIL,
                 Map.of("changePasswordLink", passwordResetLink(code))
         );
 
-    }    private void enqueueTypedUserMail(String email,
-                                      String subject,
-                                      String template,
-                                      Map<String, Object> data) {
-        mailEnqueueService.enqueueMail(
+    }
+
+    private void sendUserMail(String email,
+                                   String subject,
+                                   String template,
+                                   Map<String, Object> data) {
+        applicationEventPublisher.publishEvent(
                 mailCreationService.createDancierMessageFromTemplate(
                         email,
                         MailCreationService.NO_REPLY_FROM,
@@ -250,15 +252,14 @@ public class AuthenticationService {
         );
     }
     private void enqueueUserMail(User user, String validationCode) {
-        mailEnqueueService.enqueueMail(
-                mailCreationService.createDancierMessageFromTemplate(
-                    user.getEmail(),
-                    MailCreationService.NO_REPLY_FROM,
-                    "Dancier - bestätige Deine E-Mail-Adresse!",
-                    MailCreationService.NEW_USER_VALIDATE_EMAIL,
-                    Map.of( "validationLink", emailValidationLink(validationCode)
+        applicationEventPublisher.publishEvent(
+            mailCreationService.createDancierMessageFromTemplate(
+                user.getEmail(),
+                MailCreationService.NO_REPLY_FROM,
+                "Dancier - bestätige Deine E-Mail-Adresse!",
+                MailCreationService.NEW_USER_VALIDATE_EMAIL,
+                Map.of( "validationLink", emailValidationLink(validationCode)
                 ))
         );
     }
-
 }

@@ -2,7 +2,7 @@ package net.dancier.dancer.contact;
 
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.mail.service.MailCreationService;
-import net.dancier.dancer.mail.service.MailEnqueueService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,8 @@ import java.util.Map;
 public class ContactService {
 
     private final MailCreationService mailCreationService;
-    private final MailEnqueueService mailEnqueueService;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     void send(ContactDto contactDto) {
         SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
@@ -22,8 +23,8 @@ public class ContactService {
                 "Vielen Dank - Team Dancier",
                 MailCreationService.CONTACT_FORMULAR_FEEDBACK,
                 Map.of());
+        applicationEventPublisher.publishEvent(mailToSender);
 
-        mailEnqueueService.enqueueMail(mailToSender);
         SimpleMailMessage mailToTeamDancier = mailCreationService.createDancierMessageFromTemplate(
                 "dev@dancier.net",
                 contactDto.getSender(),
@@ -33,7 +34,8 @@ public class ContactService {
                 "sender", contactDto.getSender(),
                 "message", contactDto.getMessage())
                 );
-        mailEnqueueService.enqueueMail(mailToTeamDancier);
+
+        applicationEventPublisher.publishEvent(mailToTeamDancier);
     }
 
 }

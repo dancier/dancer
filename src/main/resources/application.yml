@@ -35,12 +35,6 @@ app:
   cors:
     allowedOrigins: http://localhost:4200 # Comma separated list of allowed origins
   # differentiate between success and failure
-  mail:
-    host: mail.your-server.de
-    port: 465
-    user: user
-    pass: pass
-    allForOneAddress: dev@dancier.net
   file:
     dir: ./images-dir
   captcha:
