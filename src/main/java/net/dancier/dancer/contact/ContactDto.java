@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 public class ContactDto {
 
     @Email
-    @NotNull
     private String sender;
 
     @NotNull
