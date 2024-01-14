@@ -27,11 +27,11 @@ public class ContactService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     void send(ContactDto contactDto, AuthenticatedUser authenticatedUserOfSender) {
-        log.info("Having authorities: {}", authenticatedUserOfSender.getAuthorities());
+        log.info("Having authenticated: {}", authenticatedUserOfSender);
         String senderMailAddress = authenticatedUserOfSender.getAuthorities().contains(ROLE_USER)
                 ? authenticatedUserOfSender.getEmail()
                 : contactDto.getSender();
-        log.info("Using this: {} as sender address:", senderMailAddress);
+        log.info("Using this: {} as sender address", senderMailAddress);
         SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
                 senderMailAddress,
                 "dev@dancier.net",
