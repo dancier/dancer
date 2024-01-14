@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 
@@ -28,9 +29,13 @@ public class ContactService {
 
     void send(ContactDto contactDto, AuthenticatedUser authenticatedUserOfSender) {
         log.info("Having authenticated: {}", authenticatedUserOfSender);
-        String senderMailAddress = authenticatedUserOfSender.getAuthorities().contains(ROLE_USER)
-                ? authenticatedUserOfSender.getEmail()
-                : contactDto.getSender();
+        String senderMailAddress;
+        if (authenticatedUserOfSender.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals(ROLE_USER))) {
+            log.info("Overwriting sender...");
+            senderMailAddress = authenticatedUserOfSender.getEmail();
+        } else {
+            senderMailAddress = contactDto.getSender();
+        }
         log.info("Using this: {} as sender address", senderMailAddress);
         SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
                 senderMailAddress,
