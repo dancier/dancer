@@ -30,6 +30,7 @@ public class ContactService {
         String senderMailAddress = authenticatedUserOfSender.getAuthorities().contains(ROLE_USER)
                 ? authenticatedUserOfSender.getEmail()
                 : contactDto.getSender();
+        log.info("Using this: {} as sender address:", senderMailAddress);
         SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
                 senderMailAddress,
                 "dev@dancier.net",
