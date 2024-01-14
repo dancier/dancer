@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.model.EmailValidationCode;
 import net.dancier.dancer.authentication.repository.EmailValidationCodeRepository;
 import net.dancier.dancer.mail.service.MailCreationService;
-import net.dancier.dancer.mail.service.MailEnqueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -23,7 +24,8 @@ public class NewUserCreatedEventListener {
     private final static Logger log = LoggerFactory.getLogger(NewUserCreatedEventListener.class);
 
     private final EmailValidationCodeRepository emailValidationCodeRepository;
-    private final MailEnqueueService mailEnqueueService;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private final MailCreationService mailCreationService;
 
@@ -41,20 +43,20 @@ public class NewUserCreatedEventListener {
         emailValidationCode.setUserId(newUserCreatedEvent.getId());
         emailValidationCode.setCode(UUID.randomUUID().toString());
         emailValidationCodeRepository.save(emailValidationCode);
-        enqueueUserMail(newUserCreatedEvent, emailValidationCode.getCode());
+        applicationEventPublisher.publishEvent(
+            createMailMessage(newUserCreatedEvent, emailValidationCode.getCode())
+        );
         log.debug("Created validation code: " + emailValidationCode.getCode() + " for user: " + newUserCreatedEvent);
     }
 
-    private void enqueueUserMail(NewUserCreatedEvent newUserCreatedEvent, String code) {
-        mailEnqueueService.enqueueMail(
-                mailCreationService.createDancierMessageFromTemplate(
+    private SimpleMailMessage createMailMessage(NewUserCreatedEvent newUserCreatedEvent, String code) {
+        return mailCreationService.createDancierMessageFromTemplate(
                         newUserCreatedEvent.getEmail(),
                         MailCreationService.NO_REPLY_FROM,
                         "Dancier - bestätige Deine E-Mail-Adresse!",
                         MailCreationService.NEW_USER_VALIDATE_EMAIL,
                         Map.of( "validationLink", emailValidationLink(code)
-                        ))
-        );
+                        ));
     }
 
     private String emailValidationLink(String validationCode) {

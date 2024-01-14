@@ -1,11 +1,10 @@
 package net.dancier.dancer.core.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity

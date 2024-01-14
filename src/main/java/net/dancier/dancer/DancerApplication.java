@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @SpringBootApplication

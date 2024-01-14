@@ -58,7 +58,7 @@ Here you can configure the connection to the postgres instance:
 # stopping dancer in docker-compose
 docker-compose stop dancer;
 # running the boot app with overwriting the needed host
-./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/dancer --spring.kafka.bootstrap-servers=localhost:9092"
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/dancer
 ````
 
 #### checking test-coverage

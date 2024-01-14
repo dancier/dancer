@@ -57,6 +57,10 @@ public class AuthenticatedUser implements UserDetails {
         return userId;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
     public boolean isEmailValidated() {
         return isEmailValidated;
     }

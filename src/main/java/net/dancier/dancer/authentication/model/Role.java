@@ -1,9 +1,8 @@
 package net.dancier.dancer.authentication.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.*;
 import java.util.UUID;
 
 @Data

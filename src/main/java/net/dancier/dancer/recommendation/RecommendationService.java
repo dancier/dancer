@@ -3,16 +3,12 @@ package net.dancier.dancer.recommendation;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.core.DancerRepository;
 import net.dancier.dancer.core.model.Dancer;
-import net.dancier.dancer.core.model.Recommendable;
-import net.dancier.dancer.recommendation.dto.RecommendationDto;
 import net.dancier.dancer.recommendation.model.BaseRecommendation;
 import net.dancier.dancer.recommendation.model.RecommendationWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

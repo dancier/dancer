@@ -1,5 +1,7 @@
 package net.dancier.dancer.authentication.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.authentication.dto.RegisterRequestDto;
 import net.dancier.dancer.authentication.event.NewUserCreatedEvent;
@@ -10,19 +12,16 @@ import net.dancier.dancer.core.exception.ApplicationException;
 import net.dancier.dancer.core.exception.BusinessException;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
-import net.dancier.dancer.mail.service.MailEnqueueService;
 import net.dancier.dancer.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,21 +43,22 @@ public class AuthenticationService {
 
     private final PasswordResetCodeRepository passwordResetCodeRepository;
 
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationProvider authenticationProvider;
 
     private final JwtTokenProvider tokenProvider;
-
-    private final MailEnqueueService mailEnqueueService;
 
     private final MailCreationService mailCreationService;
 
     private final VerifiedActionCodeRepository verifiedActionCodeRepository;
+
     private final String frontendBaseName;
+
     private final ApplicationEventPublisher applicationEventPublisher;
+
     private final CookieConfiguration cookieConfiguration;
 
     public Authentication authenticate(Authentication authentication) {
-        return this.authenticationManager.authenticate(authentication);
+        return this.authenticationProvider.authenticate(authentication);
     }
     public String generateJwtToken(Authentication authentication) {
         return this.tokenProvider.generateJwtToken(authentication);
@@ -83,8 +83,11 @@ public class AuthenticationService {
      * By setting the maxAge to 0, the cookie will be deleted by the browser.
      */
     public ResponseCookie generateClearingCookie() {
-        return ResponseCookie.from("jwt-token", "")
-                              .build();
+        return ResponseCookie
+                .from("jwt-token", "")
+                .path("/")
+                .maxAge(0)
+                .build();
     }
 
     public User getUser(UUID userId) {
@@ -136,7 +139,7 @@ public class AuthenticationService {
                             loginLink():
                             emailValidationLink(createEmailValidationCode(user));
 
-        enqueueTypedUserMail(user.getEmail(),"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
+        sendUserMail(user.getEmail(),"Du bist schon Mitglied bei dancier.net ;-)", MailCreationService.USER_ALREADY_EXISTS_EMAIL,
                 Map.of("passwordResetLink", passwordResetLink(passwordResetCode),
                         "email", user.getEmail(),
                         "loginLink", loginLink)
@@ -226,17 +229,19 @@ public class AuthenticationService {
     }
 
     public void sendChangePasswordMail(String email, String code) {
-        enqueueTypedUserMail(email,
+        sendUserMail(email,
                 "Du möchtest dein Passwort auf dancier.net ändern...",
                 MailCreationService.PASSWORD_CHANGE_REQUEST_EMAIL,
                 Map.of("changePasswordLink", passwordResetLink(code))
         );
 
-    }    private void enqueueTypedUserMail(String email,
-                                      String subject,
-                                      String template,
-                                      Map<String, Object> data) {
-        mailEnqueueService.enqueueMail(
+    }
+
+    private void sendUserMail(String email,
+                                   String subject,
+                                   String template,
+                                   Map<String, Object> data) {
+        applicationEventPublisher.publishEvent(
                 mailCreationService.createDancierMessageFromTemplate(
                         email,
                         MailCreationService.NO_REPLY_FROM,
@@ -247,15 +252,14 @@ public class AuthenticationService {
         );
     }
     private void enqueueUserMail(User user, String validationCode) {
-        mailEnqueueService.enqueueMail(
-                mailCreationService.createDancierMessageFromTemplate(
-                    user.getEmail(),
-                    MailCreationService.NO_REPLY_FROM,
-                    "Dancier - bestätige Deine E-Mail-Adresse!",
-                    MailCreationService.NEW_USER_VALIDATE_EMAIL,
-                    Map.of( "validationLink", emailValidationLink(validationCode)
+        applicationEventPublisher.publishEvent(
+            mailCreationService.createDancierMessageFromTemplate(
+                user.getEmail(),
+                MailCreationService.NO_REPLY_FROM,
+                "Dancier - bestätige Deine E-Mail-Adresse!",
+                MailCreationService.NEW_USER_VALIDATE_EMAIL,
+                Map.of( "validationLink", emailValidationLink(validationCode)
                 ))
         );
     }
-
 }

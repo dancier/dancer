@@ -10,7 +10,6 @@ import net.dancier.dancer.authentication.repository.UserRepository;
 import net.dancier.dancer.authentication.service.AuthenticationService;
 import net.dancier.dancer.core.exception.NotFoundException;
 import net.dancier.dancer.mail.service.MailCreationService;
-import net.dancier.dancer.mail.service.MailEnqueueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -48,9 +48,6 @@ class AuthenticationServiceTest {
 
     @Mock
     private MailCreationService mailCreationService;
-
-    @Mock
-    private MailEnqueueService mailEnqueueService;
 
     @Mock
     private EmailValidationCodeRepository validationCodeRepositoryMock;
@@ -105,9 +102,11 @@ class AuthenticationServiceTest {
                 dummyUser().getEmail()))
                 .thenReturn(Optional.of(dummyUser(true)));
 
+        when(mailCreationService.createDancierMessageFromTemplate(any(), any(), any(), any(), any())).thenReturn(new SimpleMailMessage());
+
         underTest.registerUser(dummyRegisterRequestDto(dummyUser()));
 
-        verify(mailEnqueueService, times(1)).enqueueMail(any());
+        verify(applicationEventPublisherMock, times(1)).publishEvent(any(SimpleMailMessage.class));
     }
 
     @Test

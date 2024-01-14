@@ -25,15 +25,19 @@ import java.util.stream.Collectors;
 public class EventlogController {
 
     private static Logger log = LoggerFactory.getLogger(EventlogController.class);
+
     private final EventlogService eventlogService;
+
     @PostMapping
     public ResponseEntity publish(@RequestBody NewEventlogDto newEventlogDto) {
         Eventlog eventlog = EventlogMapper.toEventlog(newEventlogDto);
         setRolesAndUser(eventlog);
         eventlogService.appendNew(eventlog);
+
         log.info("Appended " + eventlog + " to the eventlog.");
         return ResponseEntity.ok().build();
     }
+
 
     private void setRolesAndUser(Eventlog eventlog) {
         switch (SecurityContextHolder.getContext().getAuthentication().getPrincipal()) {
@@ -47,7 +51,7 @@ public class EventlogController {
                                 .collect(Collectors.toSet())
                 );
             }
-            case default -> {
+            default -> {
                 eventlog.setUserId(null);
                 eventlog.setRoles(Set.of("ROLE_ANONYMOUS"));
             }

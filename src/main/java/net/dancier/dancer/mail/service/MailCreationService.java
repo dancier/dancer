@@ -1,7 +1,6 @@
 package net.dancier.dancer.mail.service;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.dancer.mail.model.DancierMailMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,14 +31,14 @@ public class MailCreationService {
 
     private final TemplateEngine emailTemplateEngine;
 
-    public DancierMailMessage createDancierMessageFromTemplate(
+    public SimpleMailMessage createDancierMessageFromTemplate(
             String to,
             String from,
             String subject,
             String bodyTemplate,
             Map<String, Object> context) {
 
-        final DancierMailMessage dancierMailMessage = new DancierMailMessage();
+        final SimpleMailMessage dancierMailMessage = new SimpleMailMessage();
         dancierMailMessage.setFrom(from);
         dancierMailMessage.setTo(to);
         dancierMailMessage.setSubject(subject);

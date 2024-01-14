@@ -398,7 +398,9 @@ paths:
       tags:
         - Contacts
       requestBody:
-        description: the mail will end up in dev@dancier.net
+        description: >
+          The mail will end up in dev@dancier.net, the sender will also get a copy of the mail.
+          When the user of this endpoint is logged in, the senders email-address will be the one from the user. In this case the provided value in this payload will be ignored.
         required: true
         content:
           application/json:

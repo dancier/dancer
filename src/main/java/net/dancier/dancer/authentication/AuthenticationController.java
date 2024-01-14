@@ -27,9 +27,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +64,7 @@ public class AuthenticationController {
     @Secured({ROLE_HUMAN})
     @PostMapping("/registrations")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
+        log.info("About to register user: " + registerRequest);
         try {
             authenticationService.registerUser(registerRequest);
         } catch (UserOrEmailAlreadyExistsException userOrEmailAlreadyExistsException) {
@@ -107,19 +108,19 @@ public class AuthenticationController {
                                           HttpServletResponse httpServletResponse) {
         log.info("Log in as human");
         ResponseCookie cookie = null;
+        String jwt = null;
         try {
            captchaService.verifyToken(token);
+           jwt = authenticationService.generateJwtToken("HUMAN");
            cookie = authenticationService
-                   .generateCookie(
-                           authenticationService.generateJwtToken("HUMAN")
-                   );
+                   .generateCookie(jwt);
            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         } catch (CaptchaException captchaException) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     new ApiResponse(false, "Not authorized as a human: " + captchaException.getMessage())
             );
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @GetMapping("/logout")

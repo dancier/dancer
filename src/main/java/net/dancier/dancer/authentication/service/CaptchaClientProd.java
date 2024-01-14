@@ -23,9 +23,6 @@ public class CaptchaClientProd implements CaptchaClient {
     @Value("${app.captcha.siteKey}")
     private String siteKey;
 
-    @Value("${app.mail.user}")
-    private String mailuser;
-
     @Value("${app.captcha.apiKey}")
     private String apiKey;
 

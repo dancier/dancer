@@ -17,6 +17,8 @@ import net.dancier.dancer.core.model.Dancer;
 import net.dancier.dancer.core.util.ModelMapper;
 import net.dancier.dancer.location.ZipCode;
 import net.dancier.dancer.location.ZipCodeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
+
+    private Logger log = LoggerFactory.getLogger(ProfileService.class);
 
     private final UserRepository userRepository;
 
@@ -64,6 +68,8 @@ public class ProfileService {
                             d.setVersion(0);
                             return d;
                         });
+        Integer oldVersion = dancer.getVersion().intValue();
+
         dancer.setGender(profileOfCurrentUserDto.getGender());
         dancer.setBirthDate(profileOfCurrentUserDto.getBirthDate());
         dancer.setSize(profileOfCurrentUserDto.getSize());
@@ -90,17 +96,20 @@ public class ProfileService {
         }
         handleDancerProfiles(dancer, profileOfCurrentUserDto);
         dancer.setUpdatedAt(Instant.now());
-        if (dancer.getVersion()!=null) {
-            dancer.setVersion(dancer.getVersion() + 1);
-        } else {
-            dancer.setVersion(0);
-        }
         dancerRepository.save(dancer);
-        applicationEventPublisher.publishEvent(
-                ProfileUpdatedEvent
-                        .builder()
-                        .dancer(dancer)
-                        .build());
+
+        log.info("{}/{}", dancer.getVersion(), oldVersion);
+        // this hould be unequal but it does not work then
+        if (dancer.getVersion().equals(oldVersion)) {
+            log.info("Profile-Change detected");
+            applicationEventPublisher.publishEvent(
+                    ProfileUpdatedEvent
+                            .builder()
+                            .dancer(dancer)
+                            .build());
+        } else {
+            log.info("Version unchanged");
+        }
     }
 
     private void checkDancerNameRules(String dancerName) {

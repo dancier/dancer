@@ -3,7 +3,7 @@ package net.dancier.dancer.mail.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
@@ -26,7 +26,7 @@ public class MailTemplateConfiguration {
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setOrder(Integer.valueOf(1));
         templateResolver.setResolvablePatterns(Collections.singleton("text/*"));
-        templateResolver.setPrefix("/mail/");
+        templateResolver.setPrefix("/templates/mail/");
         templateResolver.setSuffix(".txt");
         templateResolver.setTemplateMode(TemplateMode.TEXT);
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);

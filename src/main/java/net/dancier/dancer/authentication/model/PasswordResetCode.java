@@ -2,7 +2,7 @@ package net.dancier.dancer.authentication.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
