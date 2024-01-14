@@ -30,7 +30,6 @@ public class ContactController {
     @Secured({ROLE_HUMAN})
     public ResponseEntity sentMail(@RequestBody ContactDto contactDto,
                                    @CurrentUser AuthenticatedUser currentUser) {
-
         log.info("Sending {} to {}.", contactDto.getMessage(), contactDto.getSender());
         contactService.send(contactDto, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).build();

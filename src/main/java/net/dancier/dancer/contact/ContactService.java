@@ -27,7 +27,7 @@ public class ContactService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     void send(ContactDto contactDto, AuthenticatedUser authenticatedUserOfSender) {
-        String senderMailAddress = (authenticatedUserOfSender.getAuthorities().contains(ROLE_USER))
+        String senderMailAddress = authenticatedUserOfSender.getAuthorities().contains(ROLE_USER)
                 ? authenticatedUserOfSender.getEmail()
                 : contactDto.getSender();
         SimpleMailMessage mailToSender = mailCreationService.createDancierMessageFromTemplate(
