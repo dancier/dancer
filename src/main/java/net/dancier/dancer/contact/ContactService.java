@@ -27,6 +27,7 @@ public class ContactService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     void send(ContactDto contactDto, AuthenticatedUser authenticatedUserOfSender) {
+        log.info("Having authorities: {}", authenticatedUserOfSender.getAuthorities());
         String senderMailAddress = authenticatedUserOfSender.getAuthorities().contains(ROLE_USER)
                 ? authenticatedUserOfSender.getEmail()
                 : contactDto.getSender();
