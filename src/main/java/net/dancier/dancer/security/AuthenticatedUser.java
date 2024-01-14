@@ -16,6 +16,7 @@ public class AuthenticatedUser implements UserDetails {
     private UUID userId;
 
     private Optional<UUID> optionalDancerId = Optional.empty();
+
     private String email;
 
     private String password;

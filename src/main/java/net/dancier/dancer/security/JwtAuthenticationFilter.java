@@ -55,6 +55,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication onlyCaptchaVerified() {
+
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_HUMAN");
+        List<GrantedAuthority> authorities =  List.of(simpleGrantedAuthority);
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+                null,
+                null,
+                true,
+                null,
+                Optional.empty(),
+                authorities
+        );
+
+
         Authentication authentication = new Authentication() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -74,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             @Override
             public Object getPrincipal() {
-                return null;
+                return authenticatedUser;
             }
 
             @Override
