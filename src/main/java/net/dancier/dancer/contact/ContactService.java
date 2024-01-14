@@ -46,7 +46,7 @@ public class ContactService {
                 "Mail über das Kontakt formular",
                 MailCreationService.CONTACT_FORMULAR,
                 Map.of(
-                "sender", contactDto.getSender(),
+                "sender", senderMailAddress,
                 "message", contactDto.getMessage())
                 );
 

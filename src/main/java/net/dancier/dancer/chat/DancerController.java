@@ -3,7 +3,6 @@ package net.dancier.dancer.chat;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.chat.dto.DancerDto;
 import net.dancier.dancer.chat.dto.DancerIdsDto;
-import net.dancier.dancer.contact.ContactController;
 import net.dancier.dancer.core.DancerService;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
@@ -22,7 +21,7 @@ import static net.dancier.dancer.authentication.Constants.ROLE_USER;
 @RequestMapping("/dancers")
 @RequiredArgsConstructor
 public class DancerController {
-    private final static Logger log = LoggerFactory.getLogger(ContactController.class);
+    private final static Logger log = LoggerFactory.getLogger(DancerController.class);
 
     private final DancerService dancerService;
 
