@@ -561,6 +561,7 @@ paths:
         - Dancers
       parameters:
         - $ref: '#/components/parameters/range'
+        - $ref: '#/components/parameters/gender'
       responses:
         '200':
           description: retrieves a potentially empty array
@@ -569,7 +570,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/recommendable"
+                  $ref: "#/components/schemas/dancer"
     post:
       summary: Used to retrieve a list of dancers
       tags:
@@ -646,6 +647,12 @@ components:
       name: lastMessageId
       in: query
       description: Id of the last message already received. If set, the endpoint only returns newer messages
+      schema:
+        type: string
+    gender:
+      name: gender
+      in: query
+      description: preferred gender of the dancers
       schema:
         type: string
     range:
@@ -745,6 +752,31 @@ components:
             - LEAD
             - BOTH
             - NA
+    dancer:
+      type: object
+      properties:
+        size:
+          type: integer
+        aboutMe:
+          type: string
+        gender:
+          $ref: "#/components/schemas/gender"
+        dancerName:
+          type: string
+        age:
+          type: integer
+        city:
+          type: string
+        country:
+          type: string
+          enum:
+            - GER
+        profileImageHash:
+          type: string
+        ableTo:
+          type: array
+          items:
+            $ref: "#/components/schemas/dance_profile"
     change_profile:
       type: object
       properties:
