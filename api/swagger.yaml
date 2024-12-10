@@ -570,7 +570,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/dancer"
+                  $ref: "#/components/schemas/public_profile"
     post:
       summary: Used to retrieve a list of dancers
       tags:
@@ -752,31 +752,6 @@ components:
             - LEAD
             - BOTH
             - NA
-    dancer:
-      type: object
-      properties:
-        size:
-          type: integer
-        aboutMe:
-          type: string
-        gender:
-          $ref: "#/components/schemas/gender"
-        dancerName:
-          type: string
-        age:
-          type: integer
-        city:
-          type: string
-        country:
-          type: string
-          enum:
-            - GER
-        profileImageHash:
-          type: string
-        ableTo:
-          type: array
-          items:
-            $ref: "#/components/schemas/dance_profile"
     change_profile:
       type: object
       properties:
@@ -820,9 +795,8 @@ components:
           $ref: "#/components/schemas/gender"
         dancerName:
           type: string
-        birthDate:
+        age:
           type: string
-          format: date
         ableTo:
           type: array
           items:
