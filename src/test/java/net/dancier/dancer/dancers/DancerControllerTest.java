@@ -5,28 +5,39 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.MultiValueMap;
 
-import java.util.UUID;
+import java.util.List;
 
+import static net.dancier.dancer.core.model.Gender.FEMALE;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DancerControllerTest extends AbstractPostgreSQLEnabledTest {
 
-
-    UUID userId = UUID.fromString("55bbf334-6649-11ed-8f65-5b299f0e161f");
-
     @Test
     @WithUserDetails("user-with-a-profile@dancier.net")
-    void getDancersShouldNotReturnOwnProfile() throws Exception {
+    @Sql(value = {"/dancers/data.sql"})
+    void getDancersShouldReturnFilteredProfiles() throws Exception {
 
-        ResultActions result = mockMvc
+        mockMvc
                 .perform(get("/dancers")
                         .param("range", "20")
-                        .param("gender", "MALE")
+                        .param("gender", "FEMALE")
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", isA(List.class)))
+                .andExpect(jsonPath("$.*", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value("503ffad4-148b-4af1-8365-62315ff89b9f"))
+                .andExpect(jsonPath("$[0].gender").value("FEMALE"))
+                .andExpect(jsonPath("$[0].dancerName").value("perfect_dancer"))
+                .andExpect(jsonPath("$[0].aboutMe").value("Hi"))
+                .andExpect(jsonPath("$[0].age").isNotEmpty())
+                .andExpect(jsonPath("$[0].size").value("178"))
+                .andExpect(jsonPath("$[0].city").value("Dortmund"))
+                .andExpect(jsonPath("$[0].country").value("GER"));
 
     }
 }
