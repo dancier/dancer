@@ -1,12 +1,13 @@
 package net.dancier.dancer.dancers;
 
 import net.dancier.dancer.AbstractPostgreSQLEnabledTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isA;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,9 +62,35 @@ public class DancerControllerTest extends AbstractPostgreSQLEnabledTest {
 
     @Test
     @WithUserDetails("user-with-a-profile@dancier.net")
-    void shouldFailIfGenderIsNotSet() throws Exception {
-        mockMvc .perform(get("/dancers")
-                .param("range", "20")
-        ).andExpect(status().isBadRequest());
+    @DisplayName("Search with no specified gender should return all genders")
+    void getDancers_whenGenderIsOmitted_shouldReturnAllGenders() throws Exception {
+        mockMvc.perform(get("/dancers")
+                        .param("range", "20")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].gender", containsInAnyOrder("FEMALE", "MALE")));
+    }
+
+    @Test
+    @WithUserDetails("user-with-a-profile@dancier.net")
+    @DisplayName("Search that matches no dancers should return an empty list")
+    void getDancers_whenNoDancersMatch_shouldReturnEmptyList() throws Exception {
+        mockMvc.perform(get("/dancers")
+                        .param("range", "200")
+                        .param("gender", "DIVERSE") // Assuming no DIVERSE dancers are in the data.sql
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Search without authentication should be rejected")
+    void getDancers_whenNotAuthenticated_shouldReturnUnauthorized() throws Exception {
+        mockMvc.perform(get("/dancers")
+                        .param("range", "20")
+                        .param("gender", "FEMALE")
+                )
+                .andExpect(status().isForbidden());
     }
 }

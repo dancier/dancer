@@ -1,10 +1,11 @@
 package net.dancier.dancer.dancers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.dancier.dancer.chat.dto.DancerDto;
 import net.dancier.dancer.chat.dto.DancerIdsDto;
+import net.dancier.dancer.core.dto.DancerSearchRequestDto;
 import net.dancier.dancer.core.dto.PublicProfileDto;
-import net.dancier.dancer.core.model.Gender;
 import net.dancier.dancer.security.AuthenticatedUser;
 import net.dancier.dancer.security.CurrentUser;
 import org.slf4j.Logger;
@@ -29,11 +30,9 @@ public class DancerController {
     @Secured(ROLE_USER)
     public ResponseEntity<List<PublicProfileDto>> get(
             @CurrentUser AuthenticatedUser authenticatedUser,
-            @RequestParam Gender gender,
-            @RequestParam(defaultValue = "20") int range
-            ) {
-        log.info("Fetching list of dancers in {} km range with gender {} for user {}", range, gender, authenticatedUser.getUserId());
-        return ResponseEntity.ok(dancerService.getDancerList(authenticatedUser, gender, range));
+            @Valid DancerSearchRequestDto searchRequest) {
+        log.info("Fetching list of dancers in {} km range with gender {} for user {}", searchRequest.getRange(), searchRequest.getGender(), authenticatedUser.getUserId());
+        return ResponseEntity.ok(dancerService.getDancerList(authenticatedUser, searchRequest.getGender(), searchRequest.getRange()));
     }
 
     @PostMapping("")

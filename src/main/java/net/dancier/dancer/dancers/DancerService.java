@@ -54,8 +54,15 @@ public class DancerService {
         double upperLongitude = dancer.getLongitude() + longitudeRange;
         double lowerLongitude = dancer.getLongitude() - longitudeRange;
 
-        List<Dancer> resultList = dancerRepository.findFirst500ByGenderAndLongitudeBetweenAndLatitudeBetween(
-            gender, lowerLongitude, upperLongitude, lowerLatitude, upperLatitude);
+        List<Dancer> resultList;
+        if (gender == null) {
+            // If no gender is provided, call the new repository method that doesn't filter by gender
+            resultList = dancerRepository.findFirst500ByLongitudeBetweenAndLatitudeBetween(
+                    lowerLongitude, upperLongitude, lowerLatitude, upperLatitude);
+        } else {
+            resultList = dancerRepository.findFirst500ByGenderAndLongitudeBetweenAndLatitudeBetween(
+                    gender, lowerLongitude, upperLongitude, lowerLatitude, upperLatitude);
+        }
 
         return resultList.stream()
                 .map(PublicProfileDto::of)

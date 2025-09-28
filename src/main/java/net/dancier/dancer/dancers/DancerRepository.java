@@ -22,4 +22,11 @@ public interface DancerRepository extends JpaRepository<Dancer, UUID> {
             double upperLatitude
     );
 
+    List<Dancer> findFirst500ByLongitudeBetweenAndLatitudeBetween(
+            double lowerLongitude,
+            double upperLongitude,
+            double lowerLatitude,
+            double upperLatitude
+    );
+
 }
