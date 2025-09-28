@@ -56,7 +56,6 @@ public class DancerService {
 
         List<Dancer> resultList;
         if (gender == null) {
-            // If no gender is provided, call the new repository method that doesn't filter by gender
             resultList = dancerRepository.findFirst500ByLongitudeBetweenAndLatitudeBetween(
                     lowerLongitude, upperLongitude, lowerLatitude, upperLatitude);
         } else {
