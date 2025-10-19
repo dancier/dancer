@@ -16,7 +16,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -68,7 +67,7 @@ public class EndToEndProfileTest extends AbstractPostgreSQLEnabledTest {
         danceProfileDto.setLeading(Leading.FOLLOW);
 
 
-        profileOfCurrentUserDto.setGender(Gender.DIVERS);
+        profileOfCurrentUserDto.setGender(Gender.DIVERSE);
         profileOfCurrentUserDto.setBirthDate(LocalDate.now());
         profileOfCurrentUserDto.setAbleTo(Set.of(danceProfileDto));
         profileOfCurrentUserDto.setWantsTo(Set.of(danceProfileDto));

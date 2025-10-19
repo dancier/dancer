@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   dancer:
@@ -13,7 +11,7 @@ services:
     environment:
 #   https://ckinan.com/blog/remote-debug-spring-boot-docker-intellij/:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dancer-db:5432/dancer
-      - SPRING_PROFILES_ACTIVE="dev"
+      - SPRING_PROFILES_ACTIVE=dev
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   dancer-db:
     image: postgres:14
@@ -40,6 +38,8 @@ services:
 
   prometheus:
     image: prom/prometheus
+    depends_on:
+      - dancer
     ports:
       - "9090:9090"
     volumes:
@@ -70,6 +70,8 @@ services:
   kafka-ui:
     container_name: kafka-ui
     image: tchiotludo/akhq:latest
+    depends_on:
+      - kafka
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/ui"]
       interval: 10s
