@@ -47,7 +47,7 @@ services:
 
   kafka:
     container_name: kafka
-    image: bitnami/kafka:3.3.1
+    image: soldevelo/kafka:3.3.2
     environment:
       KAFKA_ENABLE_KRAFT: 'yes'
       KAFKA_KRAFT_CLUSTER_ID: r7dMBY60T16TrNCGeXniLw
